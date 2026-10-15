@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Services — Custom decals, commission builds, wholesale | HPZ Diecast</title>
+  <meta name="description" content="Custom waterslide decals drawn to your casting, commission 1:64 builds, wholesale pricing for hobby shops, part sourcing and help with shipping and duties.">
+  <link rel="icon" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/p-services.css">
+</head>
+<body data-page="services" data-nav="services">
+<header id="hpz-header"></header>
+
+<main id="main">
+
+  <!-- sections/services-hero.liquid -->
+  <section class="svh">
+    <div class="wrap svh-in">
+      <div class="svh-copy">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html" data-id="Beranda" data-ja="ホーム">Home</a><span data-id="Layanan" data-ja="サービス">Services</span></nav>
+        <span class="eyebrow"><b>HPZ-S/26</b> <span data-id="Layanan workshop · Semarang" data-ja="工房サービス · スマラン">Workshop services · Semarang</span></span>
+        <h1 class="display svh-h" id="svh-h" data-id="Kami buat<br>yang tidak ada<br>di katalog." data-ja="カタログに<br>ないものを<br>作ります。">We build<br>what the<br>catalogue can't.</h1>
+        <p class="lead" data-id="Decal yang digambar sesuai casting-mu, mobil yang dirakit di meja kami, harga grosir untuk toko hobi, dan parts yang kami carikan. Setiap request dibaca dan dihitung oleh orang di workshop — biasanya dalam satu hari kerja." data-ja="車種に合わせて描くデカール、工房で組むビルド、ホビーショップ向け卸価格、パーツの取り寄せ。すべての依頼は工房のスタッフが確認し、通常1営業日以内にお見積りします。">Decals drawn to your casting, cars assembled on our bench, trade pricing for hobby shops and parts we hunt down for you. Every request is read and quoted by a person in the workshop — usually within one working day.</p>
+        <dl class="svh-stats">
+          <div><dt data-id="Sheet custom dicetak" data-ja="カスタム印刷数">Custom sheets printed</dt><dd class="mono" data-count="1140">0</dd></div>
+          <div><dt data-id="Build pesanan selesai" data-ja="受注ビルド完成">Commission builds</dt><dd class="mono" data-count="86">0</dd></div>
+          <div><dt data-id="Negara reseller" data-ja="取扱国">Stockist countries</dt><dd class="mono" data-count="12">0</dd></div>
+          <div><dt data-id="Rata-rata balasan" data-ja="平均返信">Median reply</dt><dd class="mono"><span data-count="6">0</span><small>h</small></dd></div>
+        </dl>
+      </div>
+      <div class="svh-side">
+        <div class="svh-idx-h"><span class="mono" data-id="Indeks layanan" data-ja="サービス一覧">Service index</span><span class="mono">05</span></div>
+        <ol class="svh-idx" id="svh-idx"></ol>
+        <div class="svh-queue" id="svh-queue"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- sections/decal-studio.liquid -->
+  <section class="section ds" id="decal">
+    <div class="wrap">
+      <div class="shead"><span class="idx">S-01</span><div><h2 class="h2" data-id="Studio Decal Custom" data-ja="カスタムデカールスタジオ">Custom Decal Studio</h2><p data-id="Livery balap, logo bengkel, atau mobil dari game — kami gambar ulang ke template casting yang kami ukur sendiri, lalu cetak sheet tes sebelum produksi." data-ja="レースカラー、ショップロゴ、ゲームの車 — 実測した車種テンプレートに描き直し、本印刷前にテスト印刷します。">Race livery, your shop logo or a car from a game — we redraw it onto a template measured from the actual casting, then print a test sheet before the real run.</p></div><a class="arrow-link" href="shop.html?k=decals"><span data-id="Lihat 38 sheet siap pakai" data-ja="既製デカール38種">Browse 38 ready-made sheets</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15"/><path d="m13 6 6 6-6 6"/></svg></a></div>
+
+      <ol class="ds-steps" id="ds-steps" data-reveal></ol>
+
+      <div class="ds-grid">
+        <form class="ds-form" id="ds-form" novalidate>
+          <fieldset class="ds-f">
+            <legend><span class="mono">01</span> <span data-id="Casting" data-ja="車種">Casting</span></legend>
+            <select class="select" id="ds-cast" aria-label="Casting"></select>
+            <p class="xs muted" id="ds-cast-note"></p>
+          </fieldset>
+          <fieldset class="ds-f">
+            <legend><span class="mono">02</span> <span data-id="Jenis decal" data-ja="デカールの種類">Decal type</span></legend>
+            <div class="opt3" id="ds-type"></div>
+          </fieldset>
+          <fieldset class="ds-f">
+            <legend><span class="mono">03</span> <span data-id="Kompleksitas" data-ja="デザイン範囲">Complexity</span></legend>
+            <div class="opt3" id="ds-cx"></div>
+          </fieldset>
+          <div class="ds-f ds-f-row">
+            <div class="ds-qwrap">
+              <span class="lg"><span class="mono">04</span> <span data-id="Jumlah sheet" data-ja="枚数">Sheets</span></span>
+              <div class="qty ds-qty"><button type="button" data-q="-1" aria-label="Less"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14"/></svg></button><input id="ds-q" type="number" min="1" max="20" value="2" aria-label="Sheets"><button type="button" data-q="1" aria-label="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></button></div>
+              <span class="xs muted" data-id="1–20 sheet · 60 × 45 mm" data-ja="1〜20枚 · 60×45mm">1–20 sheets · 60 × 45 mm each</span>
+            </div>
+            <label class="ds-rush">
+              <span class="switch"><input type="checkbox" id="ds-rush"><span></span></span>
+              <span><b data-id="Rush — masuk antrean depan" data-ja="特急 — 優先対応">Rush — jump the queue</b><em class="xs muted" data-id="+40% · proof dalam 24 jam" data-ja="+40% · 24時間以内に校正">+40% · proof within 24 h</em></span>
+            </label>
+          </div>
+          <fieldset class="ds-f">
+            <legend><span class="mono">05</span> <span data-id="Artwork & referensi" data-ja="データ・参考画像">Artwork &amp; references</span></legend>
+            <label class="drop" id="ds-drop">
+              <input type="file" id="ds-file" class="sr-only" multiple accept=".png,.jpg,.jpeg,.svg,.ai,.pdf,.psd">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v3.5h16V16"/></svg>
+              <b data-id="Tarik file ke sini atau klik untuk pilih" data-ja="ファイルをドロップまたはクリック">Drop files here or click to browse</b>
+              <span class="xs muted" data-id="SVG, AI, PDF lebih baik. Foto juga bisa — kami gambar ulang. Maks 25 MB." data-ja="SVG・AI・PDF推奨。写真でもOK（描き直します）。最大25MB。">SVG, AI or PDF are best. Photos are fine too — we redraw. Max 25 MB.</span>
+            </label>
+            <div class="files" id="ds-files"></div>
+          </fieldset>
+          <fieldset class="ds-f ds-f-2">
+            <div class="field"><label for="ds-name" data-id="Nama" data-ja="お名前">Name</label><input class="input" id="ds-name" autocomplete="name" required></div>
+            <div class="field"><label for="ds-mail">Email</label><input class="input" id="ds-mail" type="email" autocomplete="email" required><span class="err-msg" data-id="Kami butuh email untuk kirim proof." data-ja="校正送付のためメールが必要です。">We need an email to send the proof.</span></div>
+            <div class="field ds-notes"><label for="ds-notes" data-id="Catatan" data-ja="メモ">Notes</label><textarea class="textarea" id="ds-notes" placeholder="e.g. 1998 JGTC Calsonic, number 12, keep the sponsor logos period-correct" data-ph-id="mis. Calsonic JGTC 1998, nomor 12, logo sponsor sesuai era" data-ph-ja="例：1998年JGTC カルソニック #12、当時のスポンサーロゴで"></textarea></div>
+          </fieldset>
+        </form>
+
+        <aside class="ds-quote" id="ds-quote" aria-live="polite"></aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- sections/commission-build.liquid -->
+  <section class="section on-white cb" id="build">
+    <div class="wrap">
+      <div class="shead"><span class="idx">S-02</span><div><h2 class="h2" data-id="Jasa Build" data-ja="受注ビルド">Commission Build</h2><p data-id="Kami rakit mobilnya untukmu. Pilih casting dari stok kami atau kirim mobilmu sendiri ke Semarang — kami kabari progres dengan foto di setiap tahap." data-ja="あなたの代わりに組み上げます。在庫の車種を選ぶか、お手持ちの車をスマランへ送ってください。各工程で写真をお送りします。">We build the car for you. Pick a casting from our stock or post your own to Semarang — you get photos at every stage.</p></div><div class="slots" id="slots"></div></div>
+
+      <div class="cmp-wrap" data-reveal><table class="cmp" id="cmp"></table></div>
+
+      <div class="cb-grid">
+        <div class="board" id="board"></div>
+        <form class="cb-form" id="cb-form" novalidate>
+          <h3 class="h3" data-id="Mulai build" data-ja="ビルドを依頼">Start a build</h3>
+          <div class="field"><label for="cb-cast" data-id="Mobil" data-ja="車両">Car</label><select class="select" id="cb-cast"></select></div>
+          <div class="field"><span class="lbl" data-id="Paket" data-ja="プラン">Tier</span><div class="seg cb-tier" id="cb-tier"></div></div>
+          <div class="field"><label for="cb-budget" data-id="Budget (termasuk parts)" data-ja="予算（パーツ込み）">Budget (parts included)</label><select class="select" id="cb-budget"></select></div>
+          <div class="field"><label for="cb-notes" data-id="Ceritakan build-nya" data-ja="ビルドの内容">Tell us about the build</label><textarea class="textarea" id="cb-notes" placeholder="Stance, colour, references, wheels you already have…" data-ph-id="Stance, warna, referensi, velg yang sudah kamu punya…" data-ph-ja="車高、色、参考画像、手持ちのホイールなど"></textarea></div>
+          <div class="field"><label for="cb-mail">Email</label><input class="input" id="cb-mail" type="email" autocomplete="email" required><span class="err-msg" data-id="Masukkan email yang valid." data-ja="有効なメールを入力してください。">Enter a valid email.</span></div>
+          <button class="btn btn-ink btn-lg btn-block" type="submit" id="cb-go"><span class="spin"></span><span data-id="Kirim request build" data-ja="ビルドを依頼する">Request a build slot</span></button>
+          <p class="xs muted" id="cb-foot"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- sections/wholesale.liquid -->
+  <section class="section dark ws" id="wholesale">
+    <div class="wrap">
+      <div class="shead"><span class="idx">S-03</span><div><h2 class="h2" data-id="Grosir & Reseller" data-ja="卸売・取扱店">Wholesale &amp; Stockists</h2><p data-id="Harga bertingkat untuk toko hobi, reseller online dan penjual di event. Diskon dihitung per order, campur produk apa saja." data-ja="ホビーショップ、オンライン販売、イベント出店者向けの段階価格。商品の組み合わせ自由、注文ごとに割引。">Tiered trade pricing for hobby shops, online resellers and event sellers. Discount is calculated per order — mix any products.</p></div><a class="btn btn-line btn-sm" href="#ws-apply" data-id="Daftar" data-ja="申し込む">Apply</a></div>
+
+      <div class="ws-top">
+        <div class="ws-calc" id="ws-calc"></div>
+        <ul class="ws-ben" id="ws-ben"></ul>
+      </div>
+
+      <div class="ws-stock">
+        <div class="ws-stock-h"><h3 class="h3" data-id="Di mana menemukan HPZ" data-ja="取扱店">Where to find HPZ</h3><span class="mono xs" id="ws-stock-n"></span></div>
+        <div class="ws-list" id="ws-list"></div>
+      </div>
+
+      <form class="ws-form" id="ws-apply" novalidate>
+        <div class="ws-form-h"><span class="eyebrow"><b data-id="Aplikasi" data-ja="申込">Application</b></span><h3 class="h3" data-id="Buka akun trade" data-ja="取引アカウントを開設">Open a trade account</h3><p class="small" data-id="Kami balas dalam 2 hari kerja dengan price list PDF dan link order." data-ja="2営業日以内に価格表PDFと注文リンクをお送りします。">We reply within 2 working days with a PDF price list and your order link.</p></div>
+        <div class="ws-fields">
+          <div class="field"><label for="ws-shop" data-id="Nama toko" data-ja="店舗名">Shop name</label><input class="input" id="ws-shop" required></div>
+          <div class="field"><label for="ws-country" data-id="Negara" data-ja="国">Country</label><select class="select" id="ws-country"></select></div>
+          <div class="field"><label for="ws-type" data-id="Jenis usaha" data-ja="業態">Type</label><select class="select" id="ws-type"></select></div>
+          <div class="field"><label for="ws-vol" data-id="Perkiraan volume / bulan" data-ja="月間数量">Expected volume / month</label><select class="select" id="ws-vol"></select></div>
+          <div class="field"><label for="ws-web" data-id="Website atau Instagram" data-ja="サイト・Instagram">Website or Instagram</label><input class="input" id="ws-web" placeholder="@yourshop"></div>
+          <div class="field"><label for="ws-mail">Email</label><input class="input" id="ws-mail" type="email" required><span class="err-msg" data-id="Masukkan email yang valid." data-ja="有効なメールを入力してください。">Enter a valid email.</span></div>
+        </div>
+        <button class="btn btn-signal btn-lg" type="submit" id="ws-go"><span class="spin"></span><span data-id="Kirim aplikasi" data-ja="申し込む">Send application</span></button>
+      </form>
+    </div>
+  </section>
+
+  <!-- sections/part-request.liquid -->
+  <section class="section rq" id="request">
+    <div class="wrap rq-in">
+      <div class="rq-copy">
+        <span class="eyebrow"><b>S-04</b> <span data-id="Request part / casting" data-ja="パーツ・車種リクエスト">Part / casting request</span></span>
+        <h2 class="h1" data-id="Tidak ketemu?<br>Kami carikan." data-ja="見つからない？<br>探します。">Can't find it?<br>We source it.</h2>
+        <p class="lead" data-id="Kami punya jalur langsung ke 11 pabrikan dan beberapa caster resin di Jawa. Kalau part-nya ada, kami temukan. Kalau belum ada dan cukup banyak yang minta, kami buat." data-ja="11メーカーとジャワのレジン職人に直接ルートがあります。存在するパーツなら探し出し、まだ無いものは要望が集まれば製作します。">We have direct lines to 11 makers and several resin casters in Java. If the part exists, we find it. If it doesn't and enough of you ask, we make it.</p>
+        <div class="rq-log">
+          <div class="rq-log-h mono"><span data-id="Baru-baru ini dicarikan" data-ja="最近の取り寄せ">Recently sourced</span><span data-id="Hari" data-ja="日数">Days</span></div>
+          <ul id="rq-log"></ul>
+        </div>
+      </div>
+      <form class="rq-form" id="rq-form" novalidate>
+        <div class="field"><label for="rq-what" data-id="Part apa yang kamu cari?" data-ja="お探しのパーツ">What part are you after?</label><input class="input" id="rq-what" required placeholder="e.g. Volk TE37 in bronze, 9.5 mm, long axle" data-ph-id="mis. Volk TE37 bronze, 9.5 mm, axle panjang" data-ph-ja="例：TE37 ブロンズ 9.5mm ロングアクスル"><span class="err-msg" data-id="Ceritakan sedikit part-nya." data-ja="パーツを入力してください。">Tell us a little about the part.</span></div>
+        <div class="field"><label for="rq-cast" data-id="Untuk casting apa?" data-ja="対象車種">For which casting?</label><select class="select" id="rq-cast"></select></div>
+        <div class="field"><label for="rq-link" data-id="Link atau foto referensi" data-ja="参考リンク・写真">Reference link or photo</label>
+          <div class="rq-ref"><input class="input" id="rq-link" type="url" placeholder="https://"><label class="btn btn-ghost rq-photo"><input type="file" id="rq-file" accept="image/*" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7.5h3.5L9 5h6l1.5 2.5H20a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.8"/></svg><span id="rq-file-n" data-id="Foto" data-ja="写真">Photo</span></label></div></div>
+        <div class="field"><label for="rq-mail">Email</label><input class="input" id="rq-mail" type="email" required><span class="err-msg" data-id="Masukkan email yang valid." data-ja="有効なメールを入力してください。">Enter a valid email.</span></div>
+        <button class="btn btn-signal btn-lg btn-block" type="submit" id="rq-go"><span class="spin"></span><span data-id="Kirim request" data-ja="リクエストを送信">Send request</span></button>
+        <p class="xs muted" data-id="Gratis. Tidak ada kewajiban beli. Kami kabari harga & estimasi sebelum memesan apa pun." data-ja="無料・購入義務なし。手配前に価格と納期をご連絡します。">Free. No obligation to buy. We confirm price and lead time before ordering anything.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- sections/loyalty.liquid -->
+  <section class="section pp mat" id="points">
+    <div class="wrap">
+      <div class="pp-head">
+        <div>
+          <span class="eyebrow"><b>S-05</b> Pit Points</span>
+          <h2 class="h1" data-id="Setiap order<br>naik satu gigi." data-ja="注文ごとに<br>ギアが上がる。">Every order<br>shifts a gear.</h2>
+        </div>
+        <p class="lead" data-id="Program loyalitas kami. Poin dari belanja, ulasan dengan foto dan build yang tampil di galeri. 1.000 poin = potongan $10, langsung di checkout." data-ja="ロイヤルティプログラム。購入、写真付きレビュー、ギャラリー掲載でポイント獲得。1,000ポイント＝$10引き。">Our loyalty programme. Points from orders, photo reviews and builds featured in the gallery. 1,000 points = $10 off, applied at checkout.</p>
+      </div>
+      <div class="pp-meter" id="pp-meter"></div>
+      <div class="pp-grid">
+        <div class="pp-tiers" id="pp-tiers"></div>
+        <div class="pp-earn" id="pp-earn"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- sections/help-centre.liquid -->
+  <section class="section hc" id="help">
+    <div class="wrap">
+      <div class="shead"><span class="idx">H</span><div><h2 class="h2" data-id="Pusat bantuan" data-ja="ヘルプセンター">Help centre</h2><p data-id="Pengiriman, bea masuk, retur dan garansi fitment. Jawaban di bawah mengikuti negara yang kamu pilih di atas." data-ja="配送、関税、返品、フィット保証。以下の回答は選択中の地域に合わせて表示されます。">Shipping, duties, returns and the fitment guarantee. Answers below follow the market you have selected in the header.</p></div><span class="hc-mk" id="hc-mk"></span></div>
+      <div class="hc-grid">
+        <aside class="hc-side" id="hc-side"></aside>
+        <div class="hc-main">
+          <div class="hc-ship" id="hc-ship"></div>
+          <div class="tabs hc-tabs" id="hc-tabs"></div>
+          <div class="hc-faq" id="hc-faq"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="hpz-footer"></div>
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/chrome.js"></script>
+<script src="assets/js/pages/services.js"></script>
+</body>
+</html>

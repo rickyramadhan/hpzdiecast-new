@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Built by You — HPZ Diecast</title>
+  <link rel="icon" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/p-home.css">
+  <link rel="stylesheet" href="assets/css/p-builds.css">
+</head>
+<body data-page="builds" data-nav="builds">
+<header id="hpz-header"></header>
+
+<main id="main">
+  <!-- sections/builds-hero.liquid (metaobject: build) -->
+  <section class="bh dark-0">
+    <div class="wrap bh-in">
+      <div>
+        <span class="eyebrow"><b>UGC</b> <span data-id="Galeri komunitas" data-ja="コミュニティギャラリー">Community gallery</span></span>
+        <h1 class="display" data-id="Dibangun<br>oleh kalian." data-ja="みんなの<br>ビルド。">Built<br>by you.</h1>
+        <p class="lead" data-id="Setiap foto di sini dibangun dengan parts HPZ. Ketuk titik di foto untuk melihat part-nya — atau beli seluruh build sekaligus." data-ja="すべてHPZパーツで製作。写真の点をタップしてパーツを確認、またはまとめて購入。">Every photo here was built with HPZ parts. Tap the dots to see each part — or buy the whole build in one go.</p>
+      </div>
+      <dl class="bh-stats">
+        <div><dt data-id="Build dikirim" data-ja="投稿数">Builds submitted</dt><dd class="mono" data-count="2184">0</dd></div>
+        <div><dt data-id="Builder" data-ja="ビルダー">Builders</dt><dd class="mono" data-count="961">0</dd></div>
+        <div><dt data-id="Negara" data-ja="国">Countries</dt><dd class="mono" data-count="38">0</dd></div>
+        <div class="bh-cta"><a class="btn btn-signal btn-lg" href="#submit" data-id="Kirim build kamu" data-ja="ビルドを投稿">Submit your build</a></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="bg-s">
+    <div class="wrap">
+      <div class="bg-bar"><div class="bg-chips" id="bg-chips"></div><label class="tb-sort"><span class="lbl" data-id="Urutkan" data-ja="並び替え">Sort</span><select class="select" id="bg-sort"><option value="likes" data-id="Paling disukai" data-ja="人気順">Most liked</option><option value="new" data-id="Terbaru" data-ja="新着">Newest</option><option value="parts" data-id="Parts terbanyak" data-ja="パーツ数">Most parts</option></select></label></div>
+      <div class="bg-grid" id="bg-grid"></div>
+    </div>
+  </section>
+
+  <!-- sections/top-builders.liquid -->
+  <section class="section-s on-white">
+    <div class="wrap lb-in">
+      <div><span class="eyebrow"><b>10/2026</b> <span data-id="Builder bulan ini" data-ja="今月のビルダー">Builders of the month</span></span><h2 class="h2" data-id="Papan peringkat" data-ja="ランキング">Leaderboard</h2><p class="small muted" data-id="Peringkat berdasarkan like & build yang di-feature. Top 3 dapat voucher $25 setiap bulan." data-ja="いいね数と掲載数で集計。上位3名に毎月$25クーポン。">Ranked by likes and featured builds. Top three get a $25 voucher every month.</p></div>
+      <ol class="board" id="board"></ol>
+    </div>
+  </section>
+
+  <!-- sections/build-submit.liquid (Shopify Forms / app proxy → review queue) -->
+  <section class="section sub-s" id="submit">
+    <div class="wrap sub-in">
+      <div class="sub-copy">
+        <span class="eyebrow"><b>+500</b> Pit Points</span>
+        <h2 class="h1" data-id="Kirim<br>build kamu." data-ja="ビルドを<br>投稿する。">Submit<br>your build.</h2>
+        <p class="lead" data-id="Foto yang terang di atas cutting mat atau diorama paling bagus. Tag parts yang kamu pakai supaya builder lain bisa ikut." data-ja="明るい写真がおすすめ。使ったパーツをタグ付けしてください。">Bright photos on a cutting mat or a diorama work best. Tag the parts you used so other builders can follow along.</p>
+        <ul class="sub-rules"><li data-id="Minimal 1 part HPZ terlihat di foto" data-ja="HPZパーツが写っていること">At least one HPZ part visible</li><li data-id="Maks 6 foto, JPG/PNG hingga 10 MB" data-ja="最大6枚、10MBまで">Up to 6 photos, JPG/PNG up to 10 MB</li><li data-id="Kami review dalam 48 jam" data-ja="48時間以内に審査">We review within 48 hours</li></ul>
+      </div>
+      <form class="sub-f" id="sub-f"></form>
+    </div>
+  </section>
+</main>
+
+<div class="modal bm" id="bm" role="dialog" aria-modal="true"><div class="modal-box bm-box" id="bm-box"></div></div>
+
+<div id="hpz-footer"></div>
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/chrome.js"></script>
+<script src="assets/js/pages/builds.js"></script>
+</body>
+</html>

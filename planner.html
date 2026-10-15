@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Build Planner — HPZ Diecast</title>
+  <link rel="icon" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/p-planner.css">
+</head>
+<!-- Build Planner: page template + app block. Data: casting metaobjects, product metafields (diameter, made-for casting). Cart: /cart/add.js with line property _bundle -->
+<body data-page="planner" data-nav="planner" data-garagebar="off">
+<header id="hpz-header"></header>
+
+<main id="main" class="pl">
+  <section class="pl-top">
+    <div class="wrap pl-top-in">
+      <div><span class="eyebrow"><b>BP-01</b> <span data-id="Build Planner" data-ja="ビルドプランナー">Build Planner</span></span><h1 class="h1" data-id="Rencanakan build-mu." data-ja="ビルドを計画しよう。">Plan the build.</h1></div>
+      <ol class="pl-steps" id="pl-steps"></ol>
+    </div>
+  </section>
+  <section class="pl-body">
+    <div class="wrap pl-in">
+      <div class="pl-stage-col">
+        <div class="pl-stage mat" id="stage"></div>
+        <div class="pl-sheet" id="sheet"></div>
+      </div>
+      <div class="pl-panel" id="panel"></div>
+    </div>
+  </section>
+</main>
+
+<div id="hpz-footer"></div>
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/chrome.js"></script>
+<script src="assets/js/pages/planner.js"></script>
+</body>
+</html>

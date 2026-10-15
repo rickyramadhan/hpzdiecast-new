@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page not found — HPZ Diecast</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/p-404.css">
+</head>
+<body data-page="404">
+<header id="hpz-header"></header>
+
+<main id="main">
+  <!-- sections/main-404.liquid -->
+  <section class="nf">
+    <div class="wrap nf-in">
+      <div class="nf-meta mono">
+        <span><b>ERR 404</b> · <span data-id="PART TIDAK DITEMUKAN" data-ja="パーツが見つかりません">PART NOT FOUND</span></span>
+        <span class="nf-count" id="nf-count" aria-live="polite"></span>
+      </div>
+
+      <div class="nf-stage" id="nf-stage">
+        <div class="nf-num" aria-label="404">
+          <span class="nf-4" aria-hidden="true">4</span>
+          <button class="nf-wheel" id="nf-wheel" aria-label="Roll the wheel"><span class="nf-spin" id="nf-spin"></span></button>
+          <span class="nf-4" aria-hidden="true">4</span>
+        </div>
+        <i class="nf-shadow" id="nf-shadow" aria-hidden="true"></i>
+        <div class="nf-ground" aria-hidden="true"><span class="mono">0</span><span class="mono">50</span><span class="mono">100 mm</span></div>
+        <span class="nf-hint mono" id="nf-hint" data-id="klik velgnya" data-ja="ホイールをクリック">click the wheel</span>
+      </div>
+
+      <div class="nf-copy">
+        <div>
+          <h1 class="h1" data-id="Halaman ini<br>lepas dari axle." data-ja="このページは<br>アクスルから外れました。">This page came<br>off the axle.</h1>
+          <p class="lead" data-id="Link-nya mungkin lama, atau part-nya sudah pensiun. Cari lagi — 490 part masih terpasang rapi." data-ja="リンクが古いか、パーツが廃番になった可能性があります。490点のパーツから検索してください。">The link may be old, or the part has been retired. Search again — the other 490 parts are still bolted on tight.</p>
+        </div>
+        <form class="nf-search" action="shop.html" method="get" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+          <input class="input" name="q" id="nf-q" placeholder="Try “TE37 gold”, “R34 decal”, “9.5mm”" data-ph-id="Coba “TE37 gold”, “R34 decal”, “9.5mm”" data-ph-ja="例「TE37 ゴールド」「R34 デカール」" aria-label="Search" autocomplete="off">
+          <button class="btn btn-ink" data-id="Cari" data-ja="検索">Search</button>
+        </form>
+      </div>
+
+      <nav class="nf-links" id="nf-links" aria-label="Quick links"></nav>
+    </div>
+  </section>
+
+  <!-- sections/featured-collection.liquid (HPZ Originals — newest) -->
+  <section class="section-s nf-recs">
+    <div class="wrap">
+      <div class="shead"><span class="idx">→</span><div><h2 class="h2" data-id="Sementara itu, baru keluar dari workshop" data-ja="工房から出たばかり">Meanwhile, fresh off the bench</h2></div><a class="arrow-link" href="shop.html?own=1&amp;sort=new"><span data-id="Semua HPZ Originals" data-ja="HPZオリジナル一覧">All HPZ Originals</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15"/><path d="m13 6 6 6-6 6"/></svg></a></div>
+      <div class="grid" style="--cols:4" id="nf-grid"></div>
+    </div>
+  </section>
+</main>
+
+<div id="hpz-footer"></div>
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/chrome.js"></script>
+<script src="assets/js/pages/404.js"></script>
+</body>
+</html>

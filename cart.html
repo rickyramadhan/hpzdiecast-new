@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cart — HPZ Diecast</title>
+  <link rel="icon" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/p-cart.css">
+</head>
+<body data-page="cart" class="no-drawer">
+<header id="hpz-header"></header>
+
+<main id="main">
+  <!-- sections/main-cart-items.liquid + main-cart-footer.liquid -->
+  <section class="cart-s">
+    <div class="wrap">
+      <div class="cart-h">
+        <div><nav class="crumbs"><a href="index.html" data-id="Beranda" data-ja="ホーム">Home</a><span data-id="Keranjang" data-ja="カート">Cart</span></nav><h1 class="h1"><span data-id="Keranjang" data-ja="カート">Your cart</span> <sup class="mono" id="cart-n"></sup></h1></div>
+        <ol class="steps-top"><li class="is-on"><span class="mono">01</span><span data-id="Keranjang" data-ja="カート">Cart</span></li><li><span class="mono">02</span><span data-id="Pengiriman" data-ja="配送">Shipping</span></li><li><span class="mono">03</span><span data-id="Pembayaran" data-ja="お支払い">Payment</span></li></ol>
+      </div>
+      <div class="cart-in" id="cart"></div>
+    </div>
+  </section>
+  <section class="section-s" id="xs-s"><div class="wrap"><div class="shead"><span class="idx">+</span><div><h2 class="h2" data-id="Biasanya dibeli bersama" data-ja="一緒に購入されています">Often added together</h2></div><div class="rail-nav"><button id="x-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m15 6-6 6 6 6"/></svg></button><button id="x-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m9 6 6 6-6 6"/></svg></button></div></div><div class="rail" id="xs"></div></div></section>
+</main>
+
+<div id="hpz-footer"></div>
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/chrome.js"></script>
+<script src="assets/js/pages/cart.js"></script>
+</body>
+</html>

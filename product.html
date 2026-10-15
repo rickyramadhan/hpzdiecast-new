@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HPZ Diecast</title>
+  <link rel="icon" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/p-product.css">
+</head>
+<body data-page="product">
+<header id="hpz-header"></header>
+
+<main id="main">
+  <!-- sections/main-product.liquid -->
+  <section class="pdp-top">
+    <div class="wrap">
+      <nav class="crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
+      <div class="pdp" id="pdp"></div>
+    </div>
+  </section>
+
+  <!-- product sub-navigation (scroll-spy) -->
+  <nav class="subnav" id="subnav" aria-label="Product sections"><div class="wrap subnav-in" id="subnav-in"></div></nav>
+
+  <div id="details"></div>
+
+  <!-- sections/product-recommendations.liquid -->
+  <section class="section-s" id="recs-s"><div class="wrap"><div class="shead"><span class="idx">→</span><div><h2 class="h2" id="recs-h"></h2></div><div class="rail-nav"><button id="rc-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m15 6-6 6 6 6"/></svg></button><button id="rc-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m9 6 6 6-6 6"/></svg></button></div></div><div class="rail" id="recs"></div></div></section>
+</main>
+
+<div class="sbar" id="sbar"></div>
+<div class="lb" id="lb" aria-hidden="true"></div>
+
+<div id="hpz-footer"></div>
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/chrome.js"></script>
+<script src="assets/js/pages/product.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Garage — Account | HPZ Diecast</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/p-account.css">
+</head>
+<body data-page="account">
+<header id="hpz-header"></header>
+
+<main id="main">
+
+  <!-- Shopify: new customer accounts — sign-in is hosted by Shopify (shopify.com/authentication).
+       This view is the visual reference for the branded login page / customer-account extension. -->
+  <!-- sections/account-login.liquid -->
+  <section class="lg" id="login" hidden>
+    <div class="lg-art mat">
+      <div class="lg-ruler" aria-hidden="true"></div>
+      <div class="lg-art-in">
+        <span class="eyebrow"><b>HPZ-ACC</b> <span data-id="Pit crew · member area" data-ja="ピットクルー · 会員エリア">Pit crew · member area</span></span>
+        <h1 class="display lg-h" data-id="Garasimu<br>menunggu." data-ja="ガレージが<br>待っている。">Your garage<br>is waiting.</h1>
+        <div class="lg-wheel" id="lg-wheel" aria-hidden="true"></div>
+        <ul class="lg-perks">
+          <li><span class="mono">01</span><div><b data-id="Lacak setiap paket" data-ja="すべての荷物を追跡">Track every parcel</b><span data-id="Dari QC di Semarang sampai depan pintu." data-ja="スマランの検品から玄関まで。">From quality check in Semarang to your door.</span></div></li>
+          <li><span class="mono">02</span><div><b data-id="Simpan casting kamu" data-ja="車種を保存">Save your castings</b><span data-id="Tag fitment muncul di setiap device." data-ja="すべての端末で適合表示。">Fitment tags follow you to every device.</span></div></li>
+          <li><span class="mono">03</span><div><b data-id="Kumpulkan Pit Points" data-ja="ピットポイントを貯める">Earn Pit Points</b><span data-id="1 poin per $1, 500 poin untuk build yang ditampilkan." data-ja="$1で1pt、掲載ビルドで500pt。">1 point per $1, 500 for a featured build.</span></div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="lg-form-w">
+      <form class="lg-form" id="lg-form" novalidate>
+        <div class="lg-seg seg" role="tablist">
+          <button type="button" class="is-on" data-mode="in" data-id="Masuk" data-ja="ログイン">Sign in</button>
+          <button type="button" data-mode="up" data-id="Buat akun" data-ja="新規登録">Create account</button>
+        </div>
+        <div class="lg-head">
+          <h2 class="h2" id="lg-title">Welcome back</h2>
+          <p class="small muted" id="lg-sub">Sign in to see orders, saved builds and your Pit Points.</p>
+        </div>
+        <a class="btn btn-lg btn-block lg-shop" href="account.html"><span data-id="Lanjut dengan" data-ja="次で続ける">Continue with</span> <b>shop</b></a>
+        <div class="lg-or"><span data-id="atau pakai email" data-ja="またはメール">or use email</span></div>
+        <div class="lg-fields">
+          <div class="fl lg-name" hidden><input class="input" id="lg-n" placeholder=" " autocomplete="name"><label for="lg-n" data-id="Nama" data-ja="お名前">Name</label></div>
+          <div class="fl"><input class="input" id="lg-e" type="email" placeholder=" " autocomplete="email" required><label for="lg-e" data-id="Email" data-ja="メール">Email</label><span class="err-msg" data-id="Masukkan email yang valid." data-ja="有効なメールを入力してください。">Enter a valid email address.</span></div>
+          <div class="fl lg-pw"><input class="input" id="lg-p" type="password" placeholder=" " autocomplete="current-password"><label for="lg-p" data-id="Password" data-ja="パスワード">Password</label><button type="button" class="lg-eye" id="lg-eye" aria-label="Show password"></button></div>
+          <div class="lg-code" id="lg-code" hidden>
+            <span class="lbl" data-id="Kode 6 digit dikirim ke email kamu" data-ja="メールに届いた6桁コード">6-digit code sent to your email</span>
+            <div class="lg-otp" id="lg-otp"></div>
+          </div>
+        </div>
+        <div class="lg-row">
+          <label class="check"><input type="checkbox" checked><span class="box"></span><span data-id="Tetap masuk" data-ja="ログイン状態を保持">Keep me signed in</span></label>
+          <button type="button" class="link small" id="lg-otp-t" data-id="Kirim kode sekali pakai" data-ja="ワンタイムコードを送信">Email me a one-time code</button>
+        </div>
+        <button class="btn btn-ink btn-lg btn-block" id="lg-go"><span id="lg-go-t">Sign in</span><i class="spin"></i></button>
+        <p class="xs muted lg-legal" data-id="Dengan lanjut, kamu setuju dengan Ketentuan dan Kebijakan Privasi HPZ. Kami tidak pernah mengirim spam." data-ja="続行するとHPZの利用規約とプライバシーポリシーに同意したことになります。">By continuing you agree to HPZ's Terms and Privacy Policy. We never send more than one email per drop.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- sections/main-account.liquid (customer account: profile header) -->
+  <div id="acct">
+    <section class="ac-top">
+      <div class="wrap ac-top-in">
+        <div>
+          <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html" data-id="Beranda" data-ja="ホーム">Home</a><span data-id="Akun" data-ja="アカウント">Account</span><span id="ac-crumb">Overview</span></nav>
+          <h1 class="h1 ac-h1"><span data-id="Garasi saya" data-ja="マイガレージ">My Garage</span></h1>
+        </div>
+        <div class="ac-id" id="ac-id"></div>
+      </div>
+    </section>
+
+    <section class="ac-wrap">
+      <div class="wrap ac-grid">
+        <!-- snippets/account-nav.liquid -->
+        <aside class="ac-side">
+          <nav class="ac-nav" id="ac-nav" aria-label="Account">
+            <a href="#overview" data-tab="overview"><i class="mono">01</i><span data-id="Ringkasan" data-ja="概要">Overview</span></a>
+            <a href="#orders" data-tab="orders"><i class="mono">02</i><span data-id="Pesanan" data-ja="注文">Orders</span><em class="mono" data-n="orders"></em></a>
+            <a href="#garage" data-tab="garage"><i class="mono">03</i><span data-id="Casting saya" data-ja="マイ車種">My castings</span><em class="mono" data-n="garage"></em></a>
+            <a href="#builds" data-tab="builds"><i class="mono">04</i><span data-id="Build tersimpan" data-ja="保存ビルド">Saved builds</span><em class="mono" data-n="builds"></em></a>
+            <a href="#wishlist" data-tab="wishlist"><i class="mono">05</i><span data-id="Wishlist" data-ja="ウィッシュリスト">Wishlist</span><em class="mono" data-n="wish"></em></a>
+            <a href="#points" data-tab="points"><i class="mono">06</i><span>Pit Points</span><em class="mono is-y" data-n="points"></em></a>
+            <a href="#addresses" data-tab="addresses"><i class="mono">07</i><span data-id="Alamat" data-ja="住所">Addresses</span></a>
+            <a href="#alerts" data-tab="alerts"><i class="mono">08</i><span data-id="Notifikasi restock" data-ja="再入荷通知">Restock alerts</span><em class="mono" data-n="alerts"></em></a>
+            <a href="#settings" data-tab="settings"><i class="mono">09</i><span data-id="Pengaturan" data-ja="設定">Settings</span></a>
+            <i class="ac-nav-ink" aria-hidden="true"></i>
+          </nav>
+          <div class="ac-help">
+            <span class="eyebrow"><b data-id="Butuh bantuan?" data-ja="お困りですか？">Need a hand?</b></span>
+            <p class="small" data-id="Tim workshop membalas WhatsApp Sen–Sab, 09:00–17:00 WIB." data-ja="工房チームが月〜土 9:00–17:00 (WIB) にWhatsAppで対応。">The workshop team answers WhatsApp Mon–Sat, 09:00–17:00 WIB.</p>
+            <a class="arrow-link" href="services.html#help"><span data-id="Hubungi kami" data-ja="お問い合わせ">Contact us</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15"/><path d="m13 6 6 6-6 6"/></svg></a>
+          </div>
+        </aside>
+
+        <div class="ac-main">
+          <!-- sections/account-overview.liquid -->
+          <section class="ac-panel" data-panel="overview" id="p-overview"></section>
+          <!-- sections/main-order-list.liquid + main-order.liquid -->
+          <section class="ac-panel" data-panel="orders" id="p-orders" hidden></section>
+          <!-- sections/account-garage.liquid (customer metafield hpz.garage → list of casting metaobjects) -->
+          <section class="ac-panel" data-panel="garage" id="p-garage" hidden></section>
+          <!-- sections/account-builds.liquid (customer metafield hpz.builds — JSON) -->
+          <section class="ac-panel" data-panel="builds" id="p-builds" hidden></section>
+          <!-- sections/account-wishlist.liquid (wishlist app / customer metafield) -->
+          <section class="ac-panel" data-panel="wishlist" id="p-wishlist" hidden></section>
+          <!-- sections/account-points.liquid (loyalty app block — Smile / Rivo / Joy) -->
+          <section class="ac-panel" data-panel="points" id="p-points" hidden></section>
+          <!-- sections/main-addresses.liquid -->
+          <section class="ac-panel" data-panel="addresses" id="p-addresses" hidden></section>
+          <!-- sections/account-alerts.liquid (back-in-stock app block) -->
+          <section class="ac-panel" data-panel="alerts" id="p-alerts" hidden></section>
+          <!-- sections/account-settings.liquid (localization-form + marketing consent) -->
+          <section class="ac-panel" data-panel="settings" id="p-settings" hidden></section>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="hpz-footer"></div>
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/chrome.js"></script>
+<script src="assets/js/pages/account.js"></script>
+</body>
+</html>

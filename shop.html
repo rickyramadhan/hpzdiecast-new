@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop all parts — HPZ Diecast</title>
+  <link rel="icon" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/p-shop.css">
+</head>
+<body data-page="shop">
+<header id="hpz-header"></header>
+
+<main id="main">
+  <!-- sections/main-collection-banner.liquid -->
+  <section class="col-head">
+    <div class="wrap">
+      <nav class="crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
+      <div class="col-h">
+        <div><h1 class="h1" id="col-title">All parts</h1><p class="lead" id="col-desc"></p></div>
+        <div class="col-side" id="col-side"></div>
+      </div>
+      <div class="col-cats" id="col-cats"></div>
+    </div>
+  </section>
+
+  <!-- sections/main-collection-product-grid.liquid (Search & Discovery filters) -->
+  <section class="col-body">
+    <div class="wrap col-in">
+      <aside class="filters" id="filters" aria-label="Filters"></aside>
+      <div class="results">
+        <div class="toolbar">
+          <button class="btn btn-ghost btn-sm tb-filter" id="open-filters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span data-id="Filter" data-ja="絞り込み">Filters</span></button>
+          <div class="tb-count"><b class="mono" id="r-count">0</b> <span id="r-label">results</span></div>
+          <div class="tb-chips" id="r-chips"></div>
+          <div class="tb-r">
+            <label class="tb-sort"><span class="lbl" data-id="Urutkan" data-ja="並び替え">Sort</span><select class="select" id="sort"></select></label>
+            <div class="tb-dens" id="dens" role="group" aria-label="Grid density"></div>
+          </div>
+        </div>
+        <div class="grid" id="grid" style="--cols:4"></div>
+        <div class="pager" id="pager"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-s" id="recent-s" hidden>
+    <div class="wrap"><div class="shead"><span class="idx">↺</span><div><h2 class="h2" data-id="Terakhir dilihat" data-ja="最近見た商品">Recently viewed</h2></div></div><div class="rail" id="recent"></div></div>
+  </section>
+</main>
+
+<div id="hpz-footer"></div>
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/chrome.js"></script>
+<script src="assets/js/pages/shop.js"></script>
+</body>
+</html>
