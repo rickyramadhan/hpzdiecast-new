@@ -1,0 +1,168 @@
+{%- comment -%}
+  Product facts with fallbacks. Outputs ONE delimited line (Liquid has no parse_json filter). Read it like this:
+
+    {%- capture facts_raw -%}{%- render 'product-facts', product: product -%}{%- endcapture -%}
+    {%- assign f = facts_raw | strip | split: '~' -%}
+    {%- assign f_brand = f[0] -%}{%- assign f_own = f[1] -%}{%- assign f_kind = f[2] -%}{%- assign f_dia = f[3] -%}
+
+  Field order:
+    0 brand        display name ("HPZ Wheels", "JV Custom", ... or the vendor)
+    1 own          "true" when HPZ's own brand
+    2 kind         wheels | decals | bodykits | engines | exterior | interior | dioramas
+    3 dia          wheel diameter in mm, or empty when not stated anywhere
+    4 bearing      "true" | "false"
+    5 disc         "true" | "false"
+    6 face         resin | alloy | 3d-print | empty
+    7 lip          alloy | resin | steel | empty
+    8 sheet        transparent | white-toner | empty (decals)
+    9 precoated    "true" | "false"
+    10 made_for    comma list of casting handles (may be empty)
+
+  Order of truth: metafield (hpz.*) first. When the metafield is empty the value is read from the title/description
+  ONLY when the text states it (explicit "10 mm", "bearing", "resin", "transparent"). Nothing is invented.
+  Diameter is never defaulted. `kind` falls back to the product type, then to words in the title.
+{%- endcomment -%}
+{%- liquid
+  assign mv = product.metafields.hpz
+  assign title_l = product.title | downcase
+  assign desc_l = product.description | strip_html | downcase
+  assign hay = title_l | append: ' ' | append: desc_l
+
+  assign brand = mv.brand.value.name
+  assign own = mv.brand.value.is_original
+  if brand == blank
+    assign p3 = title_l | slice: 0, 3
+    assign p5 = title_l | slice: 0, 5
+    assign p6 = title_l | slice: 0, 6
+    assign p7 = title_l | slice: 0, 7
+    if p3 == 'hpz'
+      assign brand = 'HPZ Wheels'
+      assign own = true
+    elsif p3 == 'jv '
+      assign brand = 'JV Custom'
+    elsif p6 == 'sakura'
+      assign brand = 'Sakura Model'
+    elsif p7 == 'octopus'
+      assign brand = 'Octopus Hobbies'
+    elsif p6 == 'parvus'
+      assign brand = 'Parvus Models'
+    elsif p5 == 'rebel'
+      assign brand = 'Rebel x Arise'
+    elsif title_l contains 'turbominiscale'
+      assign brand = 'Turbominiscale'
+    elsif title_l contains 'carlomo'
+      assign brand = 'Carlomo'
+    elsif title_l contains 'muscle car 23'
+      assign brand = 'Muscle Car 23'
+    elsif title_l contains 'ws scale'
+      assign brand = 'WS Scale'
+    else
+      assign brand = product.vendor
+    endif
+  endif
+
+  assign kind = ''
+  case product.type
+    when 'Wheels'
+      assign kind = 'wheels'
+    when 'Decals'
+      assign kind = 'decals'
+    when 'Body Kits'
+      assign kind = 'bodykits'
+    when 'Engines'
+      assign kind = 'engines'
+    when 'Aero & Exterior'
+      assign kind = 'exterior'
+    when 'Interior'
+      assign kind = 'interior'
+    when 'Dioramas'
+      assign kind = 'dioramas'
+  endcase
+  if kind == ''
+    if title_l contains 'decal' or title_l contains 'sticker set'
+      assign kind = 'decals'
+    elsif title_l contains 'body kit' or title_l contains 'bodykit' or title_l contains 'wide body' or title_l contains 'half cut'
+      assign kind = 'bodykits'
+    elsif title_l contains 'engine' or title_l contains 'mesin'
+      assign kind = 'engines'
+    elsif title_l contains 'diorama'
+      assign kind = 'dioramas'
+    elsif title_l contains 'seat' or title_l contains 'recaro' or title_l contains 'interior'
+      assign kind = 'interior'
+    elsif title_l contains 'spoiler' or title_l contains 'wing' or title_l contains 'mirror' or title_l contains 'roof' or title_l contains 'rack' or title_l contains 'voltex' or title_l contains 'bike' or title_l contains 'carrier' or title_l contains 'accessories'
+      assign kind = 'exterior'
+    else
+      assign kind = 'wheels'
+    endif
+  endif
+
+  assign dia = mv.diameter.value
+  if dia == blank and kind == 'wheels'
+    assign segs = hay | append: ' x' | split: 'mm'
+    assign seg_n = segs.size | minus: 1
+    for seg in segs limit: 8
+      if forloop.index0 < seg_n and dia == blank
+        assign w = seg | strip | split: ' ' | last | replace: ',', '.' | replace: '(', ''
+        assign n = w | plus: 0.0
+        if n >= 7 and n <= 14
+          assign dia = n
+        endif
+      endif
+    endfor
+  endif
+
+  assign bearing = false
+  if mv.has_bearing.value or hay contains 'bearing'
+    assign bearing = true
+  endif
+  assign disc = false
+  if mv.has_disc_brake.value or hay contains 'disc brake' or hay contains 'discbrake'
+    assign disc = true
+  endif
+  assign face = mv.face_material.value
+  if face == blank and kind == 'wheels' and hay contains 'resin'
+    assign face = 'resin'
+  endif
+  assign lip = mv.lip_material.value
+  assign has_alloy = false
+  if hay contains 'alloy' or hay contains 'aluminium' or hay contains 'aluminum'
+    assign has_alloy = true
+  endif
+  if lip == blank and kind == 'wheels' and has_alloy
+    assign lip = 'alloy'
+  endif
+  assign sheet = mv.sheet_type.value
+  if sheet == blank and kind == 'decals'
+    if hay contains 'toner'
+      assign sheet = 'white-toner'
+    elsif hay contains 'transpar'
+      assign sheet = 'transparent'
+    endif
+  endif
+  assign precoated = false
+  if mv.precoated.value or hay contains 'precoat'
+    assign precoated = true
+  endif
+
+  assign made = ''
+  if mv.made_for.value.size > 0
+    assign made = mv.made_for.value | map: 'handle' | join: ','
+  elsif kind == 'decals' or kind == 'bodykits' or kind == 'engines'
+    capture raw_castings
+      render 'default-castings-list'
+    endcapture
+    assign recs = raw_castings | strip | split: ';;'
+    for r in recs
+      assign c = r | split: '|'
+      assign kws = c[7] | split: ','
+      for kw in kws
+        if title_l contains kw
+          unless made contains c[0]
+            assign made = made | append: c[0] | append: ','
+          endunless
+        endif
+      endfor
+    endfor
+  endif
+-%}
+{{ brand }}~{{ own | default: false }}~{{ kind }}~{{ dia }}~{{ bearing }}~{{ disc }}~{{ face }}~{{ lip }}~{{ sheet }}~{{ precoated }}~{{ made }}

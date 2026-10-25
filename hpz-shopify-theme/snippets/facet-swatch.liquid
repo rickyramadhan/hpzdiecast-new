@@ -1,0 +1,20 @@
+{%- comment -%} Colour swatch facet (mockup .fcol). Uses value.swatch (colour or image) else snippet color-swatch. Params: filter {%- endcomment -%}
+<div class="fcol">
+  {%- for value in filter.values -%}
+    {%- if value.count == 0 and value.active == false -%}{%- continue -%}{%- endif -%}
+    {%- assign bg = '' -%}
+    {%- if value.swatch.image -%}
+      {%- assign sw_img = value.swatch.image | image_url: width: 48 -%}
+      {%- assign bg = 'url(' | append: sw_img | append: ') center / cover' -%}
+    {%- elsif value.swatch.color -%}
+      {%- assign bg = value.swatch.color -%}
+    {%- else -%}
+      {%- capture bg -%}{% render 'color-swatch', name: value.label %}{%- endcapture -%}
+      {%- assign bg = bg | strip -%}
+    {%- endif -%}
+    <label class="fcol-b{% if value.active %} is-on{% endif %}" title="{{ value.label | escape }} ({{ value.count }})">
+      <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value | escape }}"{% if value.active %} checked{% endif %}>
+      <i{% if bg != blank %} style="--c: {{ bg }}"{% endif %}></i><span>{{ value.label | escape }}</span>
+    </label>
+  {%- endfor -%}
+</div>

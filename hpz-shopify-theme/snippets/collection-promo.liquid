@@ -1,0 +1,26 @@
+{%- comment -%}
+  Grid promo tile from a section block. Params: block (type promo_fit | promo_decal)
+{%- endcomment -%}
+{%- assign promo_url = block.settings.url -%}
+{%- if block.type == 'promo_fit' -%}
+  {%- if promo_url == blank -%}{%- assign promo_url = routes.root_url | append: 'pages/planner' -%}{%- endif -%}
+  <div data-reveal style="--i:5" {{ block.shopify_attributes }}>
+    <a class="promo promo-fit" href="{{ promo_url }}">
+      <div class="promo-w">{% render 'collection-wheel' %}</div>
+      {%- if block.settings.eyebrow != blank -%}<span class="eyebrow"><b>{{ block.settings.eyebrow | escape }}</b></span>{%- endif -%}
+      <h3>{{ block.settings.heading | escape }}</h3>
+      {%- if block.settings.text != blank -%}<p>{{ block.settings.text | escape }}</p>{%- endif -%}
+      {%- if block.settings.cta != blank -%}<span class="arrow-link">{{ block.settings.cta | escape }} {% render 'icon', name: 'arrow' %}</span>{%- endif -%}
+    </a>
+  </div>
+{%- elsif block.type == 'promo_decal' -%}
+  {%- if promo_url == blank -%}{%- assign promo_url = routes.root_url | append: 'pages/services#decal' -%}{%- endif -%}
+  <div data-reveal style="--i:3" {{ block.shopify_attributes }}>
+    <a class="promo promo-decal mat" href="{{ promo_url }}">
+      {%- if block.settings.eyebrow != blank -%}<span class="eyebrow"><b>{{ block.settings.eyebrow | escape }}</b></span>{%- endif -%}
+      <h3>{{ block.settings.heading | escape }}</h3>
+      {%- if block.settings.text != blank -%}<p>{{ block.settings.text | escape }}</p>{%- endif -%}
+      {%- if block.settings.cta != blank -%}<span class="arrow-link">{{ block.settings.cta | escape }} {% render 'icon', name: 'arrow' %}</span>{%- endif -%}
+    </a>
+  </div>
+{%- endif -%}

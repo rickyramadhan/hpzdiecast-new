@@ -1,0 +1,29 @@
+{%- comment -%}
+  UGC hotspot (homepage). Params: hp (product), x, y (percent), variant_title (optional).
+{%- endcomment -%}
+{%- liquid
+  assign hv = hp.selected_or_first_available_variant
+  if variant_title != blank
+    for v in hp.variants
+      if v.title == variant_title and v.available
+        assign hv = v
+        break
+      endif
+    endfor
+  endif
+  assign xn = x | default: 50 | plus: 0
+  assign hv_img = hv.featured_image | default: hp.featured_image
+  assign brand_name = hp.metafields.hpz.brand.value.name.value | default: hp.vendor
+-%}
+<div class="hs{% if xn > 55 %} hs-left{% endif %}" style="left:{{ x | default: 50 }}%;top:{{ y | default: 50 }}%">
+  <button type="button" class="hs-dot" aria-label="{{ hp.title | escape }}"></button>
+  <div class="hs-card">
+    {%- if hv_img -%}{{ hv_img | image_url: width: 120 | image_tag: width: 50, height: 50, alt: '', loading: 'lazy' }}{%- else -%}<span></span>{%- endif -%}
+    <div>
+      <em>{{ brand_name | escape }}</em>
+      <a href="{{ hp.url }}" style="display:contents"><b>{{ hp.title | escape }}</b></a>
+      <span class="mono">{% unless hv.title == 'Default Title' %}{{ hv.title | escape }} · {% endunless %}{{ hv.price | money }}</span>
+    </div>
+    <button type="button" class="btn btn-signal btn-icon" data-add-to-cart data-variant-id="{{ hv.id }}" aria-label="{{ 'hpz.home.ugc.add' | t }}"{% unless hv.available %} disabled{% endunless %}>{% render 'icon', name: 'plus' %}</button>
+  </div>
+</div>

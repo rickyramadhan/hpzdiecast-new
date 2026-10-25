@@ -1,0 +1,10 @@
+{%- comment -%} Checkbox list facet. Params: filter {%- endcomment -%}
+{%- for value in filter.values -%}
+  {%- if value.count == 0 and value.active == false -%}{%- continue -%}{%- endif -%}
+  <label class="check fc">
+    <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value | escape }}"{% if value.active %} checked{% endif %}>
+    <span class="box">{% render 'icon', name: 'check' %}</span>
+    <span class="fc-l">{{ value.label | escape }}</span>
+    <span class="fc-n mono">{{ value.count }}</span>
+  </label>
+{%- endfor -%}

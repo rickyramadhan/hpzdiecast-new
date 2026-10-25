@@ -1,0 +1,14 @@
+{%- comment -%}
+  Cards for a homepage tab. Params: collection, sort, limit.
+  Server side we can only approximate the sort (first 50 products of the collection);
+  home.js replaces the cards with the real ?sort_by= result from the collection page.
+{%- endcomment -%}
+{%- liquid
+  assign list = collection.products
+  if sort == 'created-descending'
+    assign list = list | sort: 'created_at' | reverse
+  endif
+-%}
+{%- for p in list limit: limit -%}
+  {% render 'product-card', product: p, index: forloop.index0, lazy: true %}
+{%- endfor -%}

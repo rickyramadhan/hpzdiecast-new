@@ -1,0 +1,52 @@
+{{ 'p-home.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign coll = s.collection
+  if coll == blank
+    assign coll = collections['all']
+  endif
+  assign items = coll.products | sort: 'created_at' | reverse
+  assign only_avail = false
+  for p in items
+    if p.available
+      assign only_avail = true
+      break
+    endif
+  endfor
+  assign now_ts = 'now' | date: '%s' | plus: 0
+  assign new_secs = s.new_days | times: 86400
+-%}
+{%- if items.size > 0 -%}
+  {%- capture row -%}
+    {%- assign shown = 0 -%}
+    {%- for p in items -%}
+      {%- if shown >= s.limit -%}{%- break -%}{%- endif -%}
+      {%- if only_avail and p.available == false -%}{%- continue -%}{%- endif -%}
+      {%- assign shown = shown | plus: 1 -%}
+      {%- assign created_ts = p.created_at | date: '%s' | plus: 0 -%}
+      {%- assign age = now_ts | minus: created_ts -%}
+      {%- assign brand_code = p.metafields.hpz.brand.value.code.value -%}
+      <a href="{{ p.url }}">
+        {%- if age < new_secs -%}<i>{{ 'hpz.home.ticker.new' | t }}</i>{%- elsif brand_code != blank -%}<i>{{ brand_code | escape }}</i>{%- endif -%}
+        {{ p.title | escape }}<b>{{ p.price | money }}</b>
+      </a>
+    {%- endfor -%}
+  {%- endcapture -%}
+  <div class="ticker" aria-label="{{ 'hpz.home.ticker.label' | t }}" {{ section.shopify_attributes }}>
+    <div class="ticker-t">{{ row }}<span style="display:contents" aria-hidden="true">{{ row | replace: '<a ', '<a tabindex="-1" ' }}</span></div>
+  </div>
+{%- elsif request.design_mode -%}
+  <div class="ticker" {{ section.shopify_attributes }}><div class="ticker-t"><a href="#">{{ 'hpz.home.ticker.label' | t }}: choose a collection with products</a></div></div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Ticker (new arrivals)",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Newest in-stock products are shown. Blank = all products." },
+    { "type": "range", "id": "limit", "label": "Items", "min": 4, "max": 20, "step": 1, "default": 14 },
+    { "type": "range", "id": "new_days", "label": "Show NEW badge for (days)", "min": 7, "max": 90, "step": 1, "default": 30 }
+  ],
+  "presets": [ { "name": "Ticker (new arrivals)" } ]
+}
+{% endschema %}

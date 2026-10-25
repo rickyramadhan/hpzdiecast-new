@@ -1,0 +1,12 @@
+{
+  "en": { "hpz": { "ongkir": {
+    "title": "Estimate delivery cost", "from": "Ships from {{ city }}",
+    "placeholder": "Type your district or city",
+    "note": "Courier rates are an estimate. The admin confirms the final shipping cost on WhatsApp."
+  } } },
+  "id": { "hpz": { "ongkir": {
+    "title": "Perkiraan ongkos kirim", "from": "Dikirim dari {{ city }}",
+    "placeholder": "Ketik kecamatan atau kota",
+    "note": "Tarif kurir hanya perkiraan. Ongkir final dikonfirmasi admin lewat WhatsApp."
+  } } }
+}

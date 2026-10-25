@@ -1,0 +1,76 @@
+{%- comment -%}
+  5-step order status derived ONLY from real order data (no invented tracking).
+  Steps: Placed, Paid, Packed, Shipped, Delivered.
+  Param: order
+{%- endcomment -%}
+{%- liquid
+  assign o = order
+  assign step = 0
+  assign paid = false
+  case o.financial_status
+    when 'paid' or 'partially_paid' or 'authorized' or 'partially_refunded' or 'refunded'
+      assign paid = true
+  endcase
+  if paid
+    assign step = 1
+  endif
+  assign fulfilled_at = nil
+  assign delivered = false
+  assign tracking_text = ''
+  assign tracking_url = ''
+  for f in o.fulfillments
+    if fulfilled_at == nil
+      assign fulfilled_at = f.created_at
+    endif
+    if f.tracking_number != blank and tracking_text == ''
+      assign tracking_text = f.tracking_company | append: ' ' | append: f.tracking_number | strip
+      assign tracking_url = f.tracking_url
+    endif
+    if f.shipment_status == 'delivered'
+      assign delivered = true
+    endif
+  endfor
+  if o.fulfillment_status == 'partial' or o.fulfillment_status == 'fulfilled'
+    assign step = 2
+  endif
+  if o.fulfillment_status == 'fulfilled' or tracking_text != ''
+    assign step = 3
+  endif
+  if delivered
+    assign step = 4
+  endif
+  assign pct = step | times: 25
+-%}
+{%- if o.cancelled -%}
+  <p class="small muted"><b>{{ 'hpz.account.cancelled' | t }}</b>{% if o.cancelled_at %} &middot; {{ o.cancelled_at | date: '%d %b %Y' }}{% endif %}</p>
+{%- else -%}
+<div class="trk" style="--p:{{ pct }}%" data-trk>
+  <div class="trk-line"><i></i></div>
+  <ol>
+    {%- assign labels = 'hpz.account.step_placed,hpz.account.step_paid,hpz.account.step_packed,hpz.account.step_shipped,hpz.account.step_delivered' | split: ',' -%}
+    {%- for label in labels -%}
+      {%- assign idx = forloop.index0 -%}
+      {%- liquid
+        assign cls = ''
+        if idx < step or step == 4
+          assign cls = 'is-done'
+        elsif idx == step
+          assign cls = 'is-now'
+        endif
+      -%}
+      <li class="{{ cls }}">
+        <span class="trk-dot">{% if cls == 'is-done' %}{% render 'icon', name: 'check' %}{% endif %}</span>
+        <b>{{ label | t }}</b>
+        <em class="mono">
+          {%- if idx == 0 -%}{{ o.created_at | date: '%d %b, %H:%M' }}
+          {%- elsif idx == 2 and fulfilled_at -%}{{ fulfilled_at | date: '%d %b, %H:%M' }}
+          {%- else -%}&mdash;{%- endif -%}
+        </em>
+        {%- if idx == 3 and tracking_text != '' and step >= 3 -%}
+          <small>{% if tracking_url != blank %}<a class="mono" href="{{ tracking_url }}" target="_blank" rel="noopener">{{ tracking_text }}</a>{% else %}<span class="mono">{{ tracking_text }}</span>{% endif %}</small>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ol>
+</div>
+{%- endif -%}

@@ -1,0 +1,86 @@
+{%- comment -%}
+  Store routing by visitor IP. Two Shopify stores, one theme:
+    role "global"    (hpzdiecast.com)   USD + English + PayPal. Indonesian IP is sent to the Indonesia store (a manual pick, ?hpz_stay=1, is respected).
+    role "indonesia" (Indonesia store)  IDR + Bahasa Indonesia + QRIS/BCA. STRICT: only Indonesian IPs may stay. Anyone else is sent to the
+                                        international store and cannot opt back in, because Indonesian prices are lower.
+  Country sources:
+    1. Shopify's own detection (localization.country, server side from the IP). Only reports countries that belong to a market.
+    2. Indonesia store only: Cloudflare's trace endpoint (country of the visitor IP, about 100 ms, does not depend on markets).
+       The page stays hidden until it answers (1.5 s cap, then fail open so a blocked request never locks real customers out).
+  Not applied: theme editor, localhost dev server, search engine bots. Staff abroad can pass ?hpz_bypass=<geo_bypass_key> once per tab session.
+  Rendered first in <head>.
+{%- endcomment -%}
+{%- assign geo_role = settings.store_role | default: 'global' -%}
+{%- assign geo_target = settings.global_store_url -%}
+{%- if geo_role == 'global' -%}{%- assign geo_target = settings.id_store_url -%}{%- endif -%}
+{%- if settings.geo_enforce and geo_target != blank -%}
+  <script>
+    (function () {
+      var host = location.hostname;
+      if (host === 'localhost' || host === '127.0.0.1') return;
+      if ({{ request.design_mode | json }}) return;
+      if (/bot|crawl|spider|lighthouse|headless|preview/i.test(navigator.userAgent)) return;
+      var role = {{ geo_role | json }}, C = {{ localization.country.iso_code | json }};
+      var target = {{ geo_target | strip | json }}.replace(/\/+$/, '');
+      if (target.replace(/^https?:\/\//, '') === host) return;
+      var root = document.documentElement;
+      var hide = function () { root.style.visibility = 'hidden'; };
+      var show = function () { root.style.visibility = ''; };
+      window.addEventListener('pageshow', show);
+      var go = function (stay) {
+        hide();
+        setTimeout(show, 3500);
+        location.replace(target + location.pathname + location.search + (stay && location.search.indexOf('hpz_stay=1') === -1 ? (location.search ? '&' : '?') + 'hpz_stay=1' : '') + location.hash);
+      };
+      var sp = new URLSearchParams(location.search);
+      window.HPZ_GEO = { role: role, country: C };
+
+      if (role === 'global') {
+        if (sp.get('hpz_stay') === '1') { try { localStorage.setItem('hpzGeoManual', String(Date.now())); } catch (e) {} return; }
+        try { var mt = +localStorage.getItem('hpzGeoManual') || 0; if (mt && Date.now() - mt < 12 * 3600 * 1000) return; } catch (e) {}
+        /* visitors Shopify already places outside Indonesia are never delayed; the check below only catches a mismatch */
+        var foreign = C !== 'ID';
+        if (!foreign) hide();
+        var decided = false;
+        /* a visitor is only sent to the Indonesia store when the IP says Indonesia AND the device clock is on an Indonesian time zone */
+        var tzOk = function () { try { return ['Asia/Jakarta', 'Asia/Pontianak', 'Asia/Makassar', 'Asia/Jayapura'].indexOf(Intl.DateTimeFormat().resolvedOptions().timeZone) !== -1; } catch (e) { return false; } };
+        var decide = function (isId) { if (decided) return; decided = true; if (isId && tzOk()) go(false); else show(); };
+        if (!foreign) setTimeout(function () { decide(true); }, 1500);
+        fetch('https://www.cloudflare.com/cdn-cgi/trace', { cache: 'no-store' })
+          .then(function (r) { return r.text(); })
+          .then(function (t) { var loc = ((t.match(/^loc=(.*)$/m) || [])[1] || '').trim(); decide(loc ? loc === 'ID' : C === 'ID'); })
+          .catch(function () { decide(C === 'ID'); });
+        return;
+      }
+
+      /* role indonesia: strict */
+      var key = {{ settings.geo_bypass_key | strip | json }};
+      if (key && sp.get('hpz_bypass') === key) { try { sessionStorage.setItem('hpzGeoBypass', '1'); } catch (e) {} }
+      try { if (sessionStorage.getItem('hpzGeoBypass') === '1') return; } catch (e) {}
+      if (C !== 'ID') return go(true);
+      try { if (sessionStorage.getItem('hpzIdOk') === '1') return; } catch (e) {}
+      hide();
+      var done = false;
+      var finish = function (loc) {
+        if (done) return; done = true;
+        if (loc && loc !== 'ID') return go(true);
+        if (loc === 'ID') { try { sessionStorage.setItem('hpzIdOk', '1'); } catch (e) {} }
+        show();
+      };
+      setTimeout(function () { finish(null); }, 3500);
+      /* 1) Cloudflare visitor-IP country; 2) if that is blocked (ad blockers, privacy modes), Shopify's own IP country */
+      var fromShopify = function () {
+        return fetch('/browsing_context_suggestions.json', { cache: 'no-store' })
+          .then(function (r) { return r.json(); })
+          .then(function (j) { return (j && j.detected_values && j.detected_values.country && j.detected_values.country.handle) || null; })
+          .catch(function () { return null; });
+      };
+      fetch('https://www.cloudflare.com/cdn-cgi/trace', { cache: 'no-store' })
+        .then(function (r) { return r.text(); })
+        .then(function (t) { return ((t.match(/^loc=(.*)$/m) || [])[1] || '').trim() || null; })
+        .catch(function () { return null; })
+        .then(function (loc) { return loc || fromShopify(); })
+        .then(function (loc) { finish(loc); });
+    })();
+  </script>
+{%- endif -%}

@@ -1,0 +1,469 @@
+[
+  {
+    "name": "Store information",
+    "settings": [
+      {
+        "type": "text",
+        "id": "workshop_city",
+        "label": "Workshop city",
+        "default": "Jakarta Selatan"
+      },
+      {
+        "type": "text",
+        "id": "workshop_address",
+        "label": "Workshop street address (leave blank to hide)"
+      },
+      {
+        "type": "text",
+        "id": "workshop_hours",
+        "label": "Workshop hours",
+        "default": "Mon–Sat 09:00–17:00 WIB"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp",
+        "label": "WhatsApp number (digits, country code first)",
+        "default": "6281310167872",
+        "info": "Used for every WhatsApp link. Example: 6281310167872"
+      },
+      {
+        "type": "text",
+        "id": "instagram_url",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "text",
+        "id": "youtube_url",
+        "label": "YouTube URL"
+      },
+      {
+        "type": "text",
+        "id": "tiktok_url",
+        "label": "TikTok URL"
+      },
+      {
+        "type": "text",
+        "id": "x_url",
+        "label": "X URL"
+      }
+    ]
+  },
+  {
+    "name": "Commerce",
+    "settings": [
+      {
+        "type": "number",
+        "id": "free_ship_usd",
+        "label": "Free shipping threshold (USD)",
+        "default": 75,
+        "info": "Converted to the visitor's currency with Shopify.currency.rate on the client."
+      },
+      {
+        "type": "text",
+        "id": "addon_box_handle",
+        "label": "Rigid box add-on product handle"
+      },
+      {
+        "type": "text",
+        "id": "addon_protect_handle",
+        "label": "Shipping protection add-on product handle"
+      },
+      {
+        "type": "checkbox",
+        "id": "bundle_discount_enabled",
+        "label": "Bundle discount is live (needs a discount Function)",
+        "default": false,
+        "info": "Only tick this after the automatic discount is set up. Otherwise the -10% copy is hidden."
+      },
+      {
+        "type": "number",
+        "id": "bundle_discount_percent",
+        "label": "Bundle discount percent",
+        "default": 10,
+        "info": "Shown in bundle copy only when the bundle discount is live."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_discount_badge",
+        "label": "Show % discount badge on product cards",
+        "default": false
+      },
+      {
+        "type": "number",
+        "id": "low_stock_threshold",
+        "label": "Show 'only N left' when stock is at or below",
+        "default": 4
+      },
+      {
+        "type": "collection",
+        "id": "cart_upsell_collection",
+        "label": "Cart upsell collection"
+      },
+      {
+        "type": "text",
+        "id": "search_popular",
+        "label": "Popular searches (comma separated)",
+        "default": "TE37, BBS, R34, Civic, decal, 9.5mm, bearing, Supra, engine"
+      }
+    ]
+  },
+  {
+    "name": "Fitment",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "fitment_requires_verified",
+        "label": "Only tag fits for castings marked 'verified'",
+        "default": true,
+        "info": "Until the workshop has measured a casting, it is not marked verified and fitment tags stay hidden."
+      },
+      {
+        "type": "collection",
+        "id": "wheels_collection",
+        "label": "Wheels collection (used by the Build Planner)"
+      }
+    ]
+  },
+  {
+    "name": "Colours",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_signal",
+        "label": "Accent (cutter yellow)",
+        "default": "#ffd100"
+      },
+      {
+        "type": "color",
+        "id": "color_mat",
+        "label": "Cutting mat green",
+        "default": "#1e4b40"
+      },
+      {
+        "type": "color",
+        "id": "color_ink",
+        "label": "Ink",
+        "default": "#0e0f11"
+      },
+      {
+        "type": "color",
+        "id": "color_paper",
+        "label": "Paper background",
+        "default": "#f3f2ee"
+      }
+    ]
+  },
+  {
+    "name": "Pit Points",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "loyalty_enabled",
+        "label": "Show Pit Points UI (needs a points app or customer metafield)",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Local payment (Indonesia)",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "local_payment_enabled",
+        "label": "Show manual payment info (QRIS and bank transfer) to visitors in Indonesia",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "payment_bank_name",
+        "label": "Bank name",
+        "default": "BCA"
+      },
+      {
+        "type": "text",
+        "id": "payment_account_number",
+        "label": "Bank account number",
+        "info": "Digits only. The bank card on the payment page stays hidden until this is filled."
+      },
+      {
+        "type": "text",
+        "id": "payment_account_name",
+        "label": "Account holder name",
+        "default": "Heru Prasetyo"
+      },
+      {
+        "type": "text",
+        "id": "payment_qris_name",
+        "label": "QRIS merchant name",
+        "default": "HPZ STORE N TOYS"
+      },
+      {
+        "type": "text",
+        "id": "payment_qris_nmid",
+        "label": "QRIS NMID",
+        "default": "ID1022170478187"
+      },
+      {
+        "type": "text",
+        "id": "payment_whatsapp",
+        "label": "WhatsApp number for payment confirmation",
+        "info": "Digits with country code, e.g. 6281234567890. Leave empty to use the store WhatsApp number."
+      },
+      {
+        "type": "number",
+        "id": "payment_deadline_hours",
+        "label": "Payment deadline (hours)",
+        "default": 24,
+        "info": "Shown to the customer. Confirm the real policy with the store owner."
+      },
+      {
+        "type": "number",
+        "id": "idr_rate",
+        "label": "USD to IDR rate (Rupiah display)",
+        "default": 16300,
+        "info": "Visitors on the Indonesian side see every USD price converted to Rupiah with this rate. Checkout itself stays in USD. Set 0 to turn the Rupiah display off."
+      },
+      {
+        "type": "checkbox",
+        "id": "idr_rate_live",
+        "label": "Refresh the rate automatically",
+        "default": false,
+        "info": "Uses a free public rate source (open.er-api.com) once per 12 hours per visitor. Falls back to the rate above if it cannot be reached."
+      }
+    ]
+  },
+  {
+    "name": "Region (IP rule)",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Language and currency by visitor IP"
+      },
+      {
+        "type": "checkbox",
+        "id": "geo_enforce",
+        "label": "Enforce IP rule",
+        "default": true,
+        "info": "Indonesia IP: Bahasa Indonesia and IDR. Any other country: English and USD. Turn off only for testing."
+      }
+    ]
+  },
+  {
+    "name": "Shipping estimate (Indonesia)",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Courier rate estimate in the cart"
+      },
+      {
+        "type": "text",
+        "id": "ongkir_api_url",
+        "label": "Ongkir Worker URL",
+        "info": "Address of the deployed Cloudflare Worker (see docs/ONGKIR-SETUP.md). Leave empty to hide the estimate."
+      },
+      {
+        "type": "text",
+        "id": "ongkir_couriers",
+        "label": "Couriers",
+        "default": "jne:sicepat:jnt:anteraja",
+        "info": "Colon separated codes, for example jne:sicepat:jnt:anteraja:pos:tiki"
+      },
+      {
+        "type": "number",
+        "id": "ongkir_pack_grams",
+        "label": "Packaging weight (grams)",
+        "default": 50,
+        "info": "Added to the product weight before asking the courier."
+      }
+    ]
+  },
+  {
+    "name": "Stores (Indonesia / International)",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Two stores, one theme"
+      },
+      {
+        "type": "select",
+        "id": "store_role",
+        "label": "This store is",
+        "default": "global",
+        "options": [
+          {
+            "value": "global",
+            "label": "International (USD, English)"
+          },
+          {
+            "value": "indonesia",
+            "label": "Indonesia (IDR, Bahasa Indonesia)"
+          }
+        ],
+        "info": "International sends Indonesian visitors to the Indonesia store. Indonesia sends foreign visitors to the International store."
+      },
+      {
+        "type": "text",
+        "id": "global_store_url",
+        "label": "International store URL",
+        "default": "https://hpzdiecast.com",
+        "info": "No trailing slash."
+      },
+      {
+        "type": "text",
+        "id": "id_store_url",
+        "label": "Indonesia store URL",
+        "info": "Example https://id.hpzdiecast.com. Leave empty to turn the redirect off. No trailing slash."
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_academy",
+        "label": "Hide the Academy link (header, mobile menu, footer)",
+        "default": false,
+        "info": "Services stays visible. Academy is hidden when this is on."
+      },
+      {
+        "type": "text",
+        "id": "geo_bypass_key",
+        "label": "Indonesia store staff bypass key",
+        "info": "Indonesia store only. Staff outside Indonesia can open the store once per tab with ?hpz_bypass=<this key>. Use a random string and keep it private. Empty = no bypass."
+      },
+      {
+        "type": "number",
+        "id": "svc_price_factor",
+        "label": "Services page price multiplier",
+        "default": 1,
+        "info": "The Services page prices are written in US dollars. 1 = show them as they are (international store). Indonesia store: use 16000 so $25 becomes Rp 400.000."
+      }
+    ]
+  },
+  {
+    "name": "Collection tiles",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Brand and category tiles on collection pages"
+      },
+      {
+        "type": "textarea",
+        "id": "brand_strip_map",
+        "label": "Brand tiles per category",
+        "default": "all: hpz-wheels, jv-custom, turbo-miniscale, sakura-model, carlomo-alloy-wheels, parvus-models, rebel-tires, cookin, muscle-car-23, octopus, bmj-diecast-custom\nwheels: hpz-wheels, jv-custom, turbo-miniscale, sakura-model, body-kit, carlomo-alloy-wheels, parvus-models, rebel-tires, cookin\nbody-kit: hpz-wheels, sakura-model\nwide-body-kit: sakura-model\nengines: rebel-tires, parvus-models, octopus, bmj-diecast-custom\nexterior-detail: hpz-wheels, sakura-model, parvus-models\ninterior-detail: jv-custom, sakura-model, parvus-models",
+        "info": "One line per category page: category handle, a colon, then brand (or collection) handles in the order to show. Only items that have products are shown."
+      },
+      {
+        "type": "textarea",
+        "id": "brand_cat_map",
+        "label": "Category tiles per brand",
+        "default": "hpz-wheels: wheels=132, exterior-detail=5, body-kit=5, decals=1\njv-custom: wheels=45, interior-detail=1\nsakura-model: body-kit=21, exterior-detail=21, interior-detail=1\nparvus-models: exterior-detail=15, engines=3, interior-detail=1\noctopus: engines=19\nbmj-diecast-custom: engines=11\nrebel-tires: engines=2\ncarlomo-alloy-wheels: wheels=33, premium-alloy-disc-brake=33",
+        "info": "One line per brand page: brand handle, a colon, then category=number of parts."
+      },
+      {
+        "type": "checkbox",
+        "id": "brand_tags_ready",
+        "label": "Brand tags exist on products",
+        "default": false,
+        "info": "On only when products carry brand-<handle> tags, so a category tile opens that category for this brand alone."
+      },
+      {
+        "type": "textarea",
+        "id": "brand_list",
+        "label": "Brands on the Brand page (/collections)",
+        "default": "hpz-wheels, jv-custom, turbo-miniscale, sakura-model, carlomo-alloy-wheels, parvus-models, rebel-tires, cookin, muscle-car-23, octopus, bmj-diecast-custom",
+        "info": "Collection handles of the brands, in display order. Part categories (Wheels, Decals ...) are not listed here."
+      }
+    ]
+  },
+  {
+    "name": "SEO",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Search engines and social sharing"
+      },
+      {
+        "type": "text",
+        "id": "seo_brand",
+        "label": "Brand name in titles",
+        "default": "HPZ Diecast",
+        "info": "Added to page titles: \"Product name | Brand\"."
+      },
+      {
+        "type": "text",
+        "id": "seo_home_title",
+        "label": "Home page title",
+        "default": "HPZ Diecast | Custom Wheels, Decals & Resin Kits for 1:64",
+        "info": "Keep it under 60 characters. Shown as the blue link in Google."
+      },
+      {
+        "type": "textarea",
+        "id": "seo_home_description",
+        "label": "Home page description",
+        "default": "Custom wheels, waterslide decals, resin body kits and engines for 1:64 diecast. Handmade in Jakarta, shipped worldwide with tracking.",
+        "info": "Keep it between 120 and 155 characters. Shown under the title in Google."
+      },
+      {
+        "type": "image_picker",
+        "id": "seo_social_image",
+        "label": "Share image (home page)",
+        "info": "1200 x 630 px works best. Used when the home page is shared on WhatsApp, Facebook, X and in Google."
+      },
+      {
+        "type": "text",
+        "id": "seo_opening_hours",
+        "label": "Opening hours (schema format)",
+        "default": "Mo-Sa 09:00-17:00",
+        "info": "Format Mo-Sa 09:00-17:00. Goes into the structured data Google reads."
+      }
+    ]
+  },
+  {
+    "name": "WhatsApp chat",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Floating WhatsApp button (bottom left)"
+      },
+      {
+        "type": "checkbox",
+        "id": "wa_float_enabled",
+        "label": "Show the floating WhatsApp button",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "wa_admin1_name",
+        "label": "Admin 1 name",
+        "default": "Admin 1"
+      },
+      {
+        "type": "text",
+        "id": "wa_admin1_number",
+        "label": "Admin 1 WhatsApp number",
+        "default": "6285187889668",
+        "info": "Digits with country code, no plus or spaces. Leave empty to hide this admin."
+      },
+      {
+        "type": "text",
+        "id": "wa_admin2_name",
+        "label": "Admin 2 name",
+        "default": "Admin 2"
+      },
+      {
+        "type": "text",
+        "id": "wa_admin2_number",
+        "label": "Admin 2 WhatsApp number",
+        "default": "6281310167872",
+        "info": "Digits with country code. Leave empty to hide this admin."
+      },
+      {
+        "type": "range",
+        "id": "wa_float_delay",
+        "label": "Seconds before the greeting pops up",
+        "min": 2,
+        "max": 20,
+        "step": 1,
+        "default": 6
+      }
+    ]
+  }
+]

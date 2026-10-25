@@ -1,0 +1,14 @@
+{
+  "en": { "hpz": { "seo": {
+    "home": "Home",
+    "collection_title": "{{ title }} for 1:64 Diecast",
+    "collection_desc": "Shop {{ title }} for 1:64 diecast customisation. Handmade parts and decals by HPZ Diecast, shipped worldwide from Jakarta Selatan, Indonesia.",
+    "product_tail": "Custom part for 1:64 diecast models by HPZ Diecast, ships from Jakarta Selatan"
+  } } },
+  "id": { "hpz": { "seo": {
+    "home": "Beranda",
+    "collection_title": "{{ title }} untuk Diecast 1:64",
+    "collection_desc": "Belanja {{ title }} untuk custom diecast 1:64. Part dan decal buatan HPZ Diecast, dikirim dari Jakarta Selatan ke seluruh Indonesia.",
+    "product_tail": "Part custom untuk diecast 1:64 dari HPZ Diecast, dikirim dari Jakarta Selatan"
+  } } }
+}

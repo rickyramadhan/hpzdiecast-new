@@ -1,0 +1,91 @@
+{%- comment -%}
+  One cart line. Params: item (line item), style ('drawer' | 'page').
+  Actions are wired by assets/cart.js: [data-rm], [data-q], [data-qi], [data-later].
+{%- endcomment -%}
+{%- liquid
+  assign p = item.product
+  assign v = item.variant
+  assign brand_name = p.metafields.hpz.brand.value.name
+  if brand_name == blank
+    assign brand_name = item.vendor
+  endif
+  assign max_q = 0
+  if v.inventory_management == 'shopify' and v.inventory_policy == 'deny' and v.inventory_quantity > 0
+    assign max_q = v.inventory_quantity
+  endif
+  assign strike = 0
+  if item.original_line_price > item.final_line_price
+    assign strike = item.original_line_price
+  elsif v.compare_at_price > v.price
+    assign strike = v.compare_at_price | times: item.quantity
+  endif
+  assign made_for = ''
+  for c in p.metafields.hpz.made_for.value
+    assign made_for = made_for | append: c.system.handle | append: ','
+  endfor
+  capture kind
+    render 'kind-slug', type: p.type
+  endcapture
+  assign low = false
+  if v.inventory_management == 'shopify' and v.inventory_quantity > 0 and v.inventory_quantity <= 4
+    assign low = true
+  endif
+-%}
+{%- capture swatch -%}
+  {%- unless p.has_only_default_variant -%}
+    {%- for o in item.options_with_values -%}
+      {%- assign on_l = o.name | downcase -%}
+      {%- if on_l contains 'colo' or on_l contains 'finish' or on_l contains 'warna' -%}
+        {%- capture bg -%}{%- render 'color-swatch', name: o.value -%}{%- endcapture -%}
+        {%- assign bg = bg | strip -%}
+        {%- if bg != blank -%}<i style="--c:{{ bg }}"></i>{%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endunless -%}
+{%- endcapture -%}
+{%- capture props -%}
+  {%- for pr in item.properties -%}
+    {%- assign first_char = pr.first | slice: 0 -%}
+    {%- if first_char != '_' and pr.last != blank -%}<span class="mono">{{ pr.first }}: {{ pr.last }}</span>{%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- capture bundle_tag -%}
+  {%- if item.properties._bundle != blank -%}
+    <span class="cl-bundle">{% render 'icon', name: 'layers' %} {{ 'hpz.cart.bundle' | t }}</span>
+  {%- endif -%}
+  {%- for d in item.line_level_discount_allocations -%}
+    <span class="cl-bundle">{% render 'icon', name: 'tag' %} {{ d.discount_application.title }}</span>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if style == 'page' -%}
+<div class="cr cl" data-line data-key="{{ item.key }}" data-vid="{{ item.variant_id }}" data-qty="{{ item.quantity }}" data-dia="{{ p.metafields.hpz.diameter.value }}" data-made-for="{{ made_for }}" data-kind="{{ kind | strip }}"
+  data-title="{{ item.product_title | escape }}" data-vtitle="{% unless p.has_only_default_variant %}{{ v.title | escape }}{% endunless %}" data-img="{{ item.image | image_url: width: 140 }}" data-url="{{ item.url }}" data-price="{{ v.price }}">
+  <a class="cr-img" href="{{ item.url }}">{% if item.image %}{{ item.image | image_url: width: 260 | image_tag: width: 120, height: 120, alt: item.product_title, loading: 'lazy' }}{% endif %}</a>
+  <div class="cr-info">
+    <span class="cl-brand">{{ brand_name }}{% if v.sku != blank %} · <span class="mono">{{ v.sku }}</span>{% endif %}</span>
+    <a class="cr-t" href="{{ item.url }}">{{ item.product_title }}</a>
+    <div class="cr-meta">{% unless p.has_only_default_variant %}<span class="cl-v">{{ swatch }}{{ v.title }}</span>{% endunless %}{{ props }}</div>
+    {{ bundle_tag }}
+    <span data-fit-slot></span>
+    <div class="cr-act">
+      <span class="cr-stock"><i class="dot{% if low %} low{% endif %}"></i>{% if low %}{{ 'hpz.cart.only_left' | t: count: v.inventory_quantity }}{% else %}{{ 'hpz.cart.in_stock' | t }}{% endif %}</span>
+      <button type="button" class="link xs" data-later>{{ 'hpz.cart.save_later' | t }}</button>
+      <button type="button" class="link xs" data-rm>{{ 'hpz.cart.remove' | t }}</button>
+    </div>
+  </div>
+  <div class="qty"><button type="button" data-q="-1" aria-label="-">{% render 'icon', name: 'minus' %}</button><input value="{{ item.quantity }}" inputmode="numeric" aria-label="{{ 'hpz.cart.qty' | t }}" data-qi{% if max_q > 0 %} data-max="{{ max_q }}"{% endif %}><button type="button" data-q="1" aria-label="+">{% render 'icon', name: 'plus' %}</button></div>
+  <div class="cr-p"><b class="mono">{{ item.final_line_price | money }}</b>{% if item.quantity > 1 %}<span class="mono xs muted">{{ item.final_price | money }} × {{ item.quantity }}</span>{% endif %}{% if strike > 0 %}<s class="mono xs">{{ strike | money }}</s>{% endif %}</div>
+</div>
+{%- else -%}
+<li class="cl" data-line data-key="{{ item.key }}" data-vid="{{ item.variant_id }}" data-qty="{{ item.quantity }}">
+  <a class="cl-img" href="{{ item.url }}">{% if item.image %}{{ item.image | image_url: width: 200 | image_tag: width: 84, height: 84, alt: item.product_title, loading: 'lazy' }}{% endif %}</a>
+  <div class="cl-main">
+    <div class="cl-top"><div><span class="cl-brand">{{ brand_name }}{% if v.sku != blank %} · <span class="mono">{{ v.sku }}</span>{% endif %}</span><a class="cl-t" href="{{ item.url }}">{{ item.product_title }}</a>
+      {% unless p.has_only_default_variant %}<span class="cl-v">{{ swatch }}{{ v.title }}</span>{% endunless %}{{ bundle_tag }}</div>
+      <button type="button" class="cl-x" data-rm aria-label="{{ 'hpz.cart.remove' | t }}">{% render 'icon', name: 'trash' %}</button></div>
+    <div class="cl-bot"><div class="qty qty-sm"><button type="button" data-q="-1" aria-label="-">{% render 'icon', name: 'minus' %}</button><input value="{{ item.quantity }}" inputmode="numeric" aria-label="{{ 'hpz.cart.qty' | t }}" data-qi{% if max_q > 0 %} data-max="{{ max_q }}"{% endif %}><button type="button" data-q="1" aria-label="+">{% render 'icon', name: 'plus' %}</button></div>
+      <span class="cl-p">{% if strike > 0 %}<s>{{ strike | money }}</s>{% endif %}<b>{{ item.final_line_price | money }}</b></span></div>
+  </div>
+</li>
+{%- endif -%}

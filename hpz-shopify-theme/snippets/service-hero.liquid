@@ -1,0 +1,90 @@
+{%- assign svc_fx = settings.svc_price_factor | default: 1 -%}
+{%- comment -%} Services hero + service index. Params: section {%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- assign nl = '
+' -%}
+{%- assign cx_min = 0 -%}
+{%- assign cx_max_d = 0 -%}
+{%- assign cx_min_d = 0 -%}
+{%- assign cx_n = 0 -%}
+{%- assign tiers_n = 0 -%}
+{%- assign tier_price = 0 -%}
+{%- assign tier_ta = '' -%}
+{%- assign loy_n = 0 -%}
+{%- for b in section.blocks -%}
+  {%- if b.type == 'decal_complexity' -%}
+    {%- assign cx_n = cx_n | plus: 1 -%}
+    {%- if cx_n == 1 or b.settings.price < cx_min -%}{%- assign cx_min = b.settings.price -%}{%- endif -%}
+    {%- if cx_n == 1 or b.settings.days < cx_min_d -%}{%- assign cx_min_d = b.settings.days -%}{%- endif -%}
+    {%- if b.settings.days > cx_max_d -%}{%- assign cx_max_d = b.settings.days -%}{%- endif -%}
+  {%- elsif b.type == 'build_tier' -%}
+    {%- assign tiers_n = tiers_n | plus: 1 -%}
+    {%- if tiers_n == 1 or b.settings.price < tier_price -%}{%- assign tier_price = b.settings.price -%}{%- assign tier_ta = b.settings.turnaround -%}{%- endif -%}
+  {%- elsif b.type == 'loyalty_tier' -%}
+    {%- assign loy_n = loy_n | plus: 1 -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign ws_lines = s.ws_tiers | split: nl -%}
+{%- assign ws_first = ws_lines.first | split: '|' -%}
+{%- assign ws_last = ws_lines.last | split: '|' -%}
+{%- assign ws_min_sets = ws_first[0] | strip -%}
+{%- assign ws_lo = ws_first[1] | strip -%}
+{%- assign ws_hi = ws_last[1] | strip -%}
+{%- assign stat_n = 0 -%}
+{%- for b in section.blocks -%}{%- if b.type == 'stat' and b.settings.label != blank -%}{%- assign stat_n = stat_n | plus: 1 -%}{%- endif -%}{%- endfor -%}
+
+<section class="svh">
+  <div class="wrap svh-in">
+    <div class="svh-copy">
+      <nav class="crumbs" aria-label="{{ 'hpz.svc.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'hpz.svc.home' | t }}</a><span>{{ 'hpz.svc.services' | t }}</span></nav>
+      <span class="eyebrow"><b>{{ 'hpz.svc.eyebrow' | t }}</b>{% if settings.workshop_city != blank %} <span>{{ settings.workshop_city }}</span>{% endif %}</span>
+      <h1 class="display svh-h" id="svh-h">{% if s.hero_heading != blank %}{{ s.hero_heading | escape | newline_to_br }}{% else %}{{ 'hpz.svc.hero_h_html' | t }}{% endif %}</h1>
+      <p class="lead">{% if s.hero_lead != blank %}{{ s.hero_lead | escape }}{% else %}{{ 'hpz.svc.hero_lead' | t }}{% endif %}</p>
+      {%- assign auto_dc = s.decal_collection -%}
+      {%- if stat_n == 0 -%}
+        <dl class="svh-stats">
+          {%- if localization.available_countries.size > 1 -%}<div><dt>{{ 'hpz.svc.stat_countries' | t }}</dt><dd class="mono"><span data-count="{{ localization.available_countries.size }}">0</span></dd></div>{%- endif -%}
+          {%- assign auto_dc_n = auto_dc.products_count | plus: 0 -%}{%- if auto_dc_n > 0 -%}<div><dt>{{ 'hpz.svc.stat_sheets' | t }}</dt><dd class="mono"><span data-count="{{ auto_dc.products_count }}">0</span></dd></div>{%- endif -%}
+        </dl>
+      {%- endif -%}
+      {%- if stat_n > 0 -%}
+        <dl class="svh-stats">
+          {%- for b in section.blocks -%}
+            {%- if b.type == 'stat' and b.settings.label != blank -%}
+              <div {{ b.shopify_attributes }}><dt>{{ b.settings.label }}</dt><dd class="mono"><span data-count="{{ b.settings.value | default: 0 }}">0</span>{% if b.settings.suffix != blank %}<small>{{ b.settings.suffix }}</small>{% endif %}</dd></div>
+            {%- endif -%}
+          {%- endfor -%}
+        </dl>
+      {%- endif -%}
+    </div>
+    <div class="svh-side">
+      <div class="svh-idx-h"><span class="mono">{{ 'hpz.svc.index' | t }}</span><span class="mono" data-svc-count></span></div>
+      <ol class="svh-idx" id="svh-idx">
+        {%- assign i = 0 -%}
+        {%- if s.show_decal -%}
+          <li style="--i:{{ i }}"><a href="#decal"><span class="mono si-c">S-01</span><span class="si-t"><b>{{ 'hpz.svc.decal_title' | t }}</b><em>{{ 'hpz.svc.idx_decal' | t }}</em></span><span class="si-m mono">{% if cx_n > 0 %}<b>{{ 'hpz.svc.from' | t }} {{ cx_min | times: 100 | times: svc_fx | money_without_trailing_zeros }}</b><em>{% if cx_min_d == cx_max_d %}{{ 'hpz.svc.days_n' | t: n: cx_min_d }}{% else %}{{ 'hpz.svc.days_range' | t: a: cx_min_d, b: cx_max_d }}{% endif %}</em>{% endif %}</span>{% render 'icon', name: 'arrow' %}</a></li>
+          {%- assign i = i | plus: 1 -%}
+        {%- endif -%}
+        {%- if s.show_build -%}
+          <li style="--i:{{ i }}"><a href="#build"><span class="mono si-c">S-02</span><span class="si-t"><b>{{ 'hpz.svc.build_title' | t }}</b><em>{{ 'hpz.svc.idx_build' | t }}</em></span><span class="si-m mono">{% if tiers_n > 0 %}<b>{{ 'hpz.svc.from' | t }} {{ tier_price | times: 100 | times: svc_fx | money_without_trailing_zeros }}</b><em>{{ tier_ta }}</em>{% endif %}</span>{% render 'icon', name: 'arrow' %}</a></li>
+          {%- assign i = i | plus: 1 -%}
+        {%- endif -%}
+        {%- if s.show_wholesale -%}
+          <li style="--i:{{ i }}"><a href="#wholesale"><span class="mono si-c">S-03</span><span class="si-t"><b>{{ 'hpz.svc.ws_title' | t }}</b><em>{% if ws_min_sets != blank %}{{ 'hpz.svc.idx_ws_from' | t: n: ws_min_sets }}{% else %}{{ 'hpz.svc.idx_ws' | t }}{% endif %}</em></span><span class="si-m mono">{% if ws_lo != blank %}<b>{% if ws_lo == ws_hi %}{{ ws_lo }}%{% else %}{{ ws_lo }}-{{ ws_hi }}%{% endif %}</b><em>{{ 'hpz.svc.off' | t }}</em>{% endif %}</span>{% render 'icon', name: 'arrow' %}</a></li>
+          {%- assign i = i | plus: 1 -%}
+        {%- endif -%}
+        {%- if s.show_request -%}
+          <li style="--i:{{ i }}"><a href="#request"><span class="mono si-c">S-04</span><span class="si-t"><b>{{ 'hpz.svc.rq_title' | t }}</b><em>{{ 'hpz.svc.idx_rq' | t }}</em></span><span class="si-m mono"><b>{{ 'hpz.svc.free' | t }}</b>{% if s.rq_lead_time != blank %}<em>{{ s.rq_lead_time }}</em>{% endif %}</span>{% render 'icon', name: 'arrow' %}</a></li>
+          {%- assign i = i | plus: 1 -%}
+        {%- endif -%}
+        {%- if s.show_points and loy_n > 0 -%}
+          <li style="--i:{{ i }}"><a href="#points"><span class="mono si-c">S-05</span><span class="si-t"><b>Pit Points</b><em>{{ 'hpz.svc.idx_pp' | t }}</em></span><span class="si-m mono"><b>{{ 'hpz.svc.tiers_n' | t: n: loy_n }}</b></span>{% render 'icon', name: 'arrow' %}</a></li>
+          {%- assign i = i | plus: 1 -%}
+        {%- endif -%}
+      </ol>
+      {%- if s.queue_text != blank -%}
+        <div class="svh-queue" id="svh-queue"><span class="dot pulse"></span><span>{{ s.queue_text }}</span>{% if s.show_help %}<a class="link" href="#help">{{ 'hpz.svc.need_help' | t }}</a>{% endif %}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>

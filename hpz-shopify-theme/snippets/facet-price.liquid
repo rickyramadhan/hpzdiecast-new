@@ -1,0 +1,20 @@
+{%- comment -%} Dual range price facet (mockup .fprice). Params: filter. Values from Shopify are in cents. {%- endcomment -%}
+{%- assign bmin = 0 -%}
+{%- assign bmax = filter.range_max | divided_by: 100.0 | ceil -%}
+{%- if filter.min_value.value -%}{%- assign lo = filter.min_value.value | divided_by: 100.0 | floor -%}{%- else -%}{%- assign lo = bmin -%}{%- endif -%}
+{%- if filter.max_value.value -%}{%- assign hi = filter.max_value.value | divided_by: 100.0 | ceil -%}{%- else -%}{%- assign hi = bmax -%}{%- endif -%}
+{%- assign lo_cents = lo | times: 100 -%}
+{%- assign hi_cents = hi | times: 100 -%}
+<div class="fprice" data-bmin="{{ bmin }}" data-bmax="{{ bmax }}" data-min-name="{{ filter.min_value.param_name }}" data-max-name="{{ filter.max_value.param_name }}">
+  <div class="range" id="range"><span class="track"></span><span class="fill"></span>
+    <input type="range" min="{{ bmin }}" max="{{ bmax }}" step="1" value="{{ lo }}" data-r="min" aria-label="{{ 'hpz.catalog.price_min' | t }}">
+    <input type="range" min="{{ bmin }}" max="{{ bmax }}" step="1" value="{{ hi }}" data-r="max" aria-label="{{ 'hpz.catalog.price_max' | t }}">
+  </div>
+  <div class="fprice-v mono"><span id="pmin">{{ lo_cents | money_without_trailing_zeros }}</span><span id="pmax">{{ hi_cents | money_without_trailing_zeros }}</span></div>
+  <noscript>
+    <div class="fprice-ns">
+      <input class="input" type="number" min="0" step="1" name="{{ filter.min_value.param_name }}" value="{{ lo }}" aria-label="{{ 'hpz.catalog.price_min' | t }}">
+      <input class="input" type="number" min="0" step="1" name="{{ filter.max_value.param_name }}" value="{{ hi }}" aria-label="{{ 'hpz.catalog.price_max' | t }}">
+    </div>
+  </noscript>
+</div>

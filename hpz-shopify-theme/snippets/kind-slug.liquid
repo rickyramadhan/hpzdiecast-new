@@ -1,0 +1,14 @@
+{%- comment -%}
+  Outputs the HPZ kind slug for a product type: wheels | decals | bodykits | engines | exterior | interior | dioramas
+  Usage: {% capture kind %}{% render 'kind-slug', type: product.type %}{% endcapture %}
+{%- endcomment -%}
+{%- case type -%}
+  {%- when 'Wheels' -%}wheels
+  {%- when 'Decals' -%}decals
+  {%- when 'Body Kits' -%}bodykits
+  {%- when 'Engines' -%}engines
+  {%- when 'Aero & Exterior' -%}exterior
+  {%- when 'Interior' -%}interior
+  {%- when 'Dioramas' -%}dioramas
+  {%- else -%}exterior
+{%- endcase -%}

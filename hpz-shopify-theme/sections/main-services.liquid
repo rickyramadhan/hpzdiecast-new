@@ -1,0 +1,173 @@
+{{ 'p-services.css' | asset_url | stylesheet_tag }}
+{%- comment -%}
+  Services page. One section, six sub-parts rendered by snippets/service-*.liquid.
+  All prices, tiers, turnaround, slot counts, stockists and loyalty tiers are merchant-editable
+  (settings + blocks). Defaults in templates/page.services.json are PLACEHOLDERS from the design mockup.
+  JS (assets/services.js) only reads data-attributes rendered here.
+{%- endcomment -%}
+{%- assign s = section.settings -%}
+<div class="svc" data-svc data-section-id="{{ section.id }}">
+  {%- render 'service-hero', section: section -%}
+  {%- if s.show_decal -%}{%- render 'service-decal', section: section -%}{%- endif -%}
+  {%- if s.show_build -%}{%- render 'service-build', section: section -%}{%- endif -%}
+  {%- if s.show_wholesale -%}{%- render 'service-wholesale', section: section -%}{%- endif -%}
+  {%- if s.show_request -%}{%- render 'service-request', section: section -%}{%- endif -%}
+  {%- if s.show_points -%}{%- render 'service-points', section: section -%}{%- endif -%}
+  {%- if s.show_help -%}{%- render 'service-help', section: section -%}{%- endif -%}
+</div>
+<script src="{{ 'services.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Services page",
+  "tag": "div",
+  "class": "svc-section",
+  "settings": [
+    { "type": "header", "content": "Visible parts" },
+    { "type": "checkbox", "id": "show_decal", "label": "Custom Decal Studio (S-01)", "default": true },
+    { "type": "checkbox", "id": "show_build", "label": "Commission Build (S-02)", "default": true },
+    { "type": "checkbox", "id": "show_wholesale", "label": "Wholesale and stockists (S-03)", "default": true },
+    { "type": "checkbox", "id": "show_request", "label": "Part / casting request (S-04)", "default": true },
+    { "type": "checkbox", "id": "show_points", "label": "Pit Points loyalty (S-05)", "default": true, "info": "Hide this if you do not run a loyalty programme. The tiers and rules below are PLACEHOLDERS." },
+    { "type": "checkbox", "id": "show_help", "label": "Help centre", "default": true },
+
+    { "type": "header", "content": "Hero" },
+    { "type": "textarea", "id": "hero_heading", "label": "Heading", "info": "Optional. One line per row. Blank uses the translated default." },
+    { "type": "textarea", "id": "hero_lead", "label": "Intro text", "info": "Optional. Blank uses the translated default." },
+    { "type": "text", "id": "queue_text", "label": "Workshop queue line", "info": "Optional short live note under the service index, e.g. today's workload. Blank hides it." },
+
+    { "type": "header", "content": "Decal Studio: estimator" },
+    { "type": "paragraph", "content": "All amounts are in your store currency (not converted). Complexity and sheet types are blocks below. Defaults are PLACEHOLDERS: replace with your real prices." },
+    { "type": "collection", "id": "decal_collection", "label": "Ready-made decals collection", "info": "Used for the 'Browse ready-made sheets' link." },
+    { "type": "number", "id": "decal_rush_pct", "label": "Rush surcharge (%)", "default": 40, "info": "Placeholder. Set 0 to hide the rush option." },
+    { "type": "number", "id": "decal_rush_days_pct", "label": "Rush: remaining turnaround (%)", "default": 50, "info": "Placeholder. 50 halves the working days." },
+    { "type": "number", "id": "decal_measure_fee", "label": "Fee to measure a casting that is not listed", "default": 10, "info": "Placeholder. Set 0 for free." },
+    { "type": "number", "id": "decal_measure_days", "label": "Extra days to measure a new casting", "default": 2 },
+    { "type": "number", "id": "decal_max_sheets", "label": "Maximum sheets per brief", "default": 20 },
+    { "type": "number", "id": "decal_bulk_from", "label": "Extra day when sheets exceed", "default": 10 },
+    { "type": "number", "id": "decal_bulk_days", "label": "Extra days for large runs", "default": 1 },
+    { "type": "number", "id": "decal_deposit_pct", "label": "Deposit (%)", "default": 50, "info": "Placeholder, shown in the estimate note. Set 0 to omit." },
+    { "type": "text", "id": "decal_size_note", "label": "Sheet size note", "default": "60 x 45 mm each", "info": "Placeholder. Blank hides it." },
+
+    { "type": "header", "content": "Commission Build" },
+    { "type": "paragraph", "content": "Tiers are blocks below. Comparison rows, bench list and budgets are one entry per line." },
+    { "type": "number", "id": "build_slots_total", "label": "Build slots per month", "default": 12, "info": "Placeholder. Set 0 to hide the slot counter." },
+    { "type": "number", "id": "build_slots_left", "label": "Slots left", "default": 4, "info": "Placeholder: update by hand." },
+    { "type": "text", "id": "build_slots_label", "label": "Slot counter label", "default": "next month", "info": "Shown as 'slots left for ...'." },
+    { "type": "textarea", "id": "build_rows", "label": "Comparison rows", "info": "One per line: Label | tier 1 | tier 2 | tier 3. Use yes or no for a tick or dash, any other text is shown as is. A turnaround row is added automatically." },
+    { "type": "textarea", "id": "build_stages", "label": "Build stages", "default": "Strip, Paint, Decal, Assemble, Case", "info": "Comma separated, used by the bench list." },
+    { "type": "textarea", "id": "build_bench", "label": "On the bench right now (optional)", "info": "One per line: Car | Detail | stage number | body (coupe, hatch, sedan, truck) | country code (optional). Blank hides the board." },
+    { "type": "textarea", "id": "build_budgets", "label": "Budget options", "info": "One per line: from | to. Leave 'to' empty for open ended, e.g. 350 |" },
+    { "type": "textarea", "id": "build_footnote", "label": "Shipping footnote", "default": "Every build ships in a protective box. Your own car? Post it to us tracked and we photograph it on arrival.", "info": "Placeholder. Edit to match how you really ship." },
+
+    { "type": "header", "content": "Wholesale" },
+    { "type": "number", "id": "ws_rrp", "label": "Average retail price per set", "default": 13.5, "info": "Placeholder used by the volume calculator." },
+    { "type": "textarea", "id": "ws_tiers", "label": "Discount tiers", "info": "One per line: minimum sets | discount %, lowest first. Example: 20 | 20" },
+    { "type": "range", "id": "ws_slider_min", "min": 0, "max": 50, "step": 5, "label": "Slider minimum (sets)", "default": 10 },
+    { "type": "range", "id": "ws_slider_max", "min": 50, "max": 500, "step": 10, "label": "Slider maximum (sets)", "default": 200 },
+    { "type": "range", "id": "ws_slider_start", "min": 0, "max": 500, "step": 5, "label": "Slider start value", "default": 60 },
+    { "type": "range", "id": "ws_slider_step", "min": 1, "max": 20, "step": 1, "label": "Slider step", "default": 5 },
+    { "type": "textarea", "id": "ws_benefits", "label": "Benefits", "info": "One per line: Title | Description. These are PLACEHOLDERS: only keep what you actually offer." },
+    { "type": "textarea", "id": "ws_stockists", "label": "Stockists (optional)", "info": "One per line: Country | City | Shop name. Blank hides the list." },
+    { "type": "textarea", "id": "ws_types", "label": "Business types (form)", "info": "One per line." },
+    { "type": "textarea", "id": "ws_volumes", "label": "Expected volume options (form)", "info": "One per line, e.g. 20-49 sets." },
+    { "type": "number", "id": "ws_reply_days", "label": "Reply promise (working days)", "default": 2 },
+
+    { "type": "header", "content": "Part / casting request" },
+    { "type": "textarea", "id": "rq_log", "label": "Recently sourced (optional)", "info": "One per line: Part description | days it took. Leave days empty for 'hunting'. Blank hides the list." },
+    { "type": "text", "id": "rq_lead_time", "label": "Typical lead time", "default": "4-14 days", "info": "Placeholder, shown in the index and confirmation." },
+
+    { "type": "header", "content": "Pit Points (loyalty)" },
+    { "type": "paragraph", "content": "Tiers are blocks below. All rules are PLACEHOLDERS: edit to match your real programme or hide the section." },
+    { "type": "number", "id": "pp_redeem_pts", "label": "Points needed to redeem", "default": 1000 },
+    { "type": "number", "id": "pp_redeem_value", "label": "Redeem value (store currency)", "default": 10 },
+    { "type": "number", "id": "pp_spend_max", "label": "Calculator: max yearly spend", "default": 800 },
+    { "type": "number", "id": "pp_spend_start", "label": "Calculator: start spend", "default": 240 },
+    { "type": "number", "id": "pp_meter_max", "label": "Meter maximum (points)", "default": 4000 },
+    { "type": "number", "id": "pp_review_pts", "label": "Points per photo review", "default": 150 },
+    { "type": "number", "id": "pp_feature_pts", "label": "Points for a featured build", "default": 500 },
+    { "type": "textarea", "id": "pp_earn", "label": "How to earn table", "info": "One per line: Action | Value" },
+    { "type": "textarea", "id": "pp_note", "label": "Fine print", "info": "Optional." },
+
+    { "type": "header", "content": "Help centre and contact" },
+    { "type": "text", "id": "email", "label": "Contact email", "info": "Blank uses the store email." },
+    { "type": "text", "id": "hours_days", "label": "Open days", "default": "1,2,3,4,5,6", "info": "Comma separated, 0 = Sunday ... 6 = Saturday." },
+    { "type": "number", "id": "hours_open", "label": "Opening hour (24h, workshop time)", "default": 9 },
+    { "type": "number", "id": "hours_close", "label": "Closing hour (24h, workshop time)", "default": 17 },
+    { "type": "number", "id": "hours_tz", "label": "Workshop UTC offset (hours)", "default": 7, "info": "Jakarta is 7." },
+    { "type": "text", "id": "hours_tz_label", "label": "Time zone label", "default": "WIB" },
+    { "type": "text", "id": "hours_note", "label": "Hours note", "info": "Optional, e.g. dispatch cut-off time." }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Hero stat",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label" },
+        { "type": "number", "id": "value", "label": "Number", "info": "Use real numbers only." },
+        { "type": "text", "id": "suffix", "label": "Suffix", "info": "e.g. h" }
+      ]
+    },
+    {
+      "type": "decal_complexity",
+      "name": "Decal: complexity",
+      "limit": 6,
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Partial livery" },
+        { "type": "text", "id": "desc", "label": "Description" },
+        { "type": "number", "id": "price", "label": "Artwork and template price", "default": 45, "info": "Placeholder." },
+        { "type": "number", "id": "days", "label": "Working days", "default": 5 },
+        { "type": "select", "id": "coverage", "label": "Illustration", "default": "partial", "options": [
+          { "value": "logo", "label": "Logo only" }, { "value": "partial", "label": "Stripes / partial" }, { "value": "full", "label": "Full coverage" } ] }
+      ]
+    },
+    {
+      "type": "decal_type",
+      "name": "Decal: sheet type",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Transparent" },
+        { "type": "text", "id": "desc", "label": "Description" },
+        { "type": "number", "id": "add", "label": "Print surcharge", "default": 0, "info": "Placeholder." },
+        { "type": "number", "id": "sheet", "label": "Price per extra sheet", "default": 6, "info": "Placeholder." },
+        { "type": "number", "id": "days", "label": "Extra working days", "default": 0 },
+        { "type": "select", "id": "swatch", "label": "Swatch", "default": "clear", "options": [
+          { "value": "clear", "label": "Transparent" }, { "value": "white", "label": "White toner" }, { "value": "both", "label": "Both" } ] }
+      ]
+    },
+    {
+      "type": "build_tier",
+      "name": "Build tier",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Street Build" },
+        { "type": "number", "id": "price", "label": "From price", "default": 140, "info": "Placeholder." },
+        { "type": "text", "id": "turnaround", "label": "Turnaround", "default": "2-3 weeks", "info": "Placeholder." },
+        { "type": "checkbox", "id": "popular", "label": "Mark as most booked", "default": false }
+      ]
+    },
+    {
+      "type": "loyalty_tier",
+      "name": "Loyalty tier",
+      "limit": 5,
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Rookie" },
+        { "type": "number", "id": "at", "label": "Points to reach", "default": 0 },
+        { "type": "number", "id": "rate", "label": "Points per 1 unit of currency spent", "default": 10 },
+        { "type": "textarea", "id": "perks", "label": "Perks (one per line)" }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "limit": 30,
+      "settings": [
+        { "type": "text", "id": "group", "label": "Tab", "default": "Shipping", "info": "Questions with the same tab name are grouped together." },
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer" }
+      ]
+    }
+  ]
+}
+{% endschema %}

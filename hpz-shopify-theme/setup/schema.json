@@ -1,0 +1,72 @@
+{
+  "_readme": "Single source of truth for HPZ metafield + metaobject definitions. tools/gen-graphql.cjs turns this into GraphQL mutations; the theme reads these keys. Namespace for product/customer metafields is 'hpz'.",
+  "metaobjects": [
+    {
+      "type": "casting",
+      "name": "Casting",
+      "displayNameKey": "name",
+      "storefront": true,
+      "fields": [
+        { "key": "name", "name": "Name", "type": "single_line_text_field", "required": true },
+        { "key": "maker", "name": "Maker", "type": "single_line_text_field", "choices": ["Hot Wheels", "Matchbox", "Mini GT", "Tomica Premium", "Other"], "required": true },
+        { "key": "year", "name": "Casting year", "type": "number_integer" },
+        { "key": "body", "name": "Body silhouette", "type": "single_line_text_field", "choices": ["coupe", "hatch", "sedan", "truck"], "required": true },
+        { "key": "diameter", "name": "Recommended wheel diameter (mm)", "type": "number_decimal", "required": true },
+        { "key": "axle", "name": "Axle", "type": "single_line_text_field", "choices": ["long", "short"] },
+        { "key": "verified", "name": "Measured by HPZ workshop", "type": "boolean", "description": "Theme only shows 'fits your casting' tags for verified castings (setting: fitment_requires_verified)." }
+      ]
+    },
+    {
+      "type": "brand",
+      "name": "Brand",
+      "displayNameKey": "name",
+      "storefront": true,
+      "fields": [
+        { "key": "name", "name": "Name", "type": "single_line_text_field", "required": true },
+        { "key": "code", "name": "3-letter code", "type": "single_line_text_field" },
+        { "key": "note", "name": "Short description", "type": "multi_line_text_field" },
+        { "key": "is_original", "name": "HPZ Original (made by HPZ)", "type": "boolean" },
+        { "key": "logo", "name": "Logo", "type": "file_reference" }
+      ]
+    },
+    {
+      "type": "build",
+      "name": "Build (Built by You)",
+      "displayNameKey": "title",
+      "storefront": true,
+      "fields": [
+        { "key": "title", "name": "Title", "type": "single_line_text_field", "required": true },
+        { "key": "builder", "name": "Builder handle (without @)", "type": "single_line_text_field", "required": true },
+        { "key": "photo", "name": "Photo", "type": "file_reference", "required": true },
+        { "key": "casting", "name": "Casting", "type": "metaobject_reference", "references": "casting" },
+        { "key": "story", "name": "Story", "type": "multi_line_text_field" },
+        { "key": "hotspots", "name": "Hotspots JSON", "type": "json", "description": "[{\"x\":58,\"y\":64,\"product\":\"product-handle\",\"variant\":\"Gold\"}] — x/y are % of the photo." },
+        { "key": "products", "name": "Parts used", "type": "list.product_reference" },
+        { "key": "likes", "name": "Likes", "type": "number_integer" },
+        { "key": "featured", "name": "Featured on homepage", "type": "boolean" }
+      ]
+    }
+  ],
+  "productMetafields": [
+    { "key": "diameter", "name": "Wheel diameter (mm)", "type": "number_decimal", "filter": true, "description": "Overall wheel diameter. Drives fitment checks and the diameter filter." },
+    { "key": "width", "name": "Wheel width (mm)", "type": "number_decimal" },
+    { "key": "axle", "name": "Axle", "type": "single_line_text_field", "choices": ["long", "short", "included"] },
+    { "key": "face_material", "name": "Face material", "type": "single_line_text_field", "choices": ["resin", "alloy", "3d-print"] },
+    { "key": "lip_material", "name": "Lip / barrel material", "type": "single_line_text_field", "choices": ["alloy", "resin", "steel"] },
+    { "key": "has_bearing", "name": "Bearing hub", "type": "boolean", "filter": true },
+    { "key": "has_disc_brake", "name": "Disc brake included", "type": "boolean", "filter": true },
+    { "key": "wheel_style", "name": "Wheel style", "type": "single_line_text_field", "choices": ["jdm", "euro", "classic", "muscle", "offroad"], "filter": true },
+    { "key": "made_for", "name": "Made for castings", "type": "list.metaobject_reference", "references": "casting", "description": "Decals, body kits, engines made for specific castings." },
+    { "key": "brand", "name": "Brand", "type": "metaobject_reference", "references": "brand", "filter": true },
+    { "key": "sheet_type", "name": "Decal type", "type": "single_line_text_field", "choices": ["transparent", "white-toner"], "filter": true },
+    { "key": "precoated", "name": "Decal is precoated", "type": "boolean" },
+    { "key": "install_steps", "name": "Install / apply steps", "type": "list.single_line_text_field", "description": "One step per entry. Shown as the numbered 'How to apply/install' list." },
+    { "key": "video_url", "name": "Tutorial video URL", "type": "url" },
+    { "key": "needs_review", "name": "Data needs review", "type": "boolean", "description": "Set by the CSV tool for guessed values. Clear once checked." }
+  ],
+  "customerMetafields": [
+    { "key": "garage", "name": "My garage (casting handles)", "type": "list.single_line_text_field", "access": "customer_read_write" }
+  ],
+  "productTypes": ["Wheels", "Decals", "Body Kits", "Engines", "Aero & Exterior", "Interior", "Dioramas"],
+  "shopifyAdminFilters": "In Search & Discovery > Filters add: Availability, Price, Product type, Brand (hpz.brand), Wheel diameter (hpz.diameter), Wheel style (hpz.wheel_style), Bearing (hpz.has_bearing), Disc brake (hpz.has_disc_brake), Decal type (hpz.sheet_type), Color (variant option 'Color')."
+}

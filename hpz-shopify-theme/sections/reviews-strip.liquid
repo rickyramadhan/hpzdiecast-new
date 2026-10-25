@@ -1,0 +1,127 @@
+{{ 'p-home.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign rating_num = s.rating | times: 1.0
+  assign has_summary = false
+  if rating_num > 0
+    assign has_summary = true
+  endif
+  assign has_bars = false
+  if s.pct_5 != blank or s.pct_4 != blank or s.pct_3 != blank or s.pct_2 != blank or s.pct_1 != blank
+    assign has_bars = true
+  endif
+  assign pcts = s.pct_5 | append: ',' | append: s.pct_4 | append: ',' | append: s.pct_3 | append: ',' | append: s.pct_2 | append: ',' | append: s.pct_1 | split: ','
+  assign rounded = rating_num | round
+-%}
+{%- if section.blocks.size > 0 or has_summary or request.design_mode -%}
+<section class="section rev-s on-white" data-home="reviews" {{ section.shopify_attributes }}>
+  <div class="wrap rev-in">
+    <div class="rev-score">
+      <span class="eyebrow">{% if s.idx != blank %}<b>{{ s.idx }}</b> {% endif %}<span>{{ 'hpz.home.reviews.eyebrow' | t }}</span></span>
+      {%- if has_summary -%}
+        <div class="rev-big"><span class="mono" data-count="{{ s.rating }}" data-dp="1">{{ s.rating }}</span><small>/5</small></div>
+        <div>
+          <span class="stars" aria-label="{{ s.rating }} / 5">
+            {%- for i in (1..5) -%}<i class="{% if i <= rounded %}on{% endif %}">{% render 'icon', name: 'star' %}</i>{%- endfor -%}
+          </span>
+        </div>
+        {%- if s.review_count != blank -%}
+          <p class="small muted">
+            <b class="mono">{{ s.review_count }}</b> {{ 'hpz.home.reviews.reviews' | t }}{% if s.country_count != blank %} {{ 'hpz.home.reviews.in_countries' | t: count: s.country_count }}{% endif %}
+          </p>
+        {%- endif -%}
+      {%- elsif request.design_mode -%}
+        <p class="small muted">Set the average rating in section settings (real data only).</p>
+      {%- endif -%}
+      {%- if has_bars -%}
+        <div class="rev-bars" data-rev-bars>
+          {%- for i in (0..4) -%}
+            {%- assign star = 5 | minus: i -%}
+            {%- assign pv = pcts[i] | strip -%}
+            {%- if pv != blank -%}
+              <div><span class="mono">{{ star }}★</span><i><b style="--p:{{ pv }}%"></b></i><span class="mono">{{ pv }}%</span></div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+    <div>
+      <div class="rail rev-rail" data-rev-rail>
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              {% render block %}
+            {%- when 'review' -%}
+              {%- assign b = block.settings -%}
+              {%- assign star_n = b.rating | round -%}
+              <article class="rv" {{ block.shopify_attributes }}>
+                <span class="stars" aria-label="{{ b.rating }} / 5">
+                  {%- for i in (1..5) -%}<i class="{% if i <= star_n %}on{% endif %}">{% render 'icon', name: 'star' %}</i>{%- endfor -%}
+                </span>
+                {%- if b.title != blank -%}<h4>{{ b.title }}</h4>{%- endif -%}
+                <p>{{ b.text }}</p>
+                <div class="rv-f">
+                  <span class="rv-who">
+                    {%- if b.country != blank -%}{%- assign cc = b.country | upcase -%}{% render 'flag', code: cc %}{%- endif -%}
+                    <b>{{ b.name }}</b>
+                    {%- if b.verified -%}<em>{{ 'hpz.home.reviews.verified' | t }}</em>{%- endif -%}
+                  </span>
+                  {%- if b.product != blank -%}
+                    <a class="rv-p" href="{{ b.product.url }}">
+                      {%- if b.product.featured_image -%}{{ b.product.featured_image | image_url: width: 100 | image_tag: width: 36, height: 36, alt: '', loading: 'lazy' }}{%- endif -%}
+                      <span>{{ b.product.title | escape }}</span>
+                    </a>
+                  {%- endif -%}
+                </div>
+              </article>
+          {%- endcase -%}
+        {%- endfor -%}
+        {%- if section.blocks.size == 0 and request.design_mode -%}
+          <article class="rv"><p class="muted">Add review blocks with real customer reviews, or add the Judge.me app block.</p></article>
+        {%- endif -%}
+      </div>
+      <div class="rail-nav rev-nav">
+        <button type="button" data-rail-prev aria-label="{{ 'hpz.home.common.prev' | t }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
+        <button type="button" data-rail-next aria-label="{{ 'hpz.home.common.next' | t }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+{%- endif -%}
+<script src="{{ 'home.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Reviews strip",
+  "settings": [
+    { "type": "text", "id": "idx", "label": "Index number", "default": "08" },
+    { "type": "header", "content": "Rating summary (real data only)" },
+    { "type": "text", "id": "rating", "label": "Average rating", "info": "e.g. 4.8. Blank = summary hidden." },
+    { "type": "text", "id": "review_count", "label": "Number of reviews" },
+    { "type": "text", "id": "country_count", "label": "Number of countries", "info": "Optional." },
+    { "type": "header", "content": "Distribution (% of reviews, optional)" },
+    { "type": "text", "id": "pct_5", "label": "5 star %" },
+    { "type": "text", "id": "pct_4", "label": "4 star %" },
+    { "type": "text", "id": "pct_3", "label": "3 star %" },
+    { "type": "text", "id": "pct_2", "label": "2 star %" },
+    { "type": "text", "id": "pct_1", "label": "1 star %" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "range", "id": "rating", "label": "Rating", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "text", "id": "title", "label": "Headline" },
+        { "type": "textarea", "id": "text", "label": "Review text" },
+        { "type": "text", "id": "name", "label": "Name" },
+        { "type": "text", "id": "country", "label": "Country code", "info": "Two letters, e.g. DE, US, JP." },
+        { "type": "checkbox", "id": "verified", "label": "Mark as verified buyer", "default": false },
+        { "type": "product", "id": "product", "label": "Product reviewed" }
+      ]
+    },
+    { "type": "@app" }
+  ],
+  "presets": [ { "name": "Reviews strip" } ]
+}
+{% endschema %}

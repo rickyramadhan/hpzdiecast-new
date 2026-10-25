@@ -1,0 +1,90 @@
+{{ 'p-product.css' | asset_url | stylesheet_tag }}
+{%- comment -%}
+  Up to 2 extra products: merchant picks first, else Search & Discovery "complementary products".
+{%- endcomment -%}
+{%- assign main_variant = product.selected_or_first_available_variant -%}
+{%- assign list_a = section.settings.product_1 -%}
+{%- assign list_b = section.settings.product_2 -%}
+{%- assign comp = product.metafields.shopify--discovery--product_recommendation.complementary_products.value -%}
+{%- assign shown = 0 -%}
+{%- assign picked_ids = '' -%}
+{%- assign fallback_coll = null -%}
+{%- if list_a == blank and list_b == blank and section.settings.auto -%}
+  {%- for c in product.collections -%}
+    {%- if c.handle != 'all' and c.handle != 'frontpage' and c.products_count > 1 and fallback_coll == null -%}{%- assign fallback_coll = c -%}{%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- capture extras_html -%}
+  {%- for src in (1..4) -%}
+    {%- if shown >= 2 -%}{%- break -%}{%- endif -%}
+    {%- assign x = null -%}
+    {%- if src == 1 -%}{%- assign x = list_a -%}
+    {%- elsif src == 2 -%}{%- assign x = list_b -%}
+    {%- elsif src == 3 and list_a == blank and list_b == blank and section.settings.auto -%}{%- assign x = comp[0] -%}
+    {%- elsif src == 4 and list_a == blank and list_b == blank and section.settings.auto -%}{%- assign x = comp[1] -%}
+    {%- endif -%}
+    {%- if x != blank and x.available and x.id != product.id -%}
+      {%- assign picked_ids = picked_ids | append: ',' | append: x.id | append: ',' -%}
+      {%- assign shown = shown | plus: 1 -%}
+      {% render 'product-bundle-item', x: x %}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if shown < 2 and comp == blank and fallback_coll != null -%}
+    {%- for x in fallback_coll.products limit: 16 -%}
+      {%- if shown >= 2 -%}{%- break -%}{%- endif -%}
+      {%- assign x_tag = x.id | prepend: ',' | append: ',' -%}
+      {%- assign dup = false -%}
+      {%- if picked_ids contains x_tag -%}{%- assign dup = true -%}{%- endif -%}
+      {%- if x.available and x.id != product.id and dup == false -%}
+        {%- assign picked_ids = picked_ids | append: x_tag -%}
+        {%- assign shown = shown | plus: 1 -%}
+        {% render 'product-bundle-item', x: x %}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- if shown > 0 and main_variant != blank -%}
+  {%- assign disc_on = settings.bundle_discount_enabled -%}
+  {%- assign disc_pct = section.settings.discount_pct | default: 10 -%}
+  <section class="sec sec-bundle" id="s-bundle" data-bundle data-discount="{% if disc_on %}{{ disc_pct }}{% else %}0{% endif %}">
+    <div class="wrap sec-in">
+      <div class="sec-h">
+        <span class="mono">&uarr;</span>
+        <h2 class="h3">{% if section.settings.heading != blank %}{{ section.settings.heading | escape }}{% else %}{{ 'hpz.product.bundle_title' | t }}{% endif %}</h2>
+        {%- if disc_on -%}<p class="small muted">{{ 'hpz.product.bundle_save' | t: pct: disc_pct }}</p>{%- endif -%}
+      </div>
+      <div class="sec-b">
+        <div class="bnd">
+          <label class="bnd-i is-main">
+            <input type="checkbox" checked disabled data-bnd data-bnd-main data-variant-id="{{ main_variant.id }}" data-price="{{ main_variant.price }}">
+            <span class="bnd-c">{% render 'icon', name: 'check' %}</span>
+            {%- if product.featured_image -%}{{ product.featured_image | image_url: width: 300 | image_tag: alt: '', loading: 'lazy' }}{%- endif -%}
+            <span class="bnd-t"><em>{{ 'hpz.product.this_item' | t }}</em><b>{{ product.title | escape }}</b><span class="mono" data-bnd-main-price>{{ main_variant.price | money }}</span></span>
+          </label>
+          {{ extras_html }}
+          <div class="bnd-sum" data-bnd-sum
+               data-label-items="{{ 'hpz.product.items' | t }}"
+               data-label-save="{{ 'hpz.product.you_save' | t }}"
+               data-label-add="{{ 'hpz.product.add_n_to_cart' | t: count: '__N__' }}"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+<script src="{{ 'product.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Complete the build",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Blank uses the translated default." },
+    { "type": "product", "id": "product_1", "label": "Product 1" },
+    { "type": "product", "id": "product_2", "label": "Product 2" },
+    { "type": "checkbox", "id": "auto", "label": "If none picked, pick related products", "info": "Uses complementary products, else other products from the first collection.", "default": true },
+    { "type": "range", "id": "discount_pct", "label": "Bundle discount %", "min": 1, "max": 30, "step": 1, "default": 10, "info": "Only displayed when 'Bundle discount is live' is ticked in Theme settings. The discount itself must be created as an automatic discount / discount Function that matches cart lines carrying the _bundle property; the theme does not apply it." }
+  ],
+  "presets": []
+}
+{% endschema %}

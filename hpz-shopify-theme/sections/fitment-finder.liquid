@@ -1,0 +1,76 @@
+{{ 'p-home.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign lead = s.lead
+  if lead == blank
+    assign lead = 'hpz.home.fit.lead' | t
+  endif
+  assign makers = 'Hot Wheels|Matchbox|Mini GT|Tomica Premium|Other' | split: '|'
+  assign castings = metaobjects.casting.values
+  assign wheels_url = routes.collections_url | append: '/' | append: s.wheels_collection
+  assign has_filter = false
+  for flt in collections[s.wheels_collection].filters
+    if flt.param_name contains 'hpz.diameter'
+      assign has_filter = true
+    endif
+  endfor
+-%}
+<section class="fitment dark-0" id="fitment-{{ section.id }}" data-home="fitment"
+  data-wheels-url="{{ wheels_url }}"
+  data-has-filter="{{ has_filter }}"
+  data-made-for="{{ s.show_made_for }}"
+  data-t-dia="{{ 'hpz.home.fit.diameter' | t }}"
+  data-t-axle="{{ 'hpz.home.fit.axle' | t }}"
+  data-t-maker="{{ 'hpz.home.fit.maker' | t }}"
+  data-t-year="{{ 'hpz.home.fit.year' | t }}"
+  data-t-long="{{ 'hpz.home.fit.axle_long' | t }}"
+  data-t-short="{{ 'hpz.home.fit.axle_short' | t }}"
+  data-t-cta="{{ 'hpz.home.fit.cta' | t }}"
+  data-t-made="{{ 'hpz.home.fit.made' | t }}"
+  data-t-est="{{ 'hpz.home.fit.estimated' | t }}"
+  data-t-ver="{{ 'hpz.home.fit.verified' | t }}"
+  {{ section.shopify_attributes }}>
+  <div class="wrap fit-in">
+    <div class="fit-copy">
+      <span class="eyebrow">{% if s.idx != blank %}<b>{{ s.idx }}</b> {% endif %}<span>{{ 'hpz.home.fit.eyebrow' | t }}</span></span>
+      <h2 class="h1">
+        {%- if s.heading != blank -%}{{ s.heading | escape | newline_to_br }}{%- else -%}{{ 'hpz.home.fit.heading_html' | t }}{%- endif -%}
+      </h2>
+      <p class="lead">{{ lead }}</p>
+      <div class="fit-form">
+        <label class="lbl" for="fit-sel-{{ section.id }}">{{ 'hpz.home.fit.label' | t }}</label>
+        <select class="select" id="fit-sel-{{ section.id }}" data-fit-sel>
+          {%- for mk in makers -%}
+            {%- capture opts -%}
+              {%- for c in castings -%}
+                {%- if c.maker.value == mk -%}
+                  <option value="{{ c.system.handle }}" data-name="{{ c.name.value | escape }}" data-maker="{{ c.maker.value | escape }}" data-year="{{ c.year.value }}" data-body="{{ c.body.value }}" data-verified="{% if c.verified.value %}1{% else %}0{% endif %}" data-dia="{{ c.diameter.value }}" data-axle="{{ c.axle.value }}">{{ c.name.value | escape }}</option>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endcapture -%}
+            {%- if opts != blank -%}<optgroup label="{{ mk }}">{{ opts }}</optgroup>{%- endif -%}
+          {%- endfor -%}
+        </select>
+        <div class="fit-read" data-fit-read></div>
+        <a class="btn btn-signal btn-lg btn-block" data-fit-go href="{{ wheels_url }}">{{ 'hpz.home.fit.cta' | t }} {% render 'icon', name: 'arrow' %}</a>
+      </div>
+    </div>
+    <div class="fit-vis" data-fit-vis></div>
+  </div>
+  <script type="application/json" data-fit-fallback>{%- render 'default-castings' -%}</script>
+</section>
+<script src="{{ 'home.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Fitment finder",
+  "settings": [
+    { "type": "text", "id": "idx", "label": "Index number", "default": "02" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "info": "One line per row. Blank = translated default." },
+    { "type": "textarea", "id": "lead", "label": "Lead paragraph", "info": "Blank = translated default." },
+    { "type": "text", "id": "wheels_collection", "label": "Wheels collection handle", "default": "wheels", "info": "The button links to this collection filtered by the casting's wheel diameter (filter.p.m.hpz.diameter)." },
+    { "type": "checkbox", "id": "show_made_for", "label": "Show 'made for this casting' strip", "default": true, "info": "Searches the store for products whose title or tags mention the casting name. Hidden when nothing is found." }
+  ],
+  "presets": [ { "name": "Fitment finder" } ]
+}
+{% endschema %}

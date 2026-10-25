@@ -1,0 +1,21 @@
+{%- comment -%}
+  Open Graph + Twitter tags for product, collection and article pages (placed in theme.liquid head by the lead if needed).
+{%- endcomment -%}
+<meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:url" content="{{ canonical_url }}">
+{%- if template.name == 'product' -%}
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="{{ product.title | escape }}">
+  <meta property="og:description" content="{{ product.description | strip_html | truncate: 160 | escape }}">
+  <meta property="og:image" content="{{ product.featured_image | image_url: width: 1200 | prepend: 'https:' }}">
+  <meta property="product:price:amount" content="{{ product.price | divided_by: 100.0 }}">
+  <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+{%- elsif template.name == 'article' -%}
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{ article.title | escape }}">
+  <meta property="og:image" content="{{ article.image | image_url: width: 1200 | prepend: 'https:' }}">
+{%- else -%}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page_title | escape }}">
+{%- endif -%}
+<meta name="twitter:card" content="summary_large_image">

@@ -1,0 +1,5 @@
+{%- comment -%} Accordion wrapper for one facet. Params: filter, open (bool), body (captured html) {%- endcomment -%}
+<div class="fg acc{% if open %} is-open{% endif %}" data-acc data-fg="{{ filter.param_name }}">
+  <button type="button" class="acc-h fg-h" aria-expanded="{% if open %}true{% else %}false{% endif %}">{{ filter.label | escape }}<span class="acc-ic"></span></button>
+  <div class="acc-b"{% if open %} style="height:auto"{% endif %}><div class="fg-c">{{ body }}</div></div>
+</div>

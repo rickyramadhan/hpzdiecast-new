@@ -1,0 +1,35 @@
+{{ 'p-account.css' | asset_url | stylesheet_tag }}
+
+<section class="lg is-in" id="login" data-account-auth>
+  {% render 'account-auth-art' %}
+  <div class="lg-form-w">
+    <div class="lg-form">
+      <div class="lg-seg seg" role="tablist">
+        <a href="{{ routes.account_login_url }}" role="tab" aria-selected="false">{{ 'hpz.account.sign_in' | t }}</a>
+        <a class="is-on" href="{{ routes.account_register_url }}" role="tab" aria-selected="true">{{ 'hpz.account.create_account' | t }}</a>
+      </div>
+      <div class="lg-head"><h2 class="h2">{{ 'hpz.account.join_title' | t }}</h2><p class="small muted">{{ 'hpz.account.join_sub' | t }}</p></div>
+      {%- form 'create_customer', novalidate: 'novalidate' -%}
+        {%- if form.errors -%}<p class="err-msg" role="alert" style="display:block">{{ form.errors | default_errors }}</p>{%- endif -%}
+        <div class="lg-fields">
+          <div class="fl"><input class="input" id="rg-fn" name="customer[first_name]" placeholder=" " autocomplete="given-name" value="{{ form.first_name }}"><label for="rg-fn">{{ 'hpz.account.first_name' | t }}</label></div>
+          <div class="fl"><input class="input" id="rg-ln" name="customer[last_name]" placeholder=" " autocomplete="family-name" value="{{ form.last_name }}"><label for="rg-ln">{{ 'hpz.account.last_name' | t }}</label></div>
+          <div class="fl"><input class="input" id="rg-e" name="customer[email]" type="email" placeholder=" " autocomplete="email" required value="{{ form.email }}"><label for="rg-e">{{ 'hpz.account.email' | t }}</label></div>
+          <div class="fl lg-pw"><input class="input" id="lg-p" name="customer[password]" type="password" placeholder=" " autocomplete="new-password" required><label for="lg-p">{{ 'hpz.account.password' | t }}</label><button type="button" class="lg-eye" data-eye aria-label="{{ 'hpz.account.show_password' | t }}">{% render 'icon', name: 'eye' %}</button></div>
+        </div>
+        <label class="check"><input type="checkbox" name="customer[accepts_marketing]" value="true"><span class="box">{% render 'icon', name: 'check' %}</span><span class="small">{{ 'hpz.account.marketing_opt' | t }}</span></label>
+        <button class="btn btn-ink btn-lg btn-block" type="submit">{{ 'hpz.account.create_account' | t }}</button>
+      {%- endform -%}
+      <p class="small muted" style="margin-top:16px">{{ 'hpz.account.have_account' | t }} <a class="link" href="{{ routes.account_login_url }}">{{ 'hpz.account.sign_in' | t }}</a></p>
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'account.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Register",
+  "settings": []
+}
+{% endschema %}

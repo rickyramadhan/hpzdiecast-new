@@ -1,0 +1,35 @@
+{%- comment -%}
+  Store picker with two choices: Indonesia store (IDR) and International store (USD).
+  The default comes from the visitor IP (snippets/geo-guard.liquid). A manual pick carries ?hpz_stay=1 so the IP rule leaves it alone.
+{%- endcomment -%}
+{%- assign mf_role = settings.store_role | default: 'global' -%}
+{%- if mf_role == 'indonesia' -%}
+  {%- assign mf_id_url = request.origin -%}
+  {%- assign mf_global_url = settings.global_store_url | strip -%}
+{%- else -%}
+  {%- assign mf_id_url = settings.id_store_url | strip -%}
+  {%- assign mf_global_url = request.origin -%}
+{%- endif -%}
+<button class="modal-x" data-close aria-label="Close">{% render 'icon', name: 'close' %}</button>
+<div class="mk-h">
+  <span class="eyebrow"><b>{{ 'hpz.region.eyebrow' | t }}</b></span>
+  <h3 class="h3">{{ 'hpz.region.title' | t }}</h3>
+  <p class="small muted">{{ 'hpz.region.lead' | t }}</p>
+</div>
+<div class="mk-grid">
+  {%- if mf_id_url != blank -%}
+    <a class="mk-i{% if mf_role == 'indonesia' %} is-on{% endif %}" href="{{ mf_id_url }}{{ request.path }}" data-region="ID">
+      {% render 'flag', code: 'ID' %}
+      <span><b>Indonesia</b><em class="mono">Bahasa Indonesia · IDR</em></span>
+      <span class="mk-r"></span>
+    </a>
+  {%- endif -%}
+  {%- if mf_global_url != blank -%}
+    <a class="mk-i{% if mf_role != 'indonesia' %} is-on{% endif %}" href="{{ mf_global_url }}{{ request.path }}?hpz_stay=1" data-region="US">
+      {% render 'flag', code: 'US' %}
+      <span><b>{{ 'hpz.region.intl' | t }}</b><em class="mono">English · USD</em></span>
+      <span class="mk-r"></span>
+    </a>
+  {%- endif -%}
+</div>
+<p class="xs muted" style="margin-top:14px">{{ 'hpz.region.note' | t }}</p>

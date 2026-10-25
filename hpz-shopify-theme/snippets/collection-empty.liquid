@@ -1,0 +1,10 @@
+{%- comment -%} Empty results state. Params: clear_url {%- endcomment -%}
+<div class="empty">
+  <div class="empty-w">{% render 'collection-wheel' %}</div>
+  <h3 class="h3">{{ 'hpz.catalog.empty_title' | t }}</h3>
+  <p>{{ 'hpz.catalog.empty_text' | t }}</p>
+  <div>
+    <a class="btn btn-ink" href="{{ clear_url }}" data-ajax>{{ 'hpz.catalog.clear_filters' | t }}</a>
+    <a class="btn btn-ghost" href="{{ routes.root_url | append: 'pages/services' }}#request">{{ 'hpz.catalog.request_part' | t }}</a>
+  </div>
+</div>

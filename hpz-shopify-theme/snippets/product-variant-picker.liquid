@@ -1,0 +1,24 @@
+{%- comment -%}
+  One .vp group per product option. Buttons carry data-opt-index / data-opt-value; product.js / quick-view.js resolve the variant.
+  Params: product, variant
+{%- endcomment -%}
+{%- unless product.has_only_default_variant -%}
+  <div class="vps">
+    {%- for option in product.options_with_values -%}
+      {%- assign opt_index = forloop.index0 -%}
+      <div class="vp" data-vp>
+        <span class="lbl">{{ option.name | escape }}: <b>{{ option.selected_value | escape }}</b>{% unless variant.available %}{% if forloop.last %} <em class="vp-out">&mdash; {{ 'hpz.product.sold_out_lc' | t }}</em>{% endif %}{% endunless %}</span>
+        <div class="vp-l" role="radiogroup" aria-label="{{ option.name | escape }}">
+          {%- for value in option.values -%}
+            {%- capture swatch_bg -%}{% render 'color-swatch', name: value %}{%- endcapture -%}
+            {%- assign swatch_bg = swatch_bg | strip -%}
+            <button type="button" class="vp-b{% if value.selected %} is-on{% endif %}{% unless value.available %} is-out{% endunless %}" role="radio" aria-checked="{{ value.selected }}" data-opt-index="{{ opt_index }}" data-opt-value="{{ value | escape }}">
+              {%- if swatch_bg != blank -%}<i style="--c:{{ swatch_bg }}"></i>{%- endif -%}
+              {{- value | escape -}}
+            </button>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+{%- endunless -%}

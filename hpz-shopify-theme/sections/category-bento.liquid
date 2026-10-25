@@ -1,0 +1,112 @@
+{{ 'p-home.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign heading = s.heading
+  if heading == blank
+    assign heading = 'hpz.home.bento.heading' | t
+  endif
+  assign sub = s.subheading
+  if sub == blank
+    assign sub = 'hpz.home.bento.sub' | t
+  endif
+  assign all_count = collections['all'].products_count
+  assign shown = 0
+  for block in section.blocks
+    if block.settings.collection != blank
+      assign shown = shown | plus: 1
+    endif
+  endfor
+-%}
+{%- if shown > 0 or request.design_mode -%}
+<section class="section" {{ section.shopify_attributes }}>
+  <div class="wrap">
+    <div class="shead">
+      {%- if s.idx != blank -%}<span class="idx">{{ s.idx }}</span>{%- endif -%}
+      <div><h2 class="h2">{{ heading }}</h2><p>{{ sub }}</p></div>
+      <a class="arrow-link" href="{{ routes.all_products_collection_url }}"><span>{{ 'hpz.home.bento.all' | t: count: all_count }}</span> {% render 'icon', name: 'arrow' %}</a>
+    </div>
+    <div class="bento">
+      {%- assign n = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- assign c = block.settings.collection -%}
+        {%- if c == blank -%}{%- continue -%}{%- endif -%}
+        {%- assign img = block.settings.image -%}
+        {%- if img == blank -%}
+          {%- assign img = c.featured_image -%}
+        {%- endif -%}
+        {%- if img == blank -%}
+          {%- assign img = c.products.first.featured_image -%}
+        {%- endif -%}
+        {%- assign title = block.settings.title | default: c.title -%}
+        {%- assign cnt = c.products_count -%}
+        {%- assign pos_class = 'bn-' | append: forloop.index -%}
+        {%- case n -%}
+          {%- when 0 -%}{%- assign pos_class = 'bn-wheels' -%}
+          {%- when 1 -%}{%- assign pos_class = 'bn-decals' -%}
+          {%- when 2 -%}{%- assign pos_class = 'bn-bodykits' -%}
+        {%- endcase -%}
+        <a class="bn {{ pos_class }}" href="{{ c.url }}" data-reveal style="--i:{{ n }}" {{ block.shopify_attributes }}>
+          <div class="bn-img">
+            {%- if img -%}
+              {%- if n == 0 -%}
+                {{ img | image_url: width: 900 | image_tag: width: 900, alt: '', loading: 'lazy', sizes: '(min-width: 900px) 50vw, 100vw', widths: '450, 900' }}
+              {%- else -%}
+                {{ img | image_url: width: 500 | image_tag: width: 500, alt: '', loading: 'lazy', sizes: '(min-width: 900px) 25vw, 50vw', widths: '250, 500' }}
+              {%- endif -%}
+            {%- endif -%}
+          </div>
+          <div class="bn-t">
+            {%- if block.settings.code != blank -%}
+              <span class="mono bn-code">{{ block.settings.code | upcase }}-{{ cnt | prepend: '00' | slice: -3, 3 }}</span>
+            {%- endif -%}
+            <h3>{{ title }}</h3>
+            {%- if block.settings.blurb != blank and n < 3 -%}<p>{{ block.settings.blurb }}</p>{%- endif -%}
+            <span class="bn-n"><b class="mono">{{ cnt }}</b> {{ 'hpz.home.bento.parts' | t }} {% render 'icon', name: 'arrow' %}</span>
+          </div>
+        </a>
+        {%- assign n = n | plus: 1 -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+<script src="{{ 'home.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Category bento",
+  "settings": [
+    { "type": "text", "id": "idx", "label": "Index number", "default": "01" },
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Blank = translated default." },
+    { "type": "text", "id": "subheading", "label": "Subheading", "info": "Blank = translated default." }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Falls back to the collection image, then the first product image." },
+        { "type": "text", "id": "title", "label": "Title override" },
+        { "type": "text", "id": "code", "label": "Catalogue code", "info": "e.g. WHL. Shown as WHL-426 with the product count. Blank = hidden." },
+        { "type": "text", "id": "blurb", "label": "Blurb", "info": "Only shown on the first three (large) tiles." }
+      ]
+    }
+  ],
+  "max_blocks": 9,
+  "presets": [
+    {
+      "name": "Category bento",
+      "blocks": [
+        { "type": "category", "settings": { "code": "WHL" } },
+        { "type": "category", "settings": { "code": "DEC" } },
+        { "type": "category", "settings": { "code": "BDK" } },
+        { "type": "category", "settings": { "code": "ENG" } },
+        { "type": "category", "settings": { "code": "EXT" } },
+        { "type": "category", "settings": { "code": "INT" } },
+        { "type": "category", "settings": { "code": "DIO" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

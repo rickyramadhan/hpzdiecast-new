@@ -1,0 +1,41 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": { "type": "title" },
+        "price": { "type": "price" },
+        "chips": { "type": "chips" },
+        "variant_picker": { "type": "variant_picker" },
+        "fitment": { "type": "fitment" },
+        "stock": { "type": "stock", "settings": { "low_stock_threshold": 0 } },
+        "buy_buttons": { "type": "buy_buttons", "settings": { "show_dynamic_checkout": true } },
+        "delivery": {
+          "type": "delivery",
+          "settings": { "min_days": 7, "max_days": 14, "rows": "", "show_duty_note": true }
+        },
+        "trust": { "type": "trust" },
+        "whatsapp": { "type": "whatsapp" }
+      },
+      "block_order": ["title", "price", "chips", "variant_picker", "fitment", "stock", "buy_buttons", "delivery", "trust", "whatsapp"],
+      "settings": { "show_drawing": true, "show_compare": false }
+    },
+    "details": {
+      "type": "product-details",
+      "blocks": {
+        "in_box": { "type": "in_box", "settings": { "items": "" } }
+      },
+      "block_order": ["in_box"],
+      "settings": {}
+    },
+    "bundle": {
+      "type": "product-bundle",
+      "settings": { "auto": true, "discount_pct": 10 }
+    },
+    "recommendations": {
+      "type": "product-recommendations",
+      "settings": { "intent": "related", "limit": 10 }
+    }
+  },
+  "order": ["main", "details", "bundle", "recommendations"]
+}

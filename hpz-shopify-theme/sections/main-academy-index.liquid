@@ -1,0 +1,145 @@
+{{ 'p-academy.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<div data-academy-index>
+  <section class="ach">
+    <div class="wrap ach-in">
+      <div class="ach-copy">
+        <nav class="crumbs" aria-label="{{ 'hpz.ac.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'hpz.ac.home' | t }}</a><span>Academy</span></nav>
+        <span class="eyebrow"><b>HPZ Academy</b> {% if blog.articles_count > 0 %}<span>{{ blog.articles_count }} {{ 'hpz.ac.guides' | t }}</span>{% endif %}</span>
+        <h1 class="display ach-h" id="ach-h">{% if s.heading != blank %}{{ s.heading | escape | newline_to_br }}{% else %}{{ 'hpz.ac.hero_h_html' | t }}{% endif %}</h1>
+        <p class="lead">{% if s.lead != blank %}{{ s.lead | escape }}{% else %}{{ 'hpz.ac.hero_lead' | t }}{% endif %}</p>
+      </div>
+      <aside class="ach-prog" id="ach-prog" hidden></aside>
+    </div>
+  </section>
+
+  <section class="section-s acl">
+    <div class="wrap">
+      <div class="acl-bar">
+        <div class="acl-chips" role="navigation" aria-label="{{ 'hpz.ac.categories' | t }}">
+          <a class="chip{% unless current_tags %} is-on{% endunless %}" href="{{ blog.url }}">{{ 'hpz.ac.all' | t }}<span class="ct">{{ blog.articles_count }}</span></a>
+          {%- for tag in blog.all_tags -%}
+            <a class="chip{% if current_tags contains tag %} is-on{% endif %}" href="{{ blog.url }}/tagged/{{ tag | handleize }}">{{ tag }}</a>
+          {%- endfor -%}
+        </div>
+        {% if blog.articles_count > 0 %}<span class="mono xs muted">{{ blog.articles_count }} {{ 'hpz.ac.guides' | t }}</span>{% endif %}
+      </div>
+
+      {%- paginate blog.articles by s.per_page -%}
+        {%- assign feat = nil -%}
+        {%- if paginate.current_page == 1 -%}
+          {%- for a in blog.articles -%}{%- if a.tags contains 'featured' and feat == nil -%}{%- assign feat = a -%}{%- endif -%}{%- endfor -%}
+          {%- if feat == nil -%}{%- assign feat = blog.articles.first -%}{%- endif -%}
+        {%- endif -%}
+        {%- if feat -%}<div id="ac-feat">{%- render 'academy-featured', article: feat -%}</div>{%- endif -%}
+        <ol class="acl-list" id="ac-list">
+          {%- assign idx = 0 -%}
+          {%- for a in blog.articles -%}
+            {%- unless feat and a.id == feat.id -%}
+              {%- assign idx = idx | plus: 1 -%}
+              {%- render 'academy-row', article: a, index: idx -%}
+            {%- endunless -%}
+          {%- else -%}
+            {%- assign sample = section.blocks | where: 'type', 'guide' -%}
+            {%- if sample.size > 0 and blog.articles_count == 0 -%}
+              {%- for b in sample -%}
+                {%- assign gs = b.settings -%}
+                <li style="--i:{{ forloop.index0 }}" {{ b.shopify_attributes }}><a class="al" href="{{ gs.link | default: '#' }}">
+                  <span class="mono al-n">{{ forloop.index | prepend: '00' | slice: -2, 2 }}</span>
+                  <span class="al-img">{%- if gs.image -%}{{ gs.image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200, 400' }}{%- endif -%}</span>
+                  <span class="al-c">{% if gs.category != blank %}<span class="mono al-cat">{{ gs.category }}</span>{% endif %}{% if gs.level != blank %}<span class="al-lv">{% render 'academy-level', level: gs.level %}</span>{% endif %}</span>
+                  <span class="al-t"><b>{{ gs.title }}</b>{% if gs.summary != blank %}<em>{{ gs.summary }}</em>{% endif %}</span>
+                  <span class="mono al-m">{% if gs.minutes > 0 %}{{ gs.minutes }} {{ 'hpz.ac.min' | t }}{% endif %}</span>
+                  <span class="al-pg"></span>
+                  {% render 'icon', name: 'arrow' %}</a></li>
+              {%- endfor -%}
+            {%- else -%}
+            <li class="al-empty-card"><span class="mono al-empty-k">{{ 'hpz.ac.empty_k' | t }}</span><b>{{ 'hpz.ac.empty_h' | t }}</b><p>{{ 'hpz.ac.empty' | t }}</p><div class="al-empty-a"><a class="btn btn-ink btn-sm" href="{{ routes.all_products_collection_url }}">{{ 'hpz.ac.empty_shop' | t }}</a>{% if pages.contact.url %}<a class="btn btn-ghost btn-sm" href="{{ pages.contact.url }}">{{ 'hpz.ac.empty_ask' | t }}</a>{% endif %}</div></li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ol>
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" aria-label="{{ 'hpz.ac.pagination' | t }}" style="display:flex;gap:8px;justify-content:center;margin-top:32px">
+            {%- if paginate.previous -%}<a class="btn btn-ghost btn-sm" href="{{ paginate.previous.url }}">{{ 'hpz.ac.prev' | t }}</a>{%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}<a class="btn btn-ghost btn-sm" href="{{ part.url }}">{{ part.title }}</a>
+              {%- elsif part.title == paginate.current_page -%}<span class="btn btn-ink btn-sm" aria-current="page">{{ part.title }}</span>
+              {%- else -%}<span class="btn btn-sm">{{ part.title }}</span>{%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}<a class="btn btn-ghost btn-sm" href="{{ paginate.next.url }}">{{ 'hpz.ac.next' | t }}</a>{%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+  </section>
+
+  {%- assign terms = section.blocks | where: 'type', 'term' -%}
+  {%- if s.show_glossary and terms.size > 0 -%}
+  <section class="section on-white gl" id="glossary">
+    <div class="wrap">
+      <div class="shead"><span class="idx">G</span><div><h2 class="h2">{{ 'hpz.ac.glossary' | t }}</h2><p>{{ 'hpz.ac.glossary_intro' | t }}</p></div>
+        <label class="gl-s">{% render 'icon', name: 'search' %}<input class="input" id="gl-q" type="search" placeholder="{{ 'hpz.ac.filter_terms' | t }}" aria-label="{{ 'hpz.ac.filter_terms' | t }}"></label></div>
+      <dl class="gl-list" id="gl-list">
+        {%- for b in terms -%}
+          <div class="gl-i" data-term="{{ b.settings.term | escape }}" data-text="{{ b.settings.term | append: ' ' | append: b.settings.definition | downcase | escape }}" {{ b.shopify_attributes }}><dt><span class="mono gl-l">{{ b.settings.term | slice: 0, 1 | upcase }}</span>{{ b.settings.term }}</dt><dd>{{ b.settings.definition }}</dd></div>
+        {%- endfor -%}
+        <p class="muted" id="gl-none" hidden>{{ 'hpz.ac.no_term' | t }}</p>
+      </dl>
+    </div>
+  </section>
+  {%- endif -%}
+
+  {%- if s.help_text != blank -%}
+  <section class="acx">
+    <div class="wrap acx-in">
+      <p><b>{{ s.help_title | default: 'Stuck halfway through a build?' }}</b> <span>{{ s.help_text }}</span></p>
+      {%- if s.help_link != blank -%}<a class="btn btn-ink" href="{{ s.help_link }}">{{ s.help_label | default: 'Ask the workshop' }}</a>{%- endif -%}
+    </div>
+  </section>
+  {%- endif -%}
+</div>
+<script src="{{ 'academy.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Academy index",
+  "settings": [
+    { "type": "textarea", "id": "heading", "label": "Heading", "info": "Optional, one line per row. Blank uses the translated default." },
+    { "type": "textarea", "id": "lead", "label": "Intro", "info": "Optional. Blank uses the translated default." },
+    { "type": "range", "id": "per_page", "min": 6, "max": 24, "step": 2, "label": "Articles per page", "default": 12 },
+    { "type": "header", "content": "Glossary" },
+    { "type": "checkbox", "id": "show_glossary", "label": "Show glossary", "default": true },
+    { "type": "header", "content": "Help strip" },
+    { "type": "text", "id": "help_title", "label": "Title", "default": "Stuck halfway through a build?" },
+    { "type": "text", "id": "help_text", "label": "Text", "default": "Send us a photo and we will help." },
+    { "type": "url", "id": "help_link", "label": "Button link" },
+    { "type": "text", "id": "help_label", "label": "Button label", "default": "Ask the workshop" }
+  ],
+  "blocks": [
+    {
+      "type": "guide",
+      "name": "Sample guide card",
+      "limit": 12,
+      "settings": [
+        { "type": "paragraph", "content": "Shown only while the blog has no articles, so the page is not empty. Remove these once you publish real guides (see setup/academy-articles.json)." },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "summary", "label": "Summary" },
+        { "type": "text", "id": "category", "label": "Category", "info": "e.g. Wheels, Decals, Fitment" },
+        { "type": "select", "id": "level", "label": "Level", "default": "", "options": [ { "value": "", "label": "None" }, { "value": "Beginner", "label": "Beginner" }, { "value": "Intermediate", "label": "Intermediate" }, { "value": "Advanced", "label": "Advanced" } ] },
+        { "type": "number", "id": "minutes", "label": "Minutes to read" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    },
+    {
+      "type": "term",
+      "name": "Glossary term",
+      "settings": [
+        { "type": "text", "id": "term", "label": "Term" },
+        { "type": "textarea", "id": "definition", "label": "Definition" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Academy index" }]
+}
+{% endschema %}

@@ -1,0 +1,8 @@
+{%- comment -%} One compact data row for the planner. Param: product {%- endcomment -%}
+{%- assign p = product -%}
+{%- capture facts_raw -%}{%- render 'product-facts', product: p -%}{%- endcapture -%}
+{%- assign f = facts_raw | strip | split: '~' -%}
+{%- capture vjson -%}
+[{%- for v in p.variants -%}{"id":{{ v.id }},"title":{{ v.title | json }},"price":{{ v.price }},"available":{{ v.available | json }},"sku":{{ v.sku | json }},"img":{{ v.featured_image | default: p.featured_image | image_url: width: 160 | json }}}{% unless forloop.last %},{% endunless %}{%- endfor -%}]
+{%- endcapture -%}
+<div data-pl-item data-id="{{ p.id }}" data-handle="{{ p.handle }}" data-title="{{ p.title | escape }}" data-url="{{ p.url }}" data-img="{{ p.featured_image | image_url: width: 240 }}" data-brand="{{ f[0] | escape }}" data-dia="{{ f[3] }}" data-made-for="{{ f[10] }}" data-kind="{{ f[2] }}" data-available="{{ p.available }}" data-variants="{{ vjson | strip | escape }}"></div>

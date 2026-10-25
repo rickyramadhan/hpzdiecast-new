@@ -1,0 +1,15 @@
+{%- comment -%}
+  Price block. Strike-through compare-at only. No percent badge (store decision, see docs/THEME-CONTRACT.md).
+  Usage: {% render 'price', product: product, variant: variant, from: false %}
+  Pass from: true on cards for products with several prices.
+{%- endcomment -%}
+{%- assign v = variant | default: product.selected_or_first_available_variant -%}
+{%- assign varies = false -%}
+{%- if product.price_varies and from != false -%}{%- assign varies = true -%}{%- endif -%}
+<span class="pr{% if v.compare_at_price > v.price %} is-sale{% endif %}">
+  {%- if varies -%}<small>{{ 'products.product.price_from' | t }}</small> {%- endif -%}
+  <b>{{ v.price | money }}</b>
+  {%- if v.compare_at_price > v.price -%}
+    <s>{{ v.compare_at_price | money }}</s>
+  {%- endif -%}
+</span>

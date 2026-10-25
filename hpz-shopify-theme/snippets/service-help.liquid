@@ -1,0 +1,42 @@
+{%- comment -%} Help centre: contact cards + FAQ tabs/accordions. Params: section {%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- assign gstr = '' -%}
+{%- for b in section.blocks -%}
+  {%- if b.type == 'faq' -%}
+    {%- assign g = b.settings.group | strip | default: 'FAQ' -%}
+    {%- assign gk = '|' | append: g | append: '|' -%}{%- assign gw = '|' | append: gstr -%}{%- unless gw contains gk -%}{%- assign gstr = gstr | append: g | append: '|' -%}{%- endunless -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign groups = gstr | split: '|' -%}
+<section class="section hc" id="help">
+  <div class="wrap">
+    <div class="shead"><span class="idx">H</span><div><h2 class="h2">{{ 'hpz.svc.help_title' | t }}</h2><p>{{ 'hpz.svc.help_intro' | t }}</p></div></div>
+    <div class="hc-grid">
+      <aside class="hc-side" id="hc-side">
+        {%- render 'service-contact-cards', email: s.email, days: s.hours_days, open: s.hours_open, close: s.hours_close, tz: s.hours_tz, tz_label: s.hours_tz_label, note: s.hours_note -%}
+      </aside>
+      <div class="hc-main">
+        {%- if groups.size > 0 -%}
+          <div class="tabs hc-tabs" id="hc-tabs">
+            {%- for g in groups -%}<button type="button" data-tab="{{ g | handleize }}" class="{% if forloop.first %}is-on{% endif %}">{{ g }}</button>{%- endfor -%}
+          </div>
+          {%- for g in groups -%}
+            {%- assign gh = g | handleize -%}
+            <div class="hc-faq" data-faq="{{ gh }}"{% unless forloop.first %} hidden{% endunless %}>
+              {%- assign n = 0 -%}
+              {%- for b in section.blocks -%}
+                {%- if b.type == 'faq' -%}
+                  {%- assign bg = b.settings.group | strip | default: 'FAQ' -%}
+                  {%- if bg == g -%}
+                    {%- assign n = n | plus: 1 -%}
+                    <div class="acc{% if n == 1 %} is-open{% endif %}" data-acc {{ b.shopify_attributes }}><button class="acc-h" type="button" aria-expanded="{% if n == 1 %}true{% else %}false{% endif %}"><span class="mono fq-n">{{ n | prepend: '00' | slice: -2, 2 }}</span><span class="fq-q">{{ b.settings.question }}</span><span class="acc-ic"></span></button><div class="acc-b"><div class="acc-c">{{ b.settings.answer }}</div></div></div>
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>

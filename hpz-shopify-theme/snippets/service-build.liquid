@@ -1,0 +1,137 @@
+{%- assign svc_fx = settings.svc_price_factor | default: 1 -%}
+{%- comment -%} S-02 Commission Build. Params: section {%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- assign nl = '
+' -%}
+{%- assign tier_n = 0 -%}
+{%- for b in section.blocks -%}{%- if b.type == 'build_tier' -%}{%- assign tier_n = tier_n | plus: 1 -%}{%- endif -%}{%- endfor -%}
+{%- assign rows = s.build_rows | split: nl -%}
+{%- assign stages = s.build_stages | split: ',' -%}
+{%- assign bench = s.build_bench | split: nl -%}
+{%- assign budgets = s.build_budgets | split: nl -%}
+{%- assign t_idx = 0 -%}
+{%- assign sel_idx = 0 -%}
+{%- if tier_n > 1 -%}{%- assign sel_idx = 1 -%}{%- endif -%}
+{%- for b in section.blocks -%}
+  {%- if b.type == 'build_tier' -%}
+    {%- if b.settings.popular -%}{%- assign sel_idx = t_idx -%}{%- endif -%}
+    {%- assign t_idx = t_idx | plus: 1 -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<section class="section on-white cb" id="build">
+  <div class="wrap">
+    <div class="shead"><span class="idx">S-02</span><div><h2 class="h2">{{ 'hpz.svc.build_title' | t }}</h2><p>{% if settings.workshop_city != blank %}{{ 'hpz.svc.build_intro_city' | t: city: settings.workshop_city }}{% else %}{{ 'hpz.svc.build_intro' | t }}{% endif %}</p></div>
+      {%- if s.build_slots_total > 0 -%}
+        <div class="slots" id="slots">
+          <div class="sl-t"><b class="mono"><span data-count="{{ s.build_slots_left }}">0</span> / {{ s.build_slots_total }}</b><span>{{ 'hpz.svc.slots_left' | t: label: s.build_slots_label }}</span></div>
+          <div class="sl-cells">
+            {%- assign taken = s.build_slots_total | minus: s.build_slots_left -%}
+            {%- for i in (1..s.build_slots_total) -%}<i class="{% if i <= taken %}is-taken{% endif %}" style="--i:{{ forloop.index0 }}"></i>{%- endfor -%}
+          </div>
+          <span class="xs muted">{{ 'hpz.svc.slots_note' | t }}</span>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if tier_n > 0 -%}
+    <div class="cmp-wrap" data-reveal>
+      <table class="cmp" id="cmp">
+        <thead><tr><th class="cmp-f"><span class="mono">{{ 'hpz.svc.included' | t }}</span></th>
+          {%- assign k = 0 -%}
+          {%- for b in section.blocks -%}{%- if b.type == 'build_tier' -%}
+            <th class="{% if k == sel_idx %}is-on{% endif %}" data-col="{{ k }}" {{ b.shopify_attributes }}><button type="button" data-tier="{{ k }}"
+              data-name="{{ b.settings.name | escape }}" data-price="{{ b.settings.price | times: 100 | times: svc_fx | money_without_trailing_zeros | escape }}" data-ta="{{ b.settings.turnaround | escape }}">{% if b.settings.popular %}<span class="badge new">{{ 'hpz.svc.most_booked' | t }}</span>{% endif %}<span class="mono cmp-c">T-0{{ k | plus: 1 }}</span><b>{{ b.settings.name }}</b><span class="cmp-p"><small>{{ 'hpz.svc.from' | t }}</small> <span class="mono">{{ b.settings.price | times: 100 | times: svc_fx | money_without_trailing_zeros }}</span></span></button></th>
+            {%- assign k = k | plus: 1 -%}
+          {%- endif -%}{%- endfor -%}
+        </tr></thead>
+        <tbody>
+          {%- for row in rows -%}
+            {%- assign cells = row | split: '|' -%}
+            {%- if cells.size > 1 -%}
+              <tr><th scope="row">{{ cells[0] | strip }}</th>
+                {%- for c in (1..tier_n) -%}
+                  {%- assign v = cells[c] | strip -%}
+                  {%- assign vd = v | downcase -%}
+                  {%- assign ci = forloop.index0 -%}
+                  <td class="{% if ci == sel_idx %}is-on{% endif %}" data-col="{{ ci }}">
+                    {%- if vd == 'yes' or vd == 'y' or vd == '1' -%}<span class="ck">{% render 'icon', name: 'check' %}</span>
+                    {%- elsif vd == 'no' or vd == 'n' or vd == '0' or vd == '-' or v == blank -%}<span class="nx">&mdash;</span>
+                    {%- else -%}<span class="tx">{{ v }}</span>{%- endif -%}
+                  </td>
+                {%- endfor -%}
+              </tr>
+            {%- endif -%}
+          {%- endfor -%}
+          <tr><th scope="row">{{ 'hpz.svc.turnaround' | t }}</th>
+            {%- assign k = 0 -%}
+            {%- for b in section.blocks -%}{%- if b.type == 'build_tier' -%}<td class="{% if k == sel_idx %}is-on{% endif %}" data-col="{{ k }}"><span class="tx mono">{{ b.settings.turnaround }}</span></td>{%- assign k = k | plus: 1 -%}{%- endif -%}{%- endfor -%}
+          </tr>
+        </tbody>
+        <tfoot><tr><th></th>
+          {%- assign k = 0 -%}
+          {%- for b in section.blocks -%}{%- if b.type == 'build_tier' -%}<td class="{% if k == sel_idx %}is-on{% endif %}" data-col="{{ k }}"><button type="button" class="btn btn-sm {% if k == sel_idx %}btn-ink{% else %}btn-ghost{% endif %} btn-block" data-tier="{{ k }}" data-choose>{% if k == sel_idx %}{{ 'hpz.svc.selected' | t }}{% else %}{{ 'hpz.svc.choose' | t }}{% endif %}</button></td>{%- assign k = k | plus: 1 -%}{%- endif -%}{%- endfor -%}
+        </tr></tfoot>
+      </table>
+    </div>
+    {%- endif -%}
+
+    <div class="cb-grid" id="cb-root" data-sel="{{ sel_idx }}" data-from="{{ 'hpz.svc.from' | t }}" data-selected="{{ 'hpz.svc.selected' | t }}" data-choose="{{ 'hpz.svc.choose' | t }}" data-foot="{{ 'hpz.svc.cb_foot' | t }}">
+      <div class="board" id="board"{% if bench.size == 0 or s.build_bench == blank %} hidden{% endif %}>
+        {%- if s.build_bench != blank -%}
+          <div class="bd-h"><span class="eyebrow"><b>{{ 'hpz.svc.on_bench' | t }}</b> {{ 'hpz.svc.right_now' | t }}</span><span class="mono xs">{% for st in stages %}{{ forloop.index }} {{ st | strip }}{% unless forloop.last %} &middot; {% endunless %}{% endfor %}</span></div>
+          <ul class="bd-l">
+            {%- for line in bench -%}
+              {%- assign f = line | split: '|' -%}
+              {%- if f.size > 1 -%}
+                {%- assign stg = f[2] | strip | plus: 0 -%}
+                <li style="--i:{{ forloop.index0 }}"><span class="bd-sil" data-sil="{{ f[3] | strip | default: 'coupe' }}"></span><div class="bd-t"><b>{{ f[0] | strip }}</b><em>{{ f[1] | strip }}</em></div><span class="bd-cc" data-flag="{{ f[4] | strip }}"></span>
+                  <div class="bd-st" style="--s:{{ stg }}">{%- for st in stages -%}<i class="{% if forloop.index <= stg %}is-on{% endif %}" title="{{ st | strip }}"></i>{%- endfor -%}{%- if stg > 0 and stg <= stages.size -%}{%- assign si = stg | minus: 1 -%}<span class="mono">{{ stg }}/{{ stages.size }} {{ stages[si] | strip }}</span>{%- endif -%}</div></li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        {%- if s.build_footnote != blank -%}<p class="bd-f small">{{ s.build_footnote }}</p>{%- endif -%}
+      </div>
+      {%- form 'contact', id: 'cb-form', class: 'cb-form', novalidate: 'novalidate' -%}
+        <input type="hidden" name="contact[tags]" value="service-build">
+        <input type="hidden" name="contact[Request type]" value="Commission build">
+        {%- if form.errors -%}<div class="sv-err" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        {%- if form.posted_successfully? -%}
+          <div class="sv-ok" data-sent="cb-form"><span class="q-stamp mono">{{ 'hpz.svc.received' | t }}</span><h3 class="h3">{{ 'hpz.svc.cb_ok_h' | t }}</h3><p>{{ 'hpz.svc.cb_ok_p' | t }}</p></div>
+        {%- endif -%}
+        <div data-form-body{% if form.posted_successfully? %} hidden{% endif %}>
+          <h3 class="h3">{{ 'hpz.svc.start_build' | t }}</h3>
+          <div class="field"><label for="cb-cast">{{ 'hpz.svc.car' | t }}</label><select class="select" id="cb-cast" name="contact[Car]" data-own="{{ 'hpz.svc.own_car' | t }}"><option value="{{ 'hpz.svc.own_car' | t | escape }}">{{ 'hpz.svc.own_car' | t }}</option>{% for c in metaobjects.casting.values %}<option value="{{ c.name.value | escape }}">{{ c.name.value | escape }}</option>{% endfor %}</select></div>
+          <div class="field"><span class="lbl">{{ 'hpz.svc.tier' | t }}</span>
+            <div class="seg cb-tier" id="cb-tier">
+              {%- assign k = 0 -%}
+              {%- for b in section.blocks -%}{%- if b.type == 'build_tier' -%}<button type="button" class="{% if k == sel_idx %}is-on{% endif %}" data-tier="{{ k }}">{{ b.settings.name }}</button>{%- assign k = k | plus: 1 -%}{%- endif -%}{%- endfor -%}
+            </div>
+            <input type="hidden" name="contact[Tier]" id="cb-tier-v" value="">
+          </div>
+          {%- if s.build_budgets != blank -%}
+          <div class="field"><label for="cb-budget">{{ 'hpz.svc.budget' | t }}</label>
+            <select class="select" id="cb-budget" name="contact[Budget]">
+              {%- for line in budgets -%}
+                {%- assign f = line | split: '|' -%}
+                {%- assign lo = f[0] | strip -%}
+                {%- assign hi = f[1] | strip -%}
+                {%- if lo != blank -%}
+                  {%- assign lo_c = lo | times: 100 | times: svc_fx -%}
+                  {%- capture label -%}{{ lo_c | money_without_trailing_zeros }}{% if hi != blank %}{%- assign hi_c = hi | times: 100 | times: svc_fx %} - {{ hi_c | money_without_trailing_zeros }}{% else %}+{% endif %}{%- endcapture -%}
+                  <option value="{{ label | strip | escape }}"{% if forloop.index == 2 %} selected{% endif %}>{{ label | strip }}</option>
+                {%- endif -%}
+              {%- endfor -%}
+            </select></div>
+          {%- endif -%}
+          <div class="field"><label for="cb-notes">{{ 'hpz.svc.tell_us' | t }}</label><textarea class="textarea" id="cb-notes" name="contact[body]" required placeholder="{{ 'hpz.svc.cb_notes_ph' | t }}"></textarea></div>
+          <div class="field"><label for="cb-name">{{ 'hpz.svc.name' | t }}</label><input class="input" id="cb-name" name="contact[name]" autocomplete="name"></div>
+          <div class="field"><label for="cb-mail">{{ 'hpz.svc.email' | t }}</label><input class="input" id="cb-mail" name="contact[email]" type="email" autocomplete="email" required><span class="err-msg">{{ 'hpz.svc.email_err' | t }}</span></div>
+          <button class="btn btn-ink btn-lg btn-block" type="submit" id="cb-go"><span class="spin"></span><span>{{ 'hpz.svc.req_slot' | t }}</span></button>
+          <p class="xs muted" id="cb-foot"></p>
+        </div>
+      {%- endform -%}
+    </div>
+  </div>
+</section>

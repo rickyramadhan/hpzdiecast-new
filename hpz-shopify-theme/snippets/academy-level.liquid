@@ -1,0 +1,7 @@
+{%- comment -%} Level bars. Params: level (string, optional). Prints nothing when blank. {%- endcomment -%}
+{%- assign lv = level | strip | downcase -%}
+{%- if lv != blank -%}
+  {%- assign bars = 1 -%}
+  {%- if lv == 'intermediate' -%}{%- assign bars = 2 -%}{%- elsif lv == 'advanced' -%}{%- assign bars = 3 -%}{%- endif -%}
+  <span class="lv" title="{{ level | escape }}">{%- for n in (1..3) -%}<i class="{% if n <= bars %}on{% endif %}"></i>{%- endfor -%}</span>{{ level | escape }}
+{%- endif -%}

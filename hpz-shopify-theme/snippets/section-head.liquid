@@ -1,0 +1,14 @@
+{%- comment -%}
+  Section heading row used across the homepage and content pages.
+  Usage: {% render 'section-head', index: '01', title: 'Shop by system', text: 'Optional lead', link_url: url, link_text: 'All parts' %}
+{%- endcomment -%}
+<div class="shead">
+  {%- if index != blank -%}<span class="idx">{{ index }}</span>{%- endif -%}
+  <div>
+    <h2 class="h2">{{ title }}</h2>
+    {%- if text != blank -%}<p>{{ text }}</p>{%- endif -%}
+  </div>
+  {%- if link_url != blank and link_text != blank -%}
+    <a class="arrow-link" href="{{ link_url }}">{{ link_text }} {% render 'icon', name: 'arrow' %}</a>
+  {%- endif -%}
+</div>

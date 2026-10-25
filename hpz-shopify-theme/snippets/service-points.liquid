@@ -1,0 +1,56 @@
+{%- assign svc_fx = settings.svc_price_factor | default: 1 -%}
+{%- comment -%} S-05 Pit Points. Params: section. All rules are merchant placeholders. {%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- assign nl = '
+' -%}
+{%- assign earn = s.pp_earn | split: nl -%}
+{%- assign tier_n = 0 -%}
+{%- for b in section.blocks -%}{%- if b.type == 'loyalty_tier' -%}{%- assign tier_n = tier_n | plus: 1 -%}{%- endif -%}{%- endfor -%}
+{%- if tier_n > 0 -%}
+{%- assign redeem_c = s.pp_redeem_value | times: 100 | times: svc_fx -%}
+{%- assign unit_txt = '$1' -%}{%- if svc_fx != 1 -%}{%- assign unit_c = svc_fx | times: 100 -%}{%- assign unit_txt = unit_c | money_without_trailing_zeros -%}{%- endif -%}
+{%- assign redeem_money = redeem_c | money_without_trailing_zeros -%}
+<section class="section pp mat" id="points">
+  <div class="wrap" id="pp-root" data-max="{{ s.pp_meter_max }}" data-spend-max="{{ s.pp_spend_max }}" data-review="{{ s.pp_review_pts }}" data-feature="{{ s.pp_feature_pts }}" data-redeem-pts="{{ s.pp_redeem_pts }}" data-redeem-value="{{ s.pp_redeem_value }}">
+    <div class="pp-head">
+      <div>
+        <span class="eyebrow"><b>S-05</b> Pit Points</span>
+        <h2 class="h1">{{ 'hpz.svc.pp_h_html' | t }}</h2>
+      </div>
+      <p class="lead">{{ 'hpz.svc.pp_lead' | t: pts: s.pp_redeem_pts, amount: redeem_money }}</p>
+    </div>
+    <div class="pp-meter" id="pp-meter">
+      <div class="pm-ctl">
+        <div class="pm-in"><label class="lbl" for="pp-s">{{ 'hpz.svc.pp_spend' | t }}</label><b class="mono" id="pp-sv"></b></div>
+        <input type="range" class="wc-r" id="pp-s" min="0" max="{{ s.pp_spend_max }}" step="10" value="{{ s.pp_spend_start }}">
+        <div class="pm-opts">
+          <label class="check"><input type="checkbox" id="pp-r" checked><span class="box">{% render 'icon', name: 'check' %}</span>{{ 'hpz.svc.pp_reviews' | t }} <em class="mono">+{{ s.pp_review_pts | times: 2 }}</em></label>
+          <label class="check"><input type="checkbox" id="pp-f"><span class="box">{% render 'icon', name: 'check' %}</span>{{ 'hpz.svc.pp_featured' | t }} <em class="mono">+{{ s.pp_feature_pts }}</em></label>
+        </div>
+      </div>
+      <div class="pm-track"><div class="pm-rail"><i class="pm-fill" id="pp-fill"></i>
+        {%- for b in section.blocks -%}{%- if b.type == 'loyalty_tier' -%}<span class="pm-mk" style="left:{{ b.settings.at | times: 100.0 | divided_by: s.pp_meter_max }}%" data-tk="{{ forloop.index0 }}" data-at="{{ b.settings.at }}"><i></i><b>{{ b.settings.name }}</b><em class="mono">{{ b.settings.at }}</em></span>{%- endif -%}{%- endfor -%}
+        <span class="pm-you" id="pp-you"><b class="mono" id="pp-pts">0</b><em>{{ 'hpz.svc.pp_pts_year' | t }}</em></span></div>
+        <div class="pm-sum" id="pp-sum"></div></div>
+    </div>
+    <div class="pp-grid">
+      <div class="pp-tiers" id="pp-tiers">
+        {%- assign k = 0 -%}
+        {%- for b in section.blocks -%}{%- if b.type == 'loyalty_tier' -%}
+          {%- assign perks = b.settings.perks | split: nl -%}
+          <article class="pt" data-tier-k="{{ k }}" data-name="{{ b.settings.name | escape }}" data-at="{{ b.settings.at }}" data-rate="{{ b.settings.rate }}" data-reveal style="--i:{{ k }}" {{ b.shopify_attributes }}>
+            <div class="pt-h"><span class="mono">0{{ k | plus: 1 }}</span><h3>{{ b.settings.name }}</h3><span class="mono pt-at">{% if b.settings.at > 0 %}{{ b.settings.at }}+ {{ 'hpz.svc.pts' | t }}{% else %}{{ 'hpz.svc.on_signup' | t }}{% endif %}</span></div>
+            <ul>{%- for p in perks -%}{%- if p != blank -%}<li>{% render 'icon', name: 'check' %}{{ p | strip | replace: '$1', unit_txt }}</li>{%- endif -%}{%- endfor -%}</ul>
+          </article>
+          {%- assign k = k | plus: 1 -%}
+        {%- endif -%}{%- endfor -%}
+      </div>
+      {%- if s.pp_earn != blank -%}
+      <div class="pp-earn" id="pp-earn"><h3 class="h4">{{ 'hpz.svc.pp_how' | t }}</h3><table><tbody>
+        {%- for line in earn -%}{%- assign f = line | split: '|' -%}{%- if f[0] != blank -%}<tr><td>{{ f[0] | strip }}</td><td class="mono">{{ f[1] | strip | replace: '$1', unit_txt }}</td></tr>{%- endif -%}{%- endfor -%}
+      </tbody></table>{% if s.pp_note != blank %}<p class="xs">{{ s.pp_note }}</p>{% endif %}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}

@@ -1,0 +1,82 @@
+{{ 'p-home.css' | asset_url | stylesheet_tag }}
+{%- assign country_count = localization.available_countries.size -%}
+{%- if section.blocks.size > 0 -%}
+<section class="promise" {{ section.shopify_attributes }}>
+  <div class="wrap promise-in">
+    {%- for block in section.blocks -%}
+      {%- assign b = block.settings -%}
+      {%- assign n = forloop.index -%}
+      <div class="pm" {{ block.shopify_attributes }}>
+        {% render 'icon', name: b.icon %}
+        <div>
+          <b>
+            {%- if b.title != blank -%}{{ b.title }}
+            {%- else -%}
+              {%- case n -%}
+                {%- when 1 -%}{{ 'hpz.home.promise.t1' | t }}
+                {%- when 2 -%}{{ 'hpz.home.promise.t2' | t }}
+                {%- when 3 -%}{{ 'hpz.home.promise.t3' | t }}
+                {%- when 4 -%}{{ 'hpz.home.promise.t4' | t }}
+              {%- endcase -%}
+            {%- endif -%}
+          </b>
+          <span>
+            {%- if b.text != blank -%}{{ b.text }}
+            {%- else -%}
+              {%- case n -%}
+                {%- when 1 -%}
+                  {%- if country_count > 1 -%}{{ 'hpz.home.promise.d1_count' | t: count: country_count }}{%- else -%}{{ 'hpz.home.promise.d1' | t }}{%- endif -%}
+                {%- when 2 -%}{{ 'hpz.home.promise.d2' | t }}
+                {%- when 3 -%}{{ 'hpz.home.promise.d3' | t }}
+                {%- when 4 -%}{{ 'hpz.home.promise.d4' | t }}
+              {%- endcase -%}
+            {%- endif -%}
+          </span>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Promise bar",
+  "settings": [
+    { "type": "paragraph", "content": "Leave a block's title or text blank to use the translated default for that position (blocks 1 to 4)." }
+  ],
+  "blocks": [
+    {
+      "type": "promise",
+      "name": "Promise",
+      "settings": [
+        {
+          "type": "select", "id": "icon", "label": "Icon", "default": "truck",
+          "options": [
+            { "value": "truck", "label": "Truck" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "box", "label": "Box" },
+            { "value": "ruler", "label": "Ruler" },
+            { "value": "layers", "label": "Layers" },
+            { "value": "wheel", "label": "Wheel" }
+          ]
+        },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Promise bar",
+      "blocks": [
+        { "type": "promise", "settings": { "icon": "truck" } },
+        { "type": "promise", "settings": { "icon": "shield" } },
+        { "type": "promise", "settings": { "icon": "box" } },
+        { "type": "promise", "settings": { "icon": "ruler" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

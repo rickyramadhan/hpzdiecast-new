@@ -1,0 +1,15 @@
+{%- comment -%}
+  Shell for the build modal. Content is drawn client side by assets/builds.js from the JSON blob embedded in each gallery tile.
+{%- endcomment -%}
+<div class="modal bm" id="bm" role="dialog" aria-modal="true" aria-label="{{ 'hpz.builds.modal_label' | t }}">
+  <div class="modal-box bm-box" id="bm-box"></div>
+</div>
+
+{% schema %}
+{
+  "name": "Build modal",
+  "settings": [
+    { "type": "paragraph", "content": "Required by the Built by You page. Do not remove." }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,267 @@
+{{ 'p-home.css' | asset_url | stylesheet_tag }}
+{{ 'p-builds.css' | asset_url | stylesheet_tag }}
+
+{%- capture castings_json -%}{%- render 'default-castings' -%}{%- endcapture -%}{%- liquid
+  assign all_builds = metaobjects.build.values
+  assign limit = section.settings.limit
+  assign use_blocks = true
+  if all_builds.size > 0
+    assign use_blocks = false
+  endif
+  assign seen_casts = '|'
+  assign cast_list = ''
+  assign all_casts = ''
+  assign seen_builders = '|'
+  assign builders_n = 0
+  assign shown_n = 0
+  assign block_idx = 0
+  if use_blocks
+    for blk in section.blocks
+      if blk.type != 'build'
+        continue
+      endif
+      if block_idx >= 8
+        break
+      endif
+      assign block_idx = block_idx | plus: 1
+      assign shown_n = shown_n | plus: 1
+      assign bd = blk.settings.builder | remove: '@' | strip | downcase
+      assign ch = blk.settings.casting | strip | downcase
+      if bd != blank
+        assign bkey = bd | prepend: '|' | append: '|'
+        unless seen_builders contains bkey
+          assign seen_builders = seen_builders | append: bd | append: '|'
+          assign builders_n = builders_n | plus: 1
+        endunless
+      endif
+      if ch != blank
+        assign cname = ''
+        assign mo = metaobjects.casting[ch]
+        if mo
+          assign cname = mo.name.value
+        else
+          assign key_s = '"handle":"' | append: ch | append: '","name":"'
+          assign parts_s = castings_json | split: key_s
+          if parts_s.size > 1
+            assign cname = parts_s[1] | split: '"' | first
+          endif
+        endif
+        assign all_casts = all_casts | append: '[' | append: ch | append: ']'
+        assign ckey = ch | prepend: '|' | append: '|'
+        unless seen_casts contains ckey
+          assign seen_casts = seen_casts | append: ch | append: '|'
+          assign cast_list = cast_list | append: ch | append: '~' | append: cname | append: ','
+        endunless
+      endif
+    endfor
+  else
+    for b in all_builds limit: limit
+      assign shown_n = shown_n | plus: 1
+      assign bd = b.builder.value | downcase
+      if bd != blank
+        assign bkey = bd | prepend: '|' | append: '|'
+        unless seen_builders contains bkey
+          assign seen_builders = seen_builders | append: bd | append: '|'
+          assign builders_n = builders_n | plus: 1
+        endunless
+      endif
+      assign ch = b.casting.value.system.handle
+      if ch != blank
+        assign all_casts = all_casts | append: '[' | append: ch | append: ']'
+        assign ckey = ch | prepend: '|' | append: '|'
+        unless seen_casts contains ckey
+          assign seen_casts = seen_casts | append: ch | append: '|'
+          assign cast_list = cast_list | append: ch | append: '~' | append: b.casting.value.name.value | append: ','
+        endunless
+      endif
+    endfor
+  endif
+  assign cast_pairs = cast_list | split: ','
+  assign casts_n = cast_pairs.size
+  assign lb_rows = section.blocks | where: 'type', 'leaderboard_row'
+-%}
+
+<div data-builds data-sort="{{ section.settings.default_sort }}" data-bundle="{{ settings.bundle_discount_enabled | default: false }}" data-bundle-pct="{{ settings.bundle_discount_percent | default: 10 }}">
+  <section class="bh dark-0">
+    <div class="wrap bh-in">
+      <div>
+        <span class="eyebrow"><b>UGC</b> <span>{{ 'hpz.builds.eyebrow' | t }}</span></span>
+        <h1 class="display">{{ 'hpz.builds.title' | t }}</h1>
+        <p class="lead">{{ 'hpz.builds.lead' | t }}</p>
+      </div>
+      <dl class="bh-stats">
+        <div><dt>{{ 'hpz.builds.stat_builds' | t }}</dt><dd class="mono" data-count="{{ shown_n }}">0</dd></div>
+        {%- if builders_n > 0 -%}<div><dt>{{ 'hpz.builds.stat_builders' | t }}</dt><dd class="mono" data-count="{{ builders_n }}">0</dd></div>{%- endif -%}
+        {%- if casts_n > 0 -%}<div><dt>{{ 'hpz.builds.stat_castings' | t }}</dt><dd class="mono" data-count="{{ casts_n }}">0</dd></div>{%- endif -%}
+        <div class="bh-cta"><a class="btn btn-signal btn-lg" href="#submit">{{ 'hpz.builds.submit_cta' | t }}</a></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="bg-s">
+    <div class="wrap">
+      {%- if shown_n == 0 -%}
+        <p class="muted">{{ 'hpz.builds.empty' | t }}</p>
+      {%- else -%}
+        <div class="bg-bar">
+          <div class="bg-chips" id="bg-chips">
+            <button class="chip is-on" type="button" data-bf="all">{{ 'hpz.builds.all' | t }} <span class="ct">{{ shown_n }}</span></button>
+            {%- for pair in cast_pairs -%}
+              {%- liquid
+                assign pp = pair | split: '~'
+                assign ch = pp[0]
+                assign cname = pp[1]
+                assign ckey = ch | prepend: '[' | append: ']'
+                assign cn = all_casts | append: 'x' | split: ckey | size | minus: 1
+              -%}
+              <button class="chip" type="button" data-bf="{{ ch }}">{{ cname }} <span class="ct">{{ cn }}</span></button>
+            {%- endfor -%}
+          </div>
+          <label class="tb-sort"><span class="lbl">{{ 'hpz.builds.sort' | t }}</span>
+            <select class="select" id="bg-sort">
+              <option value="likes" {% if section.settings.default_sort == 'likes' %}selected{% endif %}>{{ 'hpz.builds.sort_likes' | t }}</option>
+              <option value="new" {% if section.settings.default_sort == 'new' %}selected{% endif %}>{{ 'hpz.builds.sort_new' | t }}</option>
+              <option value="parts" {% if section.settings.default_sort == 'parts' %}selected{% endif %}>{{ 'hpz.builds.sort_parts' | t }}</option>
+            </select>
+          </label>
+        </div>
+        <div class="bg-grid" id="bg-grid">
+          {%- if use_blocks -%}
+            {%- assign bi = 0 -%}
+            {%- for blk in section.blocks -%}
+              {%- if blk.type == 'build' and bi < 8 -%}
+                {% render 'build-card-block', block: blk, index: bi, castings: castings_json %}
+                {%- assign bi = bi | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            {%- for b in all_builds limit: limit -%}
+              {% render 'build-card', build: b, index: forloop.index0 %}
+            {%- endfor -%}
+          {%- endif -%}
+          <a class="bt bt-cta mat" href="#submit" data-reveal data-cta><span class="eyebrow"><b>{{ 'hpz.builds.cta_eyebrow' | t }}</b></span><h3>{{ 'hpz.builds.cta_title' | t }}</h3><span class="arrow-link">{{ 'hpz.builds.cta_link' | t }} {% render 'icon', name: 'arrow' %}</span></a>
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  {%- if lb_rows.size > 0 -%}
+    {%- liquid
+      assign max_likes = 1
+      for block in lb_rows
+        if block.settings.likes > max_likes
+          assign max_likes = block.settings.likes
+        endif
+      endfor
+    -%}
+    <section class="section-s on-white">
+      <div class="wrap lb-in">
+        <div>
+          <span class="eyebrow">{% if section.settings.lb_eyebrow != blank %}<b>{{ section.settings.lb_eyebrow }}</b> {% endif %}<span>{{ 'hpz.builds.lb_eyebrow' | t }}</span></span>
+          <h2 class="h2">{{ 'hpz.builds.lb_title' | t }}</h2>
+          {%- if section.settings.lb_note != blank -%}<p class="small muted">{{ section.settings.lb_note }}</p>{%- endif -%}
+        </div>
+        <ol class="board">
+          {%- for block in lb_rows -%}
+            <li {{ block.shopify_attributes }} data-reveal style="--i:{{ forloop.index0 }}"><span class="mono bd-r">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span><span class="bd-h"><b>@{{ block.settings.handle }}</b></span><span class="bd-bar"><i style="--w:{{ block.settings.likes | times: 100.0 | divided_by: max_likes }}%"></i></span><span class="mono bd-l">{{ block.settings.likes }} {% render 'icon', name: 'heart' %}</span><span class="mono bd-f">{{ block.settings.featured }} {{ 'hpz.builds.featured' | t }}</span></li>
+          {%- endfor -%}
+        </ol>
+      </div>
+    </section>
+  {%- endif -%}
+
+  <section class="section sub-s" id="submit">
+    <div class="wrap sub-in">
+      <div class="sub-copy">
+        <span class="eyebrow"><b>+</b> {{ 'hpz.builds.sub_eyebrow' | t }}</span>
+        <h2 class="h1">{{ 'hpz.builds.sub_title' | t }}</h2>
+        <p class="lead">{{ 'hpz.builds.sub_lead' | t }}</p>
+        <ul class="sub-rules"><li>{{ 'hpz.builds.rule_1' | t }}</li><li>{{ 'hpz.builds.rule_2' | t }}</li>{%- if section.settings.review_note != blank -%}<li>{{ section.settings.review_note }}</li>{%- endif -%}</ul>
+      </div>
+      {%- form 'contact', id: 'sub-f', class: 'sub-f' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="sent"><div class="sent-ic">{% render 'icon', name: 'tick' %}</div><h3 class="h2">{{ 'hpz.builds.sent_title' | t }}</h3><p>{{ 'hpz.builds.sent_body' | t }}</p></div>
+        {%- else -%}
+          {%- if form.errors -%}<p class="err-msg" role="alert" style="display:block">{{ form.errors | default_errors }}</p>{%- endif -%}
+          <input type="hidden" name="contact[tags]" value="build-submission">
+          <div class="field"><label for="sub-photo">{{ 'hpz.builds.f_photo' | t }}</label><input class="input" id="sub-photo" name="contact[Photo link]" type="url" placeholder="https://" required></div>
+          <div class="row2">
+            <div class="field"><label for="sub-ig">Instagram / TikTok</label><input class="input" id="sub-ig" name="contact[Social handle]" placeholder="@yourhandle" required></div>
+            <div class="field"><label for="sub-cast">{{ 'hpz.builds.f_casting' | t }}</label>
+              <select class="select" id="sub-cast" name="contact[Casting]"><option value="">{{ 'hpz.builds.choose' | t }}</option>
+                {%- for c in metaobjects.casting.values -%}<option value="{{ c.name.value | escape }}">{{ c.name.value }}</option>{%- endfor -%}
+                <option value="Other">{{ 'hpz.builds.other' | t }}</option>
+              </select></div>
+          </div>
+          <div class="field"><label for="sub-email">Email</label><input class="input" id="sub-email" name="contact[email]" type="email" autocomplete="email" required value="{{ form.email }}"></div>
+          <div class="field"><label for="sub-tags">{{ 'hpz.builds.f_tags' | t }}</label><input class="input" id="sub-tags" name="contact[Tagged parts]" placeholder="{{ 'hpz.builds.f_tags_ph' | t }}"></div>
+          <div class="field"><label for="sub-story">{{ 'hpz.builds.f_story' | t }}</label><textarea class="textarea" id="sub-story" name="contact[body]" placeholder="{{ 'hpz.builds.f_story_ph' | t }}"></textarea></div>
+          <label class="check"><input type="checkbox" required><span class="box">{% render 'icon', name: 'check' %}</span><span class="small">{{ 'hpz.builds.f_consent' | t }}</span></label>
+          <button class="btn btn-ink btn-lg" type="submit">{{ 'hpz.builds.f_submit' | t }} {% render 'icon', name: 'arrow' %}</button>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </section>
+</div>
+
+<script src="{{ 'builds.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Built by You",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "limit", "label": "Builds to show (max 50)", "min": 6, "max": 50, "step": 2, "default": 24 },
+    { "type": "select", "id": "default_sort", "label": "Default sort", "default": "likes", "options": [
+      { "value": "likes", "label": "Most liked" }, { "value": "new", "label": "Newest" }, { "value": "parts", "label": "Most parts" }
+    ] },
+    { "type": "text", "id": "review_note", "label": "Review note (submission rules)", "default": "We review every submission." },
+    { "type": "header", "content": "Leaderboard (only shows when rows are added)" },
+    { "type": "text", "id": "lb_eyebrow", "label": "Leaderboard period (e.g. 10/2026)" },
+    { "type": "textarea", "id": "lb_note", "label": "Leaderboard note" }
+  ],
+  "max_blocks": 16,
+  "blocks": [
+    {
+      "type": "build",
+      "name": "Build (fallback, up to 8)",
+      "limit": 8,
+      "settings": [
+        { "type": "paragraph", "content": "Used only while there are no Build metaobjects. Hotspot positions are % from the left (x) and top (y) of the photo." },
+        { "type": "image_picker", "id": "photo", "label": "Photo" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "text", "id": "builder", "label": "Builder handle (without @)" },
+        { "type": "text", "id": "casting", "label": "Casting handle (e.g. r34)" },
+        { "type": "textarea", "id": "story", "label": "Story" },
+        { "type": "number", "id": "likes", "label": "Starting likes", "default": 0 },
+        { "type": "header", "content": "Hotspot 1" },
+        { "type": "range", "id": "hs1_x", "label": "X %", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "range", "id": "hs1_y", "label": "Y %", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "product", "id": "hs1_product", "label": "Product" },
+        { "type": "header", "content": "Hotspot 2" },
+        { "type": "range", "id": "hs2_x", "label": "X %", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "range", "id": "hs2_y", "label": "Y %", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "product", "id": "hs2_product", "label": "Product" },
+        { "type": "header", "content": "Hotspot 3" },
+        { "type": "range", "id": "hs3_x", "label": "X %", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "range", "id": "hs3_y", "label": "Y %", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "product", "id": "hs3_product", "label": "Product" },
+        { "type": "header", "content": "Hotspot 4" },
+        { "type": "range", "id": "hs4_x", "label": "X %", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "range", "id": "hs4_y", "label": "Y %", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "product", "id": "hs4_product", "label": "Product" }
+      ]
+    },
+    {
+      "type": "leaderboard_row",
+      "name": "Leaderboard row",
+      "settings": [
+        { "type": "text", "id": "handle", "label": "Builder handle (without @)" },
+        { "type": "number", "id": "likes", "label": "Likes", "default": 0 },
+        { "type": "number", "id": "featured", "label": "Featured builds", "default": 0 }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Built by You" }]
+}
+{% endschema %}

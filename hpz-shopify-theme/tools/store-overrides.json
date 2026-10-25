@@ -1,0 +1,17 @@
+{
+  "indonesia": {
+    "store_role": "indonesia",
+    "svc_price_factor": 16000,
+    "seo_home_title": "HPZ Diecast | Velg, Decal & Body Kit Custom Diecast 1:64",
+    "seo_home_description": "Velg, decal waterslide, body kit resin dan mesin untuk custom diecast 1:64. Dibuat manual di Jakarta Selatan, dikirim ke seluruh Indonesia.",
+    "hide_academy": true,
+    "ongkir_api_url": "https://hpz-ongkir.ricky-ramadhan20.workers.dev",
+    "ongkir_couriers": "jne:sicepat:jnt:anteraja",
+    "ongkir_pack_grams": 50,
+    "brand_tags_ready": true
+  },
+  "global": {
+    "hide_academy": true,
+    "ongkir_api_url": ""
+  }
+}

@@ -1,0 +1,22 @@
+{%- comment -%}
+  Country flag as a small inline SVG. Usage: {% render 'flag', code: 'DE' %}
+  Only the markets the store ships to with a dedicated flag; everything else falls back to a code chip.
+{%- endcomment -%}
+{%- case code -%}
+  {%- when 'ID' -%}
+    <svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" fill="#e70011"/><rect y="10" width="30" height="10" fill="#fff"/></svg>
+  {%- when 'US' -%}
+    <svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#fff"/><g fill="#b22234"><rect width="30" height="1.54"/><rect y="3.08" width="30" height="1.54"/><rect y="6.15" width="30" height="1.54"/><rect y="9.23" width="30" height="1.54"/><rect y="12.3" width="30" height="1.54"/><rect y="15.4" width="30" height="1.54"/><rect y="18.46" width="30" height="1.54"/></g><rect width="13" height="10.8" fill="#3c3b6e"/></svg>
+  {%- when 'JP' -%}
+    <svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="5.6" fill="#bc002d"/></svg>
+  {%- when 'SG' -%}
+    <svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" fill="#ef3340"/><rect y="10" width="30" height="10" fill="#fff"/></svg>
+  {%- when 'MY' -%}
+    <svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#fff"/><g fill="#cc0001"><rect y="0" width="30" height="1.43"/><rect y="2.86" width="30" height="1.43"/><rect y="5.71" width="30" height="1.43"/><rect y="8.57" width="30" height="1.43"/><rect y="11.43" width="30" height="1.43"/><rect y="14.29" width="30" height="1.43"/><rect y="17.14" width="30" height="1.43"/></g><rect width="15" height="11.4" fill="#010066"/></svg>
+  {%- when 'GB' -%}
+    <svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#012169"/><path d="M0 0 30 20M30 0 0 20" stroke="#fff" stroke-width="4"/><path d="M15 0v20M0 10h30" stroke="#fff" stroke-width="6"/><path d="M15 0v20M0 10h30" stroke="#c8102e" stroke-width="3.4"/></svg>
+  {%- when 'AU' -%}
+    <svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#012169"/><path d="M7.5 0v10M0 5h15" stroke="#fff" stroke-width="3"/><path d="M7.5 0v10M0 5h15" stroke="#c8102e" stroke-width="1.6"/></svg>
+  {%- else -%}
+    <span class="flag-code mono">{{ code }}</span>
+{%- endcase -%}

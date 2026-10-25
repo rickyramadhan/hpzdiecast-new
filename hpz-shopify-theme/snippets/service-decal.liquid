@@ -1,0 +1,141 @@
+{%- assign svc_fx = settings.svc_price_factor | default: 1 -%}
+{%- comment -%} S-01 Custom Decal Studio. Params: section {%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- assign cx_total = 0 -%}
+{%- for b in section.blocks -%}{%- if b.type == 'decal_complexity' -%}{%- assign cx_total = cx_total | plus: 1 -%}{%- endif -%}{%- endfor -%}
+{%- assign cx_pick = 1 -%}
+{%- if cx_total > 1 -%}{%- assign cx_pick = 2 -%}{%- endif -%}
+{%- assign ds_posted = false -%}
+{%- assign coupe = 'M14 50 L16 40 Q24 36 46 34 L70 22 Q92 16 120 18 L146 30 Q176 33 186 40 L188 50 Z' -%}
+
+<section class="section ds" id="decal">
+  <div class="wrap">
+    <div class="shead"><span class="idx">S-01</span><div><h2 class="h2">{{ 'hpz.svc.decal_title' | t }}</h2><p>{{ 'hpz.svc.decal_intro' | t }}</p></div>
+      {%- if s.decal_collection != blank -%}
+        <a class="arrow-link" href="{{ s.decal_collection.url }}"><span>{{ 'hpz.svc.browse_decals' | t: n: s.decal_collection.products_count }}</span> {% render 'icon', name: 'arrow' %}</a>
+      {%- endif -%}
+    </div>
+
+    <ol class="ds-steps" id="ds-steps" data-reveal></ol>
+
+    <div class="ds-grid" id="ds-root"
+      data-rush="{{ s.decal_rush_pct | default: 0 }}"
+      data-rush-days="{{ s.decal_rush_days_pct | default: 50 }}"
+      data-measure-fee="{{ s.decal_measure_fee | default: 0 }}"
+      data-measure-days="{{ s.decal_measure_days | default: 0 }}"
+      data-max="{{ s.decal_max_sheets | default: 20 }}"
+      data-bulk-from="{{ s.decal_bulk_from | default: 10 }}"
+      data-bulk-days="{{ s.decal_bulk_days | default: 0 }}">
+      {%- form 'contact', id: 'ds-form', class: 'ds-form', novalidate: 'novalidate' -%}
+        {%- assign ds_posted = form.posted_successfully? -%}
+        <input type="hidden" name="contact[tags]" value="service-decal">
+        <input type="hidden" name="contact[Request type]" value="Custom decal brief">
+        <input type="hidden" name="contact[Estimate]" id="ds-estimate" value="">
+        {%- if form.errors -%}<div class="sv-err" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <fieldset class="ds-f">
+          <legend><span class="mono">01</span> <span>{{ 'hpz.svc.f_casting' | t }}</span></legend>
+          <select class="select" id="ds-cast" name="contact[Casting]" aria-label="{{ 'hpz.svc.f_casting' | t }}" data-other="{{ 'hpz.svc.not_listed' | t }}">
+            {%- for c in metaobjects.casting.values -%}
+              <option value="{{ c.name.value | escape }}">{{ c.name.value | escape }}</option>
+            {%- endfor -%}
+            <option value="other">{{ 'hpz.svc.not_listed' | t }}</option>
+          </select>
+          <p class="xs muted" id="ds-cast-note" data-note-other="{{ 'hpz.svc.cast_other_note' | t }}"></p>
+        </fieldset>
+        <fieldset class="ds-f">
+          <legend><span class="mono">02</span> <span>{{ 'hpz.svc.f_type' | t }}</span></legend>
+          <div class="opt3" id="ds-type">
+            {%- for b in section.blocks -%}
+              {%- if b.type == 'decal_type' -%}
+                {%- assign sel = false -%}
+                {%- if forloop.first or b.settings.preselect -%}{%- assign sel = true -%}{%- endif -%}
+                <label class="oc{% if sel %} is-on{% endif %}" {{ b.shopify_attributes }}>
+                  <input type="radio" name="contact[Decal type]" value="{{ b.settings.name | escape }}" data-ds="type" data-add="{{ b.settings.add | default: 0 }}" data-sheet="{{ b.settings.sheet | default: 0 }}" data-days="{{ b.settings.days | default: 0 }}" data-name="{{ b.settings.name | escape }}"{% if sel %} checked{% endif %}>
+                  <span class="tsw tsw-{{ b.settings.swatch }}" aria-hidden="true"><i>HPZ</i></span>
+                  <b>{{ b.settings.name }}</b>
+                  {%- if b.settings.desc != blank -%}<em>{{ b.settings.desc }}</em>{%- endif -%}
+                  <span class="oc-p mono">{% if b.settings.add > 0 %}+{{ b.settings.add | times: 100 | times: svc_fx | money_without_trailing_zeros }}{% else %}{{ 'hpz.svc.incl' | t }}{% endif %}</span>
+                </label>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </fieldset>
+        <fieldset class="ds-f">
+          <legend><span class="mono">03</span> <span>{{ 'hpz.svc.f_cx' | t }}</span></legend>
+          <div class="opt3" id="ds-cx">
+            {%- assign k = 0 -%}
+            {%- for b in section.blocks -%}
+              {%- if b.type == 'decal_complexity' -%}
+                {%- assign k = k | plus: 1 -%}
+                {%- assign sel = false -%}
+                {%- if k == cx_pick -%}{%- assign sel = true -%}{%- endif -%}
+                {%- assign cid = 'cv' | append: b.id -%}
+                <label class="oc oc-cx{% if sel %} is-on{% endif %}" {{ b.shopify_attributes }}>
+                  <input type="radio" name="contact[Complexity]" value="{{ b.settings.name | escape }}" data-ds="cx" data-usd="{{ b.settings.price | default: 0 }}" data-days="{{ b.settings.days | default: 0 }}" data-name="{{ b.settings.name | escape }}"{% if sel %} checked{% endif %}>
+                  <svg viewBox="0 0 200 60" aria-hidden="true"><defs><clipPath id="{{ cid }}c"><path d="{{ coupe }}"/></clipPath><pattern id="{{ cid }}h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="3" height="6" class="cv-d"/></pattern></defs><path d="{{ coupe }}" class="cv-b"/><g clip-path="url(#{{ cid }}c)">
+                    {%- case b.settings.coverage -%}
+                      {%- when 'logo' -%}<rect x="92" y="36" width="20" height="8" rx="1" class="cv-d"/>
+                      {%- when 'full' -%}<rect x="0" y="0" width="200" height="70" fill="url(#{{ cid }}h)"/>
+                      {%- else -%}<rect x="0" y="37" width="200" height="6" class="cv-d"/><rect x="104" y="27" width="10" height="7" class="cv-d"/>
+                    {%- endcase -%}
+                  </g><circle cx="48" cy="52" r="8" class="cv-w"/><circle cx="152" cy="52" r="8" class="cv-w"/></svg>
+                  <b>{{ b.settings.name }}</b>
+                  {%- if b.settings.desc != blank -%}<em>{{ b.settings.desc }}</em>{%- endif -%}
+                  <span class="oc-p mono">{{ b.settings.price | times: 100 | times: svc_fx | money_without_trailing_zeros }}</span>
+                </label>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </fieldset>
+        <div class="ds-f ds-f-row">
+          <div class="ds-qwrap">
+            <span class="lg"><span class="mono">04</span> <span>{{ 'hpz.svc.f_sheets' | t }}</span></span>
+            <div class="qty ds-qty"><button type="button" data-q="-1" aria-label="{{ 'hpz.svc.less' | t }}">{% render 'icon', name: 'minus' %}</button><input id="ds-q" name="contact[Sheets]" type="number" min="1" max="{{ s.decal_max_sheets | default: 20 }}" value="2" aria-label="{{ 'hpz.svc.f_sheets' | t }}"><button type="button" data-q="1" aria-label="{{ 'hpz.svc.more' | t }}">{% render 'icon', name: 'plus' %}</button></div>
+            <span class="xs muted">1-{{ s.decal_max_sheets | default: 20 }} {{ 'hpz.svc.sheets' | t }}{% if s.decal_size_note != blank %} / {{ s.decal_size_note }}{% endif %}</span>
+          </div>
+          {%- if s.decal_rush_pct > 0 -%}
+            <label class="ds-rush">
+              <span class="switch"><input type="checkbox" id="ds-rush" name="contact[Rush]" value="Yes"><span></span></span>
+              <span><b>{{ 'hpz.svc.rush' | t }}</b><em class="xs muted">+{{ s.decal_rush_pct }}%</em></span>
+            </label>
+          {%- endif -%}
+        </div>
+        <fieldset class="ds-f">
+          <legend><span class="mono">05</span> <span>{{ 'hpz.svc.f_art' | t }}</span></legend>
+          <div class="field"><label for="ds-ref">{{ 'hpz.svc.ref_link' | t }}</label><input class="input" id="ds-ref" name="contact[Reference images]" type="url" inputmode="url" placeholder="https://"></div>
+          <p class="xs muted">{{ 'hpz.svc.ref_note' | t }}</p>
+        </fieldset>
+        <fieldset class="ds-f ds-f-2">
+          <div class="field"><label for="ds-name">{{ 'hpz.svc.name' | t }}</label><input class="input" id="ds-name" name="contact[name]" autocomplete="name" required></div>
+          <div class="field"><label for="ds-mail">{{ 'hpz.svc.email' | t }}</label><input class="input" id="ds-mail" name="contact[email]" type="email" autocomplete="email" required><span class="err-msg">{{ 'hpz.svc.email_proof_err' | t }}</span></div>
+          <div class="field ds-notes"><label for="ds-notes">{{ 'hpz.svc.notes' | t }}</label><textarea class="textarea" id="ds-notes" name="contact[body]" required placeholder="{{ 'hpz.svc.ds_notes_ph' | t }}"></textarea></div>
+        </fieldset>
+        {%- if form.posted_successfully? -%}<span data-posted hidden></span>{%- endif -%}
+      {%- endform -%}
+
+      <aside class="ds-quote" id="ds-quote" aria-live="polite">
+        <div class="q-sent" data-sent="ds-form"{% unless ds_posted %} hidden{% endunless %}><span class="q-stamp mono">{{ 'hpz.svc.received' | t }}</span>
+          <span class="mono q-k">{{ 'hpz.svc.ds_sent_h' | t }}</span>
+          <ol class="q-next">
+            <li><span class="mono">01</span>{{ 'hpz.svc.ds_next1' | t }}</li>
+            <li><span class="mono">02</span>{{ 'hpz.svc.ds_next2' | t }}</li>
+            <li><span class="mono">03</span>{{ 'hpz.svc.ds_next3' | t }}</li>
+          </ol>
+          <a class="btn btn-line btn-block" href="{{ page.url }}#decal">{{ 'hpz.svc.ds_again' | t }}</a>
+        </div>
+        <div data-live{% if ds_posted %} hidden{% endif %}>
+          <div class="q-h"><span class="mono">{{ 'hpz.svc.live_quote' | t }}</span><span class="mono">{{ 'hpz.svc.draft' | t }}</span></div>
+          <div class="q-cast" id="q-cast"></div>
+          <ul class="q-lines" id="q-lines"></ul>
+          <div class="q-total"><span>{{ 'hpz.svc.est_total' | t }}</span><b class="mono" id="q-tot">{{ 0 | money }}</b></div>
+          <div class="q-ta"><div><span>{{ 'hpz.svc.turnaround' | t }}</span><b class="mono"><span id="q-days">0</span> {{ 'hpz.svc.working_days' | t }}</b></div><div><span>{{ 'hpz.svc.ships_around' | t }}</span><b id="q-date"></b></div></div>
+          <div class="q-bar" id="q-bar"><i class="qb-p"></i><i class="qb-r"></i><i class="qb-s"></i></div>
+          <div class="q-leg mono"><span><i class="qb-p"></i>{{ 'hpz.svc.proof' | t }}</span><span><i class="qb-r"></i>{{ 'hpz.svc.print' | t }}</span><span><i class="qb-s"></i>{{ 'hpz.svc.pack' | t }}</span></div>
+          <button class="btn btn-signal btn-lg btn-block" type="submit" form="ds-form" id="ds-go"><span class="spin"></span><span>{{ 'hpz.svc.send_brief' | t }}</span>{% render 'icon', name: 'arrow' %}</button>
+          <p class="q-note">{{ 'hpz.svc.q_note' | t }}{% if s.decal_deposit_pct > 0 %} {{ 'hpz.svc.q_deposit' | t: pct: s.decal_deposit_pct }}{% endif %}</p>
+        </div>
+      
+      </aside>
+    </div>
+  </div>
+</section>

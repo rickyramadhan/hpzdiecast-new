@@ -1,0 +1,25 @@
+{%- comment -%}
+  Courier rate estimate for Indonesian visitors (JNE, SiCepat, ...). Needs the ongkir Worker URL in theme settings.
+  Estimate only: Shopify still charges the shipping rate from the Indonesia zone. See docs/ONGKIR-SETUP.md.
+  Usage: {% render 'shipping-calc' %}
+{%- endcomment -%}
+{%- if settings.ongkir_api_url != blank -%}
+  {{ 'p-ongkir.css' | asset_url | stylesheet_tag }}
+  <div class="sc" data-shipcalc hidden
+    data-api="{{ settings.ongkir_api_url | strip | escape }}"
+    data-couriers="{{ settings.ongkir_couriers | default: 'jne:sicepat:jnt:anteraja' | escape }}"
+    data-pack="{{ settings.ongkir_pack_grams | default: 50 }}"
+    data-wa="{{ settings.payment_whatsapp | default: settings.whatsapp | escape }}">
+    <div class="sc-h">
+      <b>{{ 'hpz.ongkir.title' | t }}</b>
+      <span class="xs muted">{{ 'hpz.ongkir.from' | t: city: settings.workshop_city }}</span>
+    </div>
+    <div class="sc-f">
+      <input class="input" type="search" autocomplete="off" data-sc-q placeholder="{{ 'hpz.ongkir.placeholder' | t }}" aria-label="{{ 'hpz.ongkir.placeholder' | t }}">
+      <ul class="sc-sug" data-sc-sug hidden></ul>
+    </div>
+    <p class="xs sc-dest" data-sc-dest hidden></p>
+    <div class="sc-out" data-sc-out aria-live="polite"></div>
+    <p class="xs muted sc-note">{{ 'hpz.ongkir.note' | t }}</p>
+  </div>
+{%- endif -%}

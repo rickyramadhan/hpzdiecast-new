@@ -1,0 +1,271 @@
+{{ 'p-product.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign mf = product.metafields.hpz
+  capture facts_json
+    render 'product-facts', product: product
+  endcapture
+  assign f_raw = facts_json | strip | split: '~'
+  assign f_brand = f_raw[0]
+  assign f_kind = f_raw[2]
+  assign f_dia = f_raw[3]
+  assign f_face = f_raw[6]
+  assign f_lip = f_raw[7]
+  assign f_sheet = f_raw[8]
+  assign f_own = false
+  if f_raw[1] == 'true'
+    assign f_own = true
+  endif
+  assign f_bearing = false
+  if f_raw[4] == 'true'
+    assign f_bearing = true
+  endif
+  assign f_disc = false
+  if f_raw[5] == 'true'
+    assign f_disc = true
+  endif
+  assign f_precoated = false
+  if f_raw[9] == 'true'
+    assign f_precoated = true
+  endif
+  assign f_made = f_raw[10] | split: ',' | join: ','
+  assign is_decal = false
+  if f_kind == 'decals'
+    assign is_decal = true
+  endif
+  assign steps = mf.install_steps.value
+
+  comment
+    Numbered steps ("1. ...", "2. ...") that already live in the description are pulled out into the steps list
+    and removed from the Details paragraph. Each <p> or <br> line is one chunk.
+  endcomment
+  assign desc_html = product.description
+  if steps == blank
+    assign chunks = product.description | replace: '<br />', '<br>' | replace: '<br>', '</p>' | split: '</p>'
+    assign parsed_steps = ''
+    assign body_html = ''
+    assign lead_html = ''
+    assign step_n = 0
+    for ch in chunks
+      assign ch_t = ch | strip_html | strip
+      if ch_t.size <= 1
+        continue
+      endif
+      assign ch_e = ch_t | escape_once
+      assign head = ch_t | split: '. ' | first
+      assign head_n = head | plus: 0
+      assign head_s = head_n | append: ''
+      assign is_step = false
+      assign step_off = head.size | plus: 2
+      if head_n > 0 and head_s == head and head.size <= 2 and ch_t.size > step_off
+        assign is_step = true
+      endif
+      if is_step
+        assign step_n = step_n | plus: 1
+        assign step_txt = ch_t | slice: step_off, 600
+        assign parsed_steps = parsed_steps | append: step_txt | strip | append: '<<>>'
+        assign lead_html = ''
+      else
+        assign last_c = ch_t | slice: -1, 1
+        if last_c == ':'
+          assign lead_html = '<p>' | append: ch_e | append: '</p>'
+        else
+          assign body_html = body_html | append: lead_html | append: '<p>' | append: ch_e | append: '</p>'
+          assign lead_html = ''
+        endif
+      endif
+    endfor
+    if step_n >= 2
+      assign steps = parsed_steps | remove_last: '<<>>' | split: '<<>>'
+      assign desc_html = body_html | append: lead_html
+    endif
+  endif
+  assign video_url = mf.video_url.value
+  assign video_embed = ''
+  if video_url contains 'youtube.com/watch'
+    assign vid = video_url | split: 'v=' | last | split: '&' | first
+    assign video_embed = 'https://www.youtube-nocookie.com/embed/' | append: vid | append: '?autoplay=1&rel=0'
+  elsif video_url contains 'youtu.be/'
+    assign vid = video_url | split: 'youtu.be/' | last | split: '?' | first
+    assign video_embed = 'https://www.youtube-nocookie.com/embed/' | append: vid | append: '?autoplay=1&rel=0'
+  elsif video_url contains 'vimeo.com/'
+    assign vid = video_url | split: 'vimeo.com/' | last | split: '?' | first
+    assign video_embed = 'https://player.vimeo.com/video/' | append: vid | append: '?autoplay=1'
+  endif
+
+  assign box_block = null
+  assign ship_note = null
+  for block in section.blocks
+    if block.type == 'in_box' and box_block == null
+      assign box_block = block
+    elsif block.type == 'shipping_note' and ship_note == null
+      assign ship_note = block
+    endif
+  endfor
+  assign app_blocks = section.blocks | where: 'type', '@app'
+  assign ship_rows = section.blocks | where: 'type', 'ship_row'
+-%}
+{%- capture specs_html -%}{% render 'product-specs', product: product, variant: variant %}{%- endcapture -%}
+{%- assign has_details = false -%}
+{%- assign box_default = true -%}
+{%- assign desc_low = product.description | strip_html | downcase -%}
+{%- if desc_html != blank or box_default -%}{%- assign has_details = true -%}{%- endif -%}
+{%- assign has_specs = false -%}
+{%- if specs_html contains '<table' -%}{%- assign has_specs = true -%}{%- endif -%}
+{%- assign has_install = false -%}
+{%- if steps != blank or video_url != blank -%}{%- assign has_install = true -%}{%- endif -%}
+{%- assign has_reviews = false -%}
+{%- if app_blocks.size > 0 or request.design_mode -%}{%- assign has_reviews = true -%}{%- endif -%}
+{%- assign n = 0 -%}
+
+<nav class="subnav" aria-label="{{ 'hpz.product.subnav_label' | t }}" data-subnav>
+  <div class="wrap subnav-in">
+    <div class="sn-tabs">
+      {%- if has_details -%}<a href="#s-details" data-sn="s-details">{{ 'hpz.product.sn_details' | t }}</a>{%- endif -%}
+      {%- if has_specs -%}<a href="#s-specs" data-sn="s-specs">{{ 'hpz.product.sn_specs' | t }}</a>{%- endif -%}
+      {%- if has_install -%}<a href="#s-install" data-sn="s-install">{% if is_decal %}{{ 'hpz.product.sn_apply' | t }}{% else %}{{ 'hpz.product.sn_install' | t }}{% endif %}</a>{%- endif -%}
+      <a href="#s-bundle" data-sn="s-bundle">{{ 'hpz.product.sn_bundle' | t }}</a>
+      <a href="#s-shipping" data-sn="s-shipping">{{ 'hpz.product.sn_shipping' | t }}</a>
+      {%- if has_reviews -%}<a href="#reviews" data-sn="reviews">{{ 'hpz.product.sn_reviews' | t }}</a>{%- endif -%}
+    </div>
+    <div class="sn-buy"><span class="mono" data-sn-price>{{ variant.price | money }}</span><a class="btn btn-sm btn-signal" href="#pdp">{{ 'hpz.product.sn_buy' | t }}</a></div>
+  </div>
+</nav>
+
+<div id="details">
+  {%- if has_details -%}
+    {%- assign n = n | plus: 1 -%}
+    <section class="sec" id="s-details"><div class="wrap sec-in">
+      <div class="sec-h"><span class="mono">{{ n | prepend: '0' }}</span><h2 class="h3">{{ 'hpz.product.sec_details' | t }}</h2></div>
+      <div class="sec-b two">
+        <div class="desc">{{ desc_html }}</div>
+        <div class="box-in" {% if box_block != null %}{{ box_block.shopify_attributes }}{% endif %}>
+          <span class="eyebrow"><b>{{ 'hpz.product.in_the_box' | t }}</b></span>
+          <ul>
+            {%- if box_block != null and box_block.settings.items != blank -%}
+              {%- assign box_items = box_block.settings.items | newline_to_br | split: '<br />' -%}
+              {%- for item in box_items -%}
+                {%- assign item_t = item | strip -%}
+                {%- if item_t != blank -%}<li>{% render 'icon', name: 'check' %}{{ item_t | escape }}</li>{%- endif -%}
+              {%- endfor -%}
+            {%- else -%}
+              {%- case f_kind -%}
+                {%- when 'wheels' -%}<li>{% render 'icon', name: 'check' %}{{ 'hpz.product.box_wheels' | t }}</li>
+                {%- when 'decals' -%}<li>{% render 'icon', name: 'check' %}{{ 'hpz.product.box_decals' | t }}</li>
+                {%- else -%}<li>{% render 'icon', name: 'check' %}{{ 'hpz.product.box_item' | t }}</li>
+              {%- endcase -%}
+              {%- if desc_low contains 'not include' -%}<li>{% render 'icon', name: 'close' %}{{ 'hpz.product.box_no_diecast' | t }}</li>{%- endif -%}
+            {%- endif -%}
+          </ul>
+        </div>
+      </div>
+    </div></section>
+  {%- endif -%}
+
+  {%- if has_specs -%}
+    {%- assign n = n | plus: 1 -%}
+    <section class="sec" id="s-specs"><div class="wrap sec-in">
+      <div class="sec-h"><span class="mono">{{ n | prepend: '0' }}</span><h2 class="h3">{{ 'hpz.product.sec_specs' | t }}</h2></div>
+      <div class="sec-b">{{ specs_html }}</div>
+    </div></section>
+  {%- endif -%}
+
+  {%- if has_install -%}
+    {%- assign n = n | plus: 1 -%}
+    <section class="sec" id="s-install"><div class="wrap sec-in">
+      <div class="sec-h"><span class="mono">{{ n | prepend: '0' }}</span><h2 class="h3">{% if is_decal %}{{ 'hpz.product.sec_apply' | t }}{% else %}{{ 'hpz.product.sec_install' | t }}{% endif %}</h2></div>
+      <div class="sec-b{% if steps != blank and video_url != blank %} two{% endif %}">
+        {%- if steps != blank -%}
+          <ol class="steps">
+            {%- for step in steps -%}
+              <li data-reveal style="--i:{{ forloop.index0 }}"><span class="mono">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span><p>{{ step | escape_once }}</p></li>
+            {%- endfor -%}
+          </ol>
+        {%- endif -%}
+        {%- if video_url != blank -%}
+          <div class="vid">
+            <div class="vid-p" data-video{% if video_embed != blank %} data-video-src="{{ video_embed }}"{% endif %}>
+              {%- assign poster = product.media[1].preview_image | default: product.featured_image -%}
+              {%- if poster -%}{{ poster | image_url: width: 700 | image_tag: alt: '', loading: 'lazy' }}{%- endif -%}
+              {%- if video_embed != blank -%}
+                <button type="button" class="vid-b" aria-label="{{ 'hpz.product.play' | t }}">{% render 'icon', name: 'play' %}</button>
+              {%- else -%}
+                <a class="vid-b" href="{{ video_url }}" target="_blank" rel="noopener" aria-label="{{ 'hpz.product.play' | t }}">{% render 'icon', name: 'play' %}</a>
+              {%- endif -%}
+            </div>
+            <b>{{ 'hpz.product.watch_video' | t }}</b>
+          </div>
+        {%- endif -%}
+      </div>
+    </div></section>
+  {%- endif -%}
+
+  {%- assign n = n | plus: 1 -%}
+  <section class="sec" id="s-shipping"><div class="wrap sec-in">
+    <div class="sec-h"><span class="mono">{{ n | prepend: '0' }}</span><h2 class="h3">{{ 'hpz.product.sec_shipping' | t }}</h2></div>
+    <div class="sec-b two">
+      {%- if ship_rows.size > 0 -%}
+        <table class="spec ship-t">
+          <tr><th>{{ 'hpz.product.ship_method' | t }}</th><th>{{ 'hpz.product.ship_arrives' | t }}</th><th>{{ 'hpz.product.ship_cost' | t }}</th></tr>
+          {%- for row in ship_rows -%}
+            <tr {{ row.shopify_attributes }}><td>{{ row.settings.name | escape }}</td><td class="mono">{{ row.settings.arrives | escape }}</td><td class="mono">{{ row.settings.cost | escape }}</td></tr>
+          {%- endfor -%}
+        </table>
+      {%- endif -%}
+      <div class="desc small">
+        {%- if settings.workshop_city != blank -%}<p><b>{{ 'hpz.product.ships_from_label' | t }}</b> {{ settings.workshop_city | escape }}, Indonesia</p>{%- endif -%}
+        <p><b>{{ 'hpz.product.ship_cost' | t }}</b> &mdash; {{ 'hpz.product.ship_at_checkout' | t }}</p>
+        <p><b>{{ 'hpz.product.duties_label' | t }}</b> &mdash; {{ 'hpz.product.duty_note' | t }}</p>
+        <p><b>{{ 'hpz.product.returns_label' | t }}</b> &mdash; {{ 'hpz.product.returns_text' | t }}
+          {%- if shop.refund_policy != blank %} <a class="link" href="{{ shop.refund_policy.url }}">{{ 'hpz.product.refund_policy' | t }}</a>{% endif -%}
+          {%- if shop.shipping_policy != blank %} <a class="link" href="{{ shop.shipping_policy.url }}">{{ 'hpz.product.shipping_policy' | t }}</a>{% endif -%}
+        </p>
+        {%- if ship_note != null -%}<div {{ ship_note.shopify_attributes }}>{{ ship_note.settings.text }}</div>{%- endif -%}
+      </div>
+    </div>
+  </div></section>
+
+  {%- if has_reviews -%}
+    <section class="sec" id="reviews"><div class="wrap sec-in">
+      <div class="sec-h"><span class="mono">{{ n | plus: 2 | prepend: '0' }}</span><h2 class="h3">{{ 'hpz.product.sec_reviews' | t }}</h2></div>
+      <div class="sec-b">
+        {%- for block in app_blocks -%}{% render block %}{%- endfor -%}
+        {%- if app_blocks.size == 0 and request.design_mode -%}
+          <p class="small muted">{{ 'hpz.product.reviews_placeholder' | t }}</p>
+        {%- endif -%}
+      </div>
+    </div></section>
+  {%- endif -%}
+</div>
+
+<script src="{{ 'product.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Product details",
+  "settings": [],
+  "blocks": [
+    { "type": "@app" },
+    {
+      "type": "in_box", "name": "In the box", "limit": 1,
+      "settings": [
+        { "type": "textarea", "id": "items", "label": "Items (one per line)", "info": "Leave blank to hide the box." }
+      ]
+    },
+    {
+      "type": "ship_row", "name": "Shipping method row",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Method", "default": "Standard" },
+        { "type": "text", "id": "arrives", "label": "Arrives" },
+        { "type": "text", "id": "cost", "label": "Cost" }
+      ]
+    },
+    {
+      "type": "shipping_note", "name": "Shipping note", "limit": 1,
+      "settings": [
+        { "type": "richtext", "id": "text", "label": "Text" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,243 @@
+{%- comment -%}
+  Site header: utility bar, logo, navigation with mega panels, search, account, wishlist, cart, market, garage bar.
+  Navigation: by default the built-in HPZ navigation (real collections and pages). If a menu is chosen in the section
+  settings, that Shopify menu is used instead (children become mega columns). The live store's own menus are never touched.
+{%- endcomment -%}
+{%- assign custom_menu = section.settings.menu -%}
+<header id="hpz-header" class="hdr-wrap">
+  <div class="topbar">
+    <div class="wrap topbar-in">
+      <div class="tb-msgs" aria-live="off">
+        {%- for block in section.blocks -%}
+          <span class="{% if forloop.first %}is-on{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
+        {%- endfor -%}
+      </div>
+      <nav class="tb-links" aria-label="Utility">
+        <a href="{{ routes.account_url }}#orders">{% render 'icon', name: 'truck' %}<span>{{ 'customer.orders.title' | t }}</span></a>
+        {%- if settings.whatsapp != blank -%}
+          <a href="https://wa.me/{{ settings.whatsapp }}">{% render 'icon', name: 'wa' %}<span>WhatsApp</span></a>
+        {%- endif -%}
+        {% render 'store-switch', chevron: true %}
+      </nav>
+    </div>
+  </div>
+
+  <div class="hdr">
+    <div class="wrap hdr-in">
+      <button class="hdr-burger" data-open="menu" aria-label="Menu">{% render 'icon', name: 'menu' %}</button>
+      {% render 'logo' %}
+
+      <nav class="nav" aria-label="Main">
+        {%- if custom_menu != blank -%}
+          {%- for link in custom_menu.links -%}
+            {%- if link.links.size > 0 -%}
+              <div class="nav-i has-mega" data-mega="m{{ forloop.index }}"><a href="{{ link.url }}" aria-haspopup="true">{{ link.title }}{% render 'icon', name: 'down' %}</a></div>
+            {%- else -%}
+              <div class="nav-i"><a href="{{ link.url }}" class="{% if link.active %}is-cur{% endif %}">{{ link.title }}</a></div>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- else -%}
+          <div class="nav-i has-mega" data-mega="wheels"><a href="/collections/wheels" class="{% if collection.handle == 'wheels' %}is-cur{% endif %}">{{ 'hpz.nav.wheels' | t }}{% render 'icon', name: 'down' %}</a></div>
+          <div class="nav-i has-mega" data-mega="parts"><a href="/collections/all">{{ 'hpz.nav.parts' | t }}{% render 'icon', name: 'down' %}</a></div>
+          <div class="nav-i"><a href="/collections/decals" class="{% if collection.handle == 'decals' %}is-cur{% endif %}">{{ 'hpz.nav.decals' | t }}</a></div>
+          <div class="nav-i has-mega" data-mega="brands"><a href="/collections">{{ 'hpz.nav.brands' | t }}{% render 'icon', name: 'down' %}</a></div>
+          <div class="nav-i"><a href="/pages/builds">{{ 'hpz.nav.builds' | t }}</a></div>
+          <div class="nav-i"><a href="/pages/planner">{{ 'hpz.nav.planner' | t }}<sup>{{ 'hpz.nav.new' | t }}</sup></a></div>
+          <div class="nav-i"><a href="/pages/services">{{ 'hpz.nav.services' | t }}</a></div>
+          {%- unless settings.hide_academy -%}<div class="nav-i"><a href="/blogs/academy">{{ 'hpz.nav.academy' | t }}</a></div>{%- endunless -%}
+        {%- endif -%}
+      </nav>
+
+      <div class="hdr-act">
+        <button class="hdr-search" data-open="search">{% render 'icon', name: 'search' %}<span>{{ 'hpz.nav.search' | t }}</span><kbd>/</kbd></button>
+        <button class="hdr-ic hdr-s-m" data-open="search" aria-label="Search">{% render 'icon', name: 'search' %}</button>
+        <a class="hdr-ic" href="{{ routes.account_url }}" aria-label="{{ 'customer.account.title' | t }}">{% render 'icon', name: 'user' %}</a>
+        <button class="hdr-ic" data-open="wish" aria-label="Wishlist">{% render 'icon', name: 'heart' %}<i class="cnt" id="hdr-wish-n" hidden></i></button>
+        <button class="hdr-ic hdr-cart" id="hdr-cart" data-open="cart" aria-label="Cart">{% render 'icon', name: 'cart' %}<i class="cnt" id="hdr-cart-n" {% if cart.item_count == 0 %}hidden{% endif %}><span>{{ cart.item_count }}</span></i></button>
+      </div>
+    </div>
+
+    <div class="mega" id="mega" aria-hidden="true">
+      {%- if custom_menu != blank -%}
+        {%- for link in custom_menu.links -%}
+          {%- if link.links.size > 0 -%}
+            <div class="mega-panel" data-panel="m{{ forloop.index }}">
+              <div class="mega-in wrap">
+                {%- for child in link.links -%}
+                  <div class="mega-col">
+                    <h6><a href="{{ child.url }}">{{ child.title }}</a></h6>
+                    <ul>{%- for grand in child.links -%}<li><a href="{{ grand.url }}">{{ grand.title }}</a></li>{%- endfor -%}</ul>
+                  </div>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+
+        {%- comment -%} WHEELS: makers (real collections with live counts), optional diameter chips, latest drop {%- endcomment -%}
+        <div class="mega-panel" data-panel="wheels">
+          <div class="mega-in wrap">
+            <div class="mega-col">
+              <h6>{{ 'hpz.nav.by_diameter' | t }}</h6>
+              {%- if section.settings.diameter_filters -%}
+                <div class="mega-dia">
+                  {%- assign dias = '8.5,9.5,10,12' | split: ',' -%}
+                  {%- for d in dias -%}
+                    <a href="/collections/wheels?filter.p.m.hpz.diameter={{ d }}"><b>{{ d }}</b><span>mm</span></a>
+                  {%- endfor -%}
+                </div>
+              {%- else -%}
+                <p class="small muted">{{ 'hpz.nav.diameter_hint' | t }}</p>
+              {%- endif -%}
+              <a class="mega-tool" href="/pages/planner">{% render 'icon', name: 'ruler' %}<span><b>{{ 'hpz.nav.not_sure' | t }}</b>{{ 'hpz.nav.use_finder' | t }}</span>{% render 'icon', name: 'arrow' %}</a>
+            </div>
+            <div class="mega-col">
+              <h6>{{ 'hpz.nav.by_type' | t }}</h6>
+              <ul>
+                <li><a href="/collections/wheels">{{ 'hpz.nav.all_wheels' | t }}<em>{{ collections['wheels'].products_count }}</em></a></li>
+                <li><a href="/collections/premium-alloy-disc-brake">{{ 'hpz.nav.disc_brake' | t }}<em>{{ collections['premium-alloy-disc-brake'].products_count }}</em></a></li>
+                <li><a href="/collections/rebel-tires">{{ 'hpz.nav.tyres' | t }}<em>{{ collections['rebel-tires'].products_count }}</em></a></li>
+                <li><a href="/collections/muscle-car-23">Muscle Car 23<em>{{ collections['muscle-car-23'].products_count }}</em></a></li>
+              </ul>
+            </div>
+            <div class="mega-col">
+              <h6>{{ 'hpz.nav.by_maker' | t }}</h6>
+              <ul>
+                {%- assign makers = 'hpz-wheels:HPZ Wheels,jv-custom:JV Custom,sakura-model:Sakura Model,turbo-miniscale:Turbominiscale,carlomo-alloy-wheels:Carlomo,rebel-tires:Rebel x Arise' | split: ',' -%}
+                {%- for m in makers -%}
+                  {%- assign mp = m | split: ':' -%}
+                  {%- assign mc = collections[mp[0]] -%}
+                  {%- assign mc_n = mc.products_count | plus: 0 -%}
+                  {%- if mc_n > 0 -%}
+                    <li><a href="{{ mc.url }}">{{ mp[1] }}{% if mp[0] == 'hpz-wheels' %}<i class="own">HPZ</i>{% endif %}<em>{{ mc.products_count }}</em></a></li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+            <div class="mega-col mega-lab">
+              <div class="mega-wheel" data-wheel></div>
+              <div>
+                <span class="eyebrow"><b>{{ 'hpz.nav.latest' | t }}</b></span>
+                {%- assign newest = collections['hpz-wheels'].products | first -%}
+                {%- if newest -%}
+                  <a class="mega-pick" href="{{ newest.url }}">
+                    {% if newest.featured_image %}{{ newest.featured_image | image_url: width: 160 | image_tag: alt: newest.title, loading: 'lazy' }}{% endif %}
+                    <span><b>{{ newest.title | remove: 'HPZ Wheels Model ' | remove: 'HPZ Wheels ' }}</b><em>{{ newest.price | money }}</em></span>
+                  </a>
+                {%- endif -%}
+                <a class="arrow-link" href="/collections/hpz-wheels">{{ 'hpz.nav.all_originals' | t }} {% render 'icon', name: 'arrow' %}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} PARTS {%- endcomment -%}
+        <div class="mega-panel" data-panel="parts">
+          <div class="mega-in wrap mega-parts">
+            <div class="mega-cats">
+              {%- assign cats = 'body-kit:hpz.nav.body_kits:layers,engines:hpz.nav.engines:bolt,exterior-detail:hpz.nav.exterior:spark,interior-detail:hpz.nav.interior:car,dioramas:hpz.nav.dioramas:box' | split: ',' -%}
+              {%- for c in cats -%}
+                {%- assign cp = c | split: ':' -%}
+                {%- assign cc = collections[cp[0]] -%}
+                <a href="{{ cc.url }}">
+                  <span class="mc-ic">{% render 'icon', name: cp[2] %}</span>
+                  <span><b>{{ cp[1] | t }}</b><em>{{ cc.products_count }} {{ 'hpz.nav.parts_count' | t }}</em></span>
+                  {% render 'icon', name: 'arrow' %}
+                </a>
+              {%- endfor -%}
+            </div>
+            <div class="mega-feat">
+              {%- assign feat = collections['body-kit'].products | slice: 0, 3 -%}
+              {%- for p in feat -%}
+                <a href="{{ p.url }}">{% if p.featured_image %}{{ p.featured_image | image_url: width: 300 | image_tag: alt: p.title, loading: 'lazy' }}{% endif %}<b>{{ p.title }}</b><em>{{ p.price | money }}</em></a>
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} BRANDS {%- endcomment -%}
+        <div class="mega-panel" data-panel="brands">
+          <div class="mega-in wrap">
+            <div class="mega-brands">
+              {%- assign brands = 'hpz-wheels:HPZ Wheels,jv-custom:JV Custom,sakura-model:Sakura Model,turbo-miniscale:Turbominiscale,parvus-models:Parvus Models,octopus:Octopus Hobbies,rebel-tires:Rebel x Arise,carlomo-alloy-wheels:Carlomo' | split: ',' -%}
+              {%- for b in brands -%}
+                {%- assign bp = b | split: ':' -%}
+                {%- assign bc = collections[bp[0]] -%}
+                {%- assign bc_n = bc.products_count | plus: 0 -%}
+                {%- if bc_n > 0 -%}
+                  <a href="{{ bc.url }}"><b>{{ bp[1] }}</b><em>{{ bc.products_count }} {{ 'hpz.nav.products' | t }}</em></a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="gbar" data-garagebar-host>
+    <div class="wrap gbar-in" id="gbar"></div>
+  </div>
+</header>
+
+<script>
+  (function () {
+    var nav = document.querySelectorAll('.nav-i.has-mega');
+    var mega = document.getElementById('mega');
+    if (!mega) return;
+    var tm;
+    function open(k) {
+      clearTimeout(tm);
+      document.querySelectorAll('.mega-panel').forEach(function (p) { p.classList.toggle('is-on', p.getAttribute('data-panel') === k); });
+      nav.forEach(function (n) { n.classList.toggle('is-hot', n.getAttribute('data-mega') === k); });
+      mega.classList.add('is-open'); mega.setAttribute('aria-hidden', 'false');
+      var panel = mega.querySelector('[data-panel="' + k + '"]');
+      mega.style.height = panel ? panel.offsetHeight + 'px' : '0px';
+      var w = panel && panel.querySelector('[data-wheel]');
+      if (w && !w.innerHTML && window.HPZ) w.innerHTML = HPZ.wheelSVG({ spokes: 6, finish: 'gold' });
+    }
+    function close() {
+      tm = setTimeout(function () {
+        mega.classList.remove('is-open'); mega.style.height = '0px'; mega.setAttribute('aria-hidden', 'true');
+        nav.forEach(function (n) { n.classList.remove('is-hot'); });
+      }, 140);
+    }
+    nav.forEach(function (n) {
+      n.addEventListener('mouseenter', function () { open(n.getAttribute('data-mega')); });
+      n.addEventListener('mouseleave', close);
+    });
+    mega.addEventListener('mouseenter', function () { clearTimeout(tm); });
+    mega.addEventListener('mouseleave', close);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "header",
+  "class": "shopify-section-header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Navigation menu", "info": "Leave empty to use the built-in HPZ navigation (Wheels, Parts, Decals, Brands, Built by You, Planner, Services, Academy). Pick a menu to use your own links instead." },
+    { "type": "checkbox", "id": "diameter_filters", "label": "Show diameter chips in the Wheels menu", "default": false, "info": "Turn on after the 'Wheel diameter' filter is set up in Search & Discovery, otherwise the chips would lead to unfiltered pages." }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Announcement",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Message", "default": "Ships from our workshop within 24 h" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header",
+      "blocks": [
+        { "type": "message", "settings": { "text": "Ships from our workshop within 24 h" } },
+        { "type": "message", "settings": { "text": "Every wheel set is checked and bagged by hand" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

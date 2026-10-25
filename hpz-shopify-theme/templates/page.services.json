@@ -1,0 +1,267 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-services",
+      "blocks": {
+        "decal_complexity_1": {
+          "type": "decal_complexity",
+          "settings": {
+            "name": "Logo only",
+            "desc": "Up to 3 marks, single colour per mark",
+            "price": 25,
+            "days": 3,
+            "coverage": "logo"
+          }
+        },
+        "decal_complexity_2": {
+          "type": "decal_complexity",
+          "settings": {
+            "name": "Partial livery",
+            "desc": "Stripes, number boards, sponsors",
+            "price": 45,
+            "days": 5,
+            "coverage": "partial"
+          }
+        },
+        "decal_complexity_3": {
+          "type": "decal_complexity",
+          "settings": {
+            "name": "Full livery",
+            "desc": "Wrap-style, both sides, bonnet and roof",
+            "price": 75,
+            "days": 7,
+            "coverage": "full"
+          }
+        },
+        "decal_type_1": {
+          "type": "decal_type",
+          "settings": {
+            "name": "Transparent",
+            "desc": "For white / light paint",
+            "add": 0,
+            "sheet": 6,
+            "days": 0,
+            "swatch": "clear"
+          }
+        },
+        "decal_type_2": {
+          "type": "decal_type",
+          "settings": {
+            "name": "White toner",
+            "desc": "Opaque white on dark paint",
+            "add": 8,
+            "sheet": 8,
+            "days": 0,
+            "swatch": "white"
+          }
+        },
+        "decal_type_3": {
+          "type": "decal_type",
+          "settings": {
+            "name": "Both",
+            "desc": "Colour layer plus white underlay",
+            "add": 14,
+            "sheet": 12,
+            "days": 1,
+            "swatch": "both"
+          }
+        },
+        "build_tier_1": {
+          "type": "build_tier",
+          "settings": {
+            "name": "Wheel Swap",
+            "price": 65,
+            "turnaround": "5-7 days",
+            "popular": false
+          }
+        },
+        "build_tier_2": {
+          "type": "build_tier",
+          "settings": {
+            "name": "Street Build",
+            "price": 140,
+            "turnaround": "2-3 weeks",
+            "popular": true
+          }
+        },
+        "build_tier_3": {
+          "type": "build_tier",
+          "settings": {
+            "name": "Showroom",
+            "price": 290,
+            "turnaround": "4-5 weeks",
+            "popular": false
+          }
+        },
+        "loyalty_tier_1": {
+          "type": "loyalty_tier",
+          "settings": {
+            "name": "Rookie",
+            "at": 0,
+            "rate": 10,
+            "perks": "10 pts per $1 spent\nMember price on bundles"
+          }
+        },
+        "loyalty_tier_2": {
+          "type": "loyalty_tier",
+          "settings": {
+            "name": "Pro",
+            "at": 1000,
+            "rate": 12.5,
+            "perks": "12.5 pts per $1 spent\nEarly access to drops"
+          }
+        },
+        "loyalty_tier_3": {
+          "type": "loyalty_tier",
+          "settings": {
+            "name": "Legend",
+            "at": 3000,
+            "rate": 15,
+            "perks": "15 pts per $1 spent\nLegend-only colourways"
+          }
+        },
+        "faq_1": {
+          "type": "faq",
+          "settings": {
+            "group": "Shipping & duties",
+            "question": "How long does delivery take?",
+            "answer": "<p>We dispatch from the workshop in Jakarta Selatan. Delivery time depends on the shipping method and country you choose at checkout, where the estimate is shown before you pay. (Placeholder: edit with your real dispatch times.)</p>"
+          }
+        },
+        "faq_2": {
+          "type": "faq",
+          "settings": {
+            "group": "Shipping & duties",
+            "question": "Will I pay import duties or taxes?",
+            "answer": "<p>Duties and import taxes, if any, are paid by the recipient. Rules differ by country, so please check with your local customs office if you are unsure.</p>"
+          }
+        },
+        "faq_3": {
+          "type": "faq",
+          "settings": {
+            "group": "Shipping & duties",
+            "question": "My tracking has not moved for days.",
+            "answer": "<p>Parcels can go several days between scans while crossing borders. If nothing moves for 10 working days, message us with your order number and we will open a trace with the carrier.</p>"
+          }
+        },
+        "faq_4": {
+          "type": "faq",
+          "settings": {
+            "group": "Returns & fitment",
+            "question": "Can I return something I changed my mind about?",
+            "answer": "<p>Placeholder: write your real return policy here (time window, condition, who pays return postage, and what cannot be returned such as custom decals and commission builds).</p>"
+          }
+        },
+        "faq_5": {
+          "type": "faq",
+          "settings": {
+            "group": "Returns & fitment",
+            "question": "It arrived damaged or something is missing.",
+            "answer": "<p>Photograph the parcel and the part and message us as soon as you can. Placeholder: add your claim window and replacement policy.</p>"
+          }
+        },
+        "faq_6": {
+          "type": "faq",
+          "settings": {
+            "group": "Returns & fitment",
+            "question": "What if a part does not fit my casting?",
+            "answer": "<p>Send us a photo of the part on the car next to a ruler. Placeholder: add your fitment guarantee terms, or delete this question if you do not offer one.</p>"
+          }
+        },
+        "faq_7": {
+          "type": "faq",
+          "settings": {
+            "group": "Orders & payment",
+            "question": "Can I change my address after ordering?",
+            "answer": "<p>Yes, until the shipping label is printed. Message us the order number and the new address as soon as possible.</p>"
+          }
+        },
+        "faq_8": {
+          "type": "faq",
+          "settings": {
+            "group": "Orders & payment",
+            "question": "Can you combine two orders?",
+            "answer": "<p>If the first order has not shipped yet, message us and we will check whether the two can be merged. Placeholder: confirm how you handle shipping differences.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "decal_complexity_1",
+        "decal_complexity_2",
+        "decal_complexity_3",
+        "decal_type_1",
+        "decal_type_2",
+        "decal_type_3",
+        "build_tier_1",
+        "build_tier_2",
+        "build_tier_3",
+        "loyalty_tier_1",
+        "loyalty_tier_2",
+        "loyalty_tier_3",
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5",
+        "faq_6",
+        "faq_7",
+        "faq_8"
+      ],
+      "settings": {
+        "show_decal": true,
+        "show_build": true,
+        "show_wholesale": true,
+        "show_request": true,
+        "show_points": true,
+        "show_help": true,
+        "decal_rush_pct": 40,
+        "decal_rush_days_pct": 50,
+        "decal_measure_fee": 10,
+        "decal_measure_days": 2,
+        "decal_max_sheets": 20,
+        "decal_bulk_from": 10,
+        "decal_bulk_days": 1,
+        "decal_deposit_pct": 50,
+        "decal_size_note": "60 x 45 mm each",
+        "build_slots_total": 12,
+        "build_slots_left": 4,
+        "build_slots_label": "next month",
+        "build_rows": "Casting from our stock, or yours | yes | yes | yes\nHPZ wheel set, any finish | yes | yes | yes\nBase opened, closed with a screw | yes | yes | yes\nRide height set (axle relocation) | no | yes | yes\nStrip, prime, colour, gloss clear | no | yes | yes\nCustom waterslide livery | no | Partial | Full\nResin aero / body kit fitted | no | Lip + wing | Widebody\nInterior detail paint | no | no | yes\nEngine fitted, bonnet opened | no | no | yes\nAcrylic case with engraved plate | no | no | yes\nProgress photos | 2 | 6 | Every stage",
+        "build_stages": "Strip, Paint, Decal, Assemble, Case",
+        "build_bench": "",
+        "build_budgets": "65 | 100\n100 | 200\n200 | 350\n350 |",
+        "ws_rrp": 13.5,
+        "ws_tiers": "20 | 20\n50 | 28\n100 | 35",
+        "ws_slider_min": 10,
+        "ws_slider_max": 200,
+        "ws_slider_start": 60,
+        "ws_slider_step": 5,
+        "ws_benefits": "Mix anything | Wheels, decals and kits all count toward the same tier.\nDrop-shipping | We can ship to your customer with your packing slip.\nEarly allocation | Limited drops offered to stockists before retail.\nWhite-label from 100 sets | Your logo on the card and bag header.\nPayment terms | Placeholder: describe your real terms and payment methods.",
+        "ws_stockists": "",
+        "ws_types": "Physical hobby shop\nOnline store\nEvents and meets\nDistributor",
+        "ws_volumes": "20-49 sets\n50-99 sets\n100-249 sets\n250+ sets",
+        "ws_reply_days": 2,
+        "rq_log": "",
+        "rq_lead_time": "4-14 days",
+        "pp_redeem_pts": 1000,
+        "pp_redeem_value": 10,
+        "pp_spend_max": 800,
+        "pp_spend_start": 240,
+        "pp_meter_max": 4000,
+        "pp_review_pts": 150,
+        "pp_feature_pts": 500,
+        "pp_earn": "Every order | 10-15 pts per $1\nReview with a photo | 150\nBuild featured in the gallery | 500\nFriend's first order ships | 300\nBirthday | 200",
+        "pp_note": "Placeholder rules: edit or hide this section to match your real loyalty programme.",
+        "hours_days": "1,2,3,4,5,6",
+        "hours_open": 9,
+        "hours_close": 17,
+        "hours_tz": 7,
+        "hours_tz_label": "WIB",
+        "decal_collection": "decals"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

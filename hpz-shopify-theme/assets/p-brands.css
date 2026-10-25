@@ -1,0 +1,26 @@
+/* HPZ — brand / category logo tiles at the top of collection pages */
+.col-tiles { margin-top: 22px; max-width: 100%; overflow: hidden; }
+.ct-h { margin-bottom: 12px; }
+.ct-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(138px, 1fr)); gap: 14px; }
+.bt { display: grid; gap: 7px; align-content: start; color: var(--ink, #0e0f11); text-decoration: none; }
+.bt-logo { aspect-ratio: 1; display: grid; place-items: center; background: #fff; border: 1px solid var(--line, #e4e1d9); border-radius: 14px; overflow: hidden; transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), box-shadow .25s, border-color .2s; }
+.bt-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.bt-logo b { font: 900 30px/1 'Archivo Black', 'Arial Black', Arial, sans-serif; letter-spacing: -.02em; color: var(--ink, #0e0f11); }
+.bt-cat .bt-logo { background: var(--paper, #f3f2ee); color: var(--ink, #0e0f11); }
+.bt-cat .bt-logo svg { width: 44%; height: 44%; }
+.bt:hover .bt-logo, .bt:focus-visible .bt-logo { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(14, 15, 17, .16); border-color: var(--ink, #0e0f11); }
+.bt:focus-visible { outline: none; }
+.bt.is-on .bt-logo { border-color: var(--ink, #0e0f11); box-shadow: 0 0 0 2px var(--ink, #0e0f11); }
+.bt-n { font-size: 13.5px; font-weight: 700; line-height: 1.25; }
+.bt-c { font: 500 11px var(--f-mono, 'Courier New', monospace); letter-spacing: .04em; text-transform: uppercase; color: var(--mute, #6d7177); margin-top: -3px; }
+
+/* phones: one swipeable row */
+@media (max-width: 700px) {
+  .ct-list { display: flex; gap: 12px; overflow-x: auto; margin: 0 calc(var(--pad) * -1); padding: 2px var(--pad) 8px; scroll-snap-type: x proximity; scroll-padding-left: var(--pad); -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .ct-list::-webkit-scrollbar { display: none; }
+  .bt { flex: 0 0 112px; scroll-snap-align: start; }
+}
+@media (prefers-reduced-motion: reduce) { .bt-logo { transition: none; } }
+
+/* category chips with an icon */
+.col-cats .chip svg { width: 16px; height: 16px; flex: none; margin-right: 6px; vertical-align: -3px; }

@@ -1,0 +1,47 @@
+{{ 'p-account.css' | asset_url | stylesheet_tag }}
+
+<div id="acct" data-account>
+  {% render 'account-header', crumb: order.name %}
+  <section class="ac-wrap">
+    <div class="wrap ac-grid">
+      {% render 'account-nav', current: 'orders' %}
+      <div class="ac-main">
+        <section class="ac-panel">
+          <header class="ac-ph">
+            <div>
+              <span class="eyebrow"><b>{{ 'hpz.account.nav_orders' | t }}</b></span>
+              <h2 class="h2">{{ order.name }}</h2>
+              <p>{{ order.created_at | date: '%d %b %Y, %H:%M' }}{% if order.cancelled %} &middot; {{ 'hpz.account.cancelled' | t }}{% endif %}</p>
+            </div>
+            <div class="ac-ph-a"><a class="btn btn-ghost btn-sm" href="{{ routes.account_url }}#orders">{% render 'icon', name: 'left' %}{{ 'hpz.account.back_orders' | t }}</a></div>
+          </header>
+
+          <div class="od is-open"><div class="od-b" style="height:auto"><div class="od-c">
+            {% render 'account-tracker', order: order %}
+            {% render 'account-order-items', order: order %}
+          </div></div></div>
+
+          <div class="ad-grid" style="margin-top:24px">
+            {%- if order.shipping_address -%}
+              <article class="ad"><div class="ad-h"><b>{{ 'hpz.account.shipping_address' | t }}</b></div><address>{{ order.shipping_address | format_address }}</address></article>
+            {%- endif -%}
+            {%- if order.billing_address -%}
+              <article class="ad"><div class="ad-h"><b>{{ 'hpz.account.billing_address' | t }}</b></div><address>{{ order.billing_address | format_address }}</address></article>
+            {%- endif -%}
+          </div>
+          <p class="xs muted" style="margin-top:12px">{{ 'hpz.account.payment_status' | t }}: <b>{{ order.financial_status_label }}</b> &middot; {{ 'hpz.account.fulfillment_status' | t }}: <b>{{ order.fulfillment_status_label }}</b></p>
+          {%- if order.note != blank -%}<p class="xs muted">{{ order.note }}</p>{%- endif -%}
+        </section>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="{{ 'account.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Order",
+  "settings": []
+}
+{% endschema %}

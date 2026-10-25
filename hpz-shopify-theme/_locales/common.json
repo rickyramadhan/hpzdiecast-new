@@ -1,0 +1,83 @@
+{
+  "en": {
+    "accessibility": { "skip_to_content": "Skip to content", "close": "Close" },
+    "customer": {
+      "account": { "title": "Account" },
+      "orders": { "title": "Orders" },
+      "log_in": { "email": "Email address" },
+      "wishlist": { "save": "Save" }
+    },
+    "products": {
+      "product": {
+        "sold_out": "Sold out",
+        "new": "New",
+        "only_left": "Only {{ count }} left",
+        "add_to_cart": "Add to cart",
+        "choose_option": "Choose option",
+        "notify": "Notify me",
+        "notify_title": "Restock alert",
+        "notify_submit": "Notify me",
+        "quick_view": "Quick view",
+        "bearing": "Bearing",
+        "resin": "Resin",
+        "white_toner": "White toner",
+        "transparent": "Transparent",
+        "price_from": "From"
+      }
+    }
+  },
+  "id": {
+    "accessibility": { "skip_to_content": "Lewati ke konten", "close": "Tutup" },
+    "customer": {
+      "account": { "title": "Akun" },
+      "orders": { "title": "Pesanan" },
+      "log_in": { "email": "Alamat email" },
+      "wishlist": { "save": "Simpan" }
+    },
+    "products": {
+      "product": {
+        "sold_out": "Habis",
+        "new": "Baru",
+        "only_left": "Sisa {{ count }}",
+        "add_to_cart": "Tambah ke keranjang",
+        "choose_option": "Pilih opsi",
+        "notify": "Kabari saya",
+        "notify_title": "Notifikasi restock",
+        "notify_submit": "Kabari saya",
+        "quick_view": "Lihat cepat",
+        "bearing": "Bearing",
+        "resin": "Resin",
+        "white_toner": "White toner",
+        "transparent": "Transparan",
+        "price_from": "Mulai"
+      }
+    }
+  },
+  "ja": {
+    "accessibility": { "skip_to_content": "コンテンツへ移動", "close": "閉じる" },
+    "customer": {
+      "account": { "title": "アカウント" },
+      "orders": { "title": "注文" },
+      "log_in": { "email": "メールアドレス" },
+      "wishlist": { "save": "保存" }
+    },
+    "products": {
+      "product": {
+        "sold_out": "在庫切れ",
+        "new": "新着",
+        "only_left": "残り {{ count }}",
+        "add_to_cart": "カートに追加",
+        "choose_option": "オプションを選ぶ",
+        "notify": "入荷通知",
+        "notify_title": "再入荷のお知らせ",
+        "notify_submit": "通知する",
+        "quick_view": "クイックビュー",
+        "bearing": "ベアリング",
+        "resin": "レジン",
+        "white_toner": "ホワイトトナー",
+        "transparent": "透明",
+        "price_from": "〜"
+      }
+    }
+  }
+}

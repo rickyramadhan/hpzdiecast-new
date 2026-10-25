@@ -1,0 +1,11 @@
+{%- comment -%}
+  Side silhouette for a casting body type. Usage: {% render 'casting-silhouette', body: 'coupe' %}
+  body: coupe | hatch | sedan | truck (falls back to coupe).
+{%- endcomment -%}
+{%- case body -%}
+  {%- when 'hatch' -%}{%- assign d = 'M14 50 L15 38 Q20 34 40 32 L62 18 Q90 14 150 17 L168 32 Q182 35 186 42 L188 50 Z' -%}
+  {%- when 'sedan' -%}{%- assign d = 'M12 50 L14 40 Q22 35 44 33 L68 21 Q96 17 126 19 L148 31 Q178 33 188 40 L190 50 Z' -%}
+  {%- when 'truck' -%}{%- assign d = 'M10 50 L11 34 Q14 30 30 30 L52 30 L58 14 L96 14 L102 30 L190 30 L191 50 Z' -%}
+  {%- else -%}{%- assign d = 'M14 50 L16 40 Q24 36 46 34 L70 22 Q92 16 120 18 L146 30 Q176 33 186 40 L188 50 Z' -%}
+{%- endcase -%}
+<svg viewBox="0 0 200 70" aria-hidden="true"><path d="{{ d }}" fill="currentColor"/><circle cx="48" cy="52" r="10" fill="currentColor" stroke="var(--sil-bg,#fff)" stroke-width="2.5"/><circle cx="152" cy="52" r="10" fill="currentColor" stroke="var(--sil-bg,#fff)" stroke-width="2.5"/></svg>

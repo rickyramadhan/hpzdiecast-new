@@ -1,0 +1,113 @@
+{{ 'p-home.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign lead = s.lead
+  if lead == blank
+    assign lead = 'hpz.home.anat.lead' | t
+  endif
+  assign spec_items = s.spec | split: ','
+-%}
+<section class="anat dark" data-home="anatomy" {{ section.shopify_attributes }}>
+  <div class="wrap anat-in">
+    <div class="anat-copy">
+      <span class="eyebrow">{% if s.idx != blank %}<b>{{ s.idx }}</b> {% endif %}<span>{{ 'hpz.home.anat.eyebrow' | t }}</span></span>
+      <h2 class="h1">
+        {%- if s.heading != blank -%}{{ s.heading | escape | newline_to_br }}{%- else -%}{{ 'hpz.home.anat.heading_html' | t }}{%- endif -%}
+      </h2>
+      <p class="lead">{{ lead }}</p>
+      <ol class="anat-list">
+        {%- for block in section.blocks -%}
+          {%- assign k = block.settings.part -%}
+          {%- assign title_key = 'hpz.home.anat.' | append: k | append: '_title' -%}
+          {%- assign text_key = 'hpz.home.anat.' | append: k | append: '_text' -%}
+          <li data-part="{{ k }}" {{ block.shopify_attributes }}>
+            <span class="mono">0{{ forloop.index }}</span>
+            <div>
+              <b>{% if block.settings.title != blank %}{{ block.settings.title }}{% else %}{{ title_key | t }}{% endif %}</b>
+              <p>{% if block.settings.text != blank %}{{ block.settings.text }}{% else %}{{ text_key | t }}{% endif %}</p>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ol>
+      {%- if s.cta_url != blank -%}
+        <a class="btn btn-line" href="{{ s.cta_url }}">{% if s.cta_label != blank %}{{ s.cta_label }}{% else %}{{ 'hpz.home.anat.cta' | t }}{% endif %}</a>
+      {%- endif -%}
+    </div>
+    <div class="anat-vis">
+      <div class="av-wrap">
+        <div class="av-w" data-anat-wheel></div>
+        <svg class="av-hl" viewBox="0 0 100 100" aria-hidden="true">
+          {%- for block in section.blocks -%}
+            {%- assign k = block.settings.part -%}
+            {%- case k -%}
+              {%- when 'tyre' -%}{%- assign r0 = 37 | times: 1.0 -%}{%- assign r1 = 49 | times: 1.0 -%}
+              {%- when 'lip' -%}{%- assign r0 = 33.5 -%}{%- assign r1 = 38 | times: 1.0 -%}
+              {%- when 'face' -%}{%- assign r0 = 10 | times: 1.0 -%}{%- assign r1 = 33 | times: 1.0 -%}
+              {%- when 'disc' -%}{%- assign r0 = 18 | times: 1.0 -%}{%- assign r1 = 28 | times: 1.0 -%}
+              {%- else -%}{%- assign r0 = 0 -%}{%- assign r1 = 10 | times: 1.0 -%}
+            {%- endcase -%}
+            {%- assign y1 = 50 | minus: r1 -%}
+            {%- assign y0 = 50 | minus: r0 -%}
+            <path data-hl="{{ k }}" fill-rule="evenodd" d="M50 {{ y1 }} A{{ r1 }} {{ r1 }} 0 1 1 49.99 {{ y1 }} Z{% if r0 > 0 %} M50 {{ y0 }} A{{ r0 }} {{ r0 }} 0 1 0 50.01 {{ y0 }} Z{% endif %}"/>
+          {%- endfor -%}
+        </svg>
+        {%- for block in section.blocks -%}
+          {%- assign k = block.settings.part -%}
+          {%- assign title_key = 'hpz.home.anat.' | append: k | append: '_title' -%}
+          <span class="av-tag av-{{ k }}" data-part="{{ k }}"><i class="mono">0{{ forloop.index }}</i>{% if block.settings.title != blank %}{{ block.settings.title }}{% else %}{{ title_key | t }}{% endif %}</span>
+        {%- endfor -%}
+      </div>
+      {%- if s.spec != blank -%}
+        <div class="av-spec mono">{%- for item in spec_items -%}<span>{{ item | strip }}</span>{%- endfor -%}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+<script src="{{ 'home.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Wheel anatomy",
+  "settings": [
+    { "type": "text", "id": "idx", "label": "Index number", "default": "04" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "info": "One line per row. Blank = translated default." },
+    { "type": "textarea", "id": "lead", "label": "Lead paragraph", "info": "Blank = translated default." },
+    { "type": "text", "id": "spec", "label": "Spec chips", "default": "1:64", "info": "Comma separated, e.g. Ø 10.00, W 6.00, 1:64" },
+    { "type": "text", "id": "cta_label", "label": "Button label" },
+    { "type": "url", "id": "cta_url", "label": "Button link", "info": "Blank = no button." }
+  ],
+  "blocks": [
+    {
+      "type": "part",
+      "name": "Part",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "select", "id": "part", "label": "Wheel part (highlight area)", "default": "tyre",
+          "options": [
+            { "value": "tyre", "label": "Tyre (outer ring)" },
+            { "value": "lip", "label": "Lip / barrel" },
+            { "value": "face", "label": "Face" },
+            { "value": "disc", "label": "Disc brake" },
+            { "value": "hub", "label": "Hub (centre)" }
+          ]
+        },
+        { "type": "text", "id": "title", "label": "Title", "info": "Blank = translated default for the part." },
+        { "type": "textarea", "id": "text", "label": "Description", "info": "Blank = translated default for the part." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wheel anatomy",
+      "blocks": [
+        { "type": "part", "settings": { "part": "tyre" } },
+        { "type": "part", "settings": { "part": "lip" } },
+        { "type": "part", "settings": { "part": "face" } },
+        { "type": "part", "settings": { "part": "disc" } },
+        { "type": "part", "settings": { "part": "hub" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,101 @@
+{%- comment -%}
+  Rendered via /products/{handle}?section_id=quick-view (and ?variant=ID&section_id=quick-view on variant change).
+  assets/quick-view.js injects the output of [data-qv-root] into #quick-box.
+{%- endcomment -%}
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  capture facts_json
+    render 'product-facts', product: product
+  endcapture
+  assign f_raw = facts_json | strip | split: '~'
+  assign f_brand = f_raw[0]
+  assign f_kind = f_raw[2]
+  assign f_dia = f_raw[3]
+  assign f_face = f_raw[6]
+  assign f_lip = f_raw[7]
+  assign f_sheet = f_raw[8]
+  assign f_own = false
+  if f_raw[1] == 'true'
+    assign f_own = true
+  endif
+  assign f_bearing = false
+  if f_raw[4] == 'true'
+    assign f_bearing = true
+  endif
+  assign f_disc = false
+  if f_raw[5] == 'true'
+    assign f_disc = true
+  endif
+  assign f_precoated = false
+  if f_raw[9] == 'true'
+    assign f_precoated = true
+  endif
+  assign f_made = f_raw[10] | split: ',' | join: ','
+  assign brand_name = f_brand
+  assign q_dia = f_dia
+  assign q_handles = f_made
+  assign kind = f_kind
+  assign cur_idx = 0
+  if current.featured_media
+    for m in product.media
+      if m.id == current.featured_media.id
+        assign cur_idx = forloop.index0
+        break
+      endif
+    endfor
+  endif
+  assign cur_media = product.media[cur_idx]
+-%}
+<div data-qv-root data-handle="{{ product.handle }}" data-product-url="{{ product.url }}" data-section-id="{{ section.id }}">
+  <button type="button" class="modal-x" data-close aria-label="{{ 'hpz.product.close' | t }}">{% render 'icon', name: 'close' %}</button>
+  <div class="qv">
+    <div class="qv-g">
+      <div class="qv-main" data-qv-main>
+        {%- if cur_media -%}
+          {{ cur_media.preview_image | image_url: width: 900 | image_tag: alt: product.title, data-qv-img: '' }}
+        {%- endif -%}
+      </div>
+      {%- if product.media.size > 1 -%}
+        <div class="qv-th">
+          {%- for m in product.media limit: 8 -%}
+            <button type="button" class="{% if forloop.index0 == cur_idx %}is-on{% endif %}" data-qi="{{ forloop.index0 }}" data-media-id="{{ m.id }}" data-src="{{ m.preview_image | image_url: width: 900 }}" aria-label="{{ 'hpz.product.image_n' | t: n: forloop.index }}">
+              {{- m.preview_image | image_url: width: 160 | image_tag: width: 60, height: 60, alt: '', loading: 'lazy' -}}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+    <div class="qv-i" data-dia="{{ q_dia }}" data-made-for="{{ q_handles }}" data-kind="{{ kind }}">
+      <span class="eyebrow">{{ brand_name | escape }}{% if current.sku != blank %} &middot; <b class="mono">{{ current.sku | escape }}</b>{% endif %}</span>
+      <h3 class="h2">{{ product.title | escape }}</h3>
+      <div class="qv-pr">{% render 'price', product: product, variant: current %}</div>
+      {%- capture chips -%}
+        {%- if f_dia != blank -%}<span>&Oslash; {{ f_dia | times: 1.0 | round: 1 | replace: '.0', '' }} mm</span>{%- endif -%}
+        {%- if f_bearing -%}<span>{{ 'hpz.product.chip_bearing' | t }}</span>{%- endif -%}
+        {%- if f_face != blank -%}<span>{{ f_face | replace: '-', ' ' | capitalize | escape }}</span>{%- endif -%}
+        {%- if f_sheet != blank -%}<span>{{ f_sheet | replace: '-', ' ' | capitalize | escape }}</span>{%- endif -%}
+        {%- if f_precoated -%}<span>{{ 'hpz.product.precoated' | t }}</span>{%- endif -%}
+      {%- endcapture -%}
+      {%- if chips contains '<span>' -%}<div class="qv-spec">{{ chips }}</div>{%- endif -%}
+      {% render 'product-variant-picker', product: product, variant: current %}
+      {%- if q_dia != blank or q_handles != blank -%}<div class="qv-fit"><span data-fit-slot></span></div>{%- endif -%}
+      <div class="qv-a">
+        {%- if current.available -%}
+          <button type="button" class="btn btn-signal btn-lg" data-add-to-cart data-variant-id="{{ current.id }}" data-fly-from="[data-qv-main]">{% render 'icon', name: 'cart' %}{{ 'hpz.product.add_to_cart' | t }}</button>
+        {%- else -%}
+          <button type="button" class="btn btn-ghost btn-lg" data-notify="Restock alert: {{ product.title | escape }} {{ shop.url }}{{ product.url }}?variant={{ current.id }}" data-notify-title="{{ product.title | escape }}">{% render 'icon', name: 'bell' %}{{ 'hpz.product.notify_when_back' | t }}</button>
+        {%- endif -%}
+        <button type="button" class="btn btn-ghost btn-icon btn-lg pc-wish-in" data-wish="{{ product.handle }}" aria-label="{{ 'hpz.product.wishlist' | t }}">{% render 'icon', name: 'heart' %}</button>
+      </div>
+      <a class="arrow-link" href="{{ product.url }}">{{ 'hpz.product.qv_full' | t }} {% render 'icon', name: 'arrow' %}</a>
+    </div>
+  </div>
+  <script type="application/json" data-qv-json>{{ product.variants | json }}</script>
+</div>
+
+{% schema %}
+{
+  "name": "Quick view",
+  "settings": []
+}
+{% endschema %}

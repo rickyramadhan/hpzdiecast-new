@@ -1,0 +1,48 @@
+{{ 'p-shop.css' | asset_url | stylesheet_tag }}
+<section class="col-head">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="{{ 'hpz.catalog.breadcrumb' | t }}">
+      <a href="{{ routes.root_url }}">{{ 'hpz.catalog.home' | t }}</a><span>{{ 'hpz.catalog.collections_title' | t }}</span>
+    </nav>
+    <div class="col-h">
+      <div><h1 class="h1">{% if section.settings.title != blank %}{{ section.settings.title | escape }}{% else %}{{ 'hpz.catalog.collections_title' | t }}{% endif %}</h1></div>
+    </div>
+  </div>
+</section>
+<section class="col-body">
+  <div class="wrap">
+    {%- assign brand_handles = settings.brand_list | split: ',' -%}
+    <div class="grid lc-grid" style="--cols:{{ section.settings.columns }}">
+      {%- for h in brand_handles -%}
+        {%- assign hk = h | strip -%}{%- assign c = collections[hk] -%}
+        {%- if c == blank or c.all_products_count == 0 -%}{%- continue -%}{%- endif -%}
+        <a class="lc-card" href="{{ c.url }}" data-reveal style="--i:{{ forloop.index0 | modulo: 6 }}">
+          <span class="lc-img">
+            {%- liquid
+              assign img = c.featured_image
+              if img == blank
+                assign img = c.products.first.featured_image
+              endif
+            -%}
+            {%- if img != blank -%}
+              {{ img | image_url: width: 600 | image_tag: loading: 'lazy', alt: c.title, sizes: '(min-width: 1000px) 25vw, 50vw' }}
+            {%- endif -%}
+          </span>
+          <span class="lc-t"><b>{{ c.title | escape }}</b><em class="mono">{{ 'hpz.catalog.products_count' | t: count: c.all_products_count }}</em></span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection list",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading (defaults to translated 'Collections')" },
+    { "type": "select", "id": "columns", "label": "Grid columns (desktop)", "default": "4", "options": [
+      { "value": "3", "label": "3" }, { "value": "4", "label": "4" }, { "value": "5", "label": "5" }
+    ] }
+  ]
+}
+{% endschema %}

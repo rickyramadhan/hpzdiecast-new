@@ -1,0 +1,120 @@
+{%- comment -%}
+  Site footer: newsletter, link columns (editable link blocks, optional Shopify menu per column), workshop contact, payments, legal.
+  The live store's own `footer` menu is not used by default (it only holds Search / About Us).
+{%- endcomment -%}
+<footer class="ft dark-0">
+  <div class="ft-ruler" aria-hidden="true"></div>
+  <div class="wrap ft-top">
+    <div class="ft-news">
+      <span class="eyebrow"><b>{{ section.settings.news_eyebrow }}</b></span>
+      <h3 class="h2">{{ section.settings.news_title }}</h3>
+      <p class="lead">{{ section.settings.news_text }}</p>
+      {%- form 'customer', id: 'footer-newsletter', class: 'ft-form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input class="input" type="email" name="contact[email]" required placeholder="Email address" aria-label="Email address">
+        <button class="btn btn-signal" type="submit">Subscribe</button>
+      {%- endform -%}
+    </div>
+
+    <div class="ft-cols">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'links' -%}
+          <div class="ft-col" {{ block.shopify_attributes }}>
+            <h6>{{ block.settings.title }}</h6>
+            <ul>
+              {%- if block.settings.menu != blank -%}
+                {%- for link in block.settings.menu.links -%}
+                  <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                {%- endfor -%}
+              {%- else -%}
+                {%- for i in (1..6) -%}
+                  {%- assign t_key = 'label_' | append: i -%}
+                  {%- assign u_key = 'url_' | append: i -%}
+                  {%- assign label = block.settings[t_key] -%}
+                  {%- assign url = block.settings[u_key] -%}
+                  {%- assign skip_link = false -%}
+                  {%- if settings.hide_academy and url contains '/blogs/academy' -%}{%- assign skip_link = true -%}{%- endif -%}
+                  {%- if label != blank and skip_link == false -%}
+                    <li><a href="{{ url | default: '#' }}">{{ label }}</a></li>
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <div class="ft-col ft-contact">
+        <h6>Workshop</h6>
+        <p>{{ shop.name }}<br>
+          {%- if settings.workshop_address != blank -%}{{ settings.workshop_address }}<br>{%- endif -%}
+          {{ settings.workshop_city }}, Indonesia</p>
+        <p class="mono xs">{{ settings.workshop_hours }}</p>
+        {%- if settings.whatsapp != blank -%}
+          <a class="ft-wa" href="https://wa.me/{{ settings.whatsapp }}">{% render 'icon', name: 'wa' %}+{{ settings.whatsapp }}</a>
+        {%- endif -%}
+        <div class="ft-soc">
+          {%- if settings.instagram_url != blank -%}<a href="{{ settings.instagram_url }}" aria-label="Instagram">{% render 'icon', name: 'ig' %}</a>{%- endif -%}
+          {%- if settings.youtube_url != blank -%}<a href="{{ settings.youtube_url }}" aria-label="YouTube">{% render 'icon', name: 'yt' %}</a>{%- endif -%}
+          {%- if settings.tiktok_url != blank -%}<a href="{{ settings.tiktok_url }}" aria-label="TikTok">{% render 'icon', name: 'tt' %}</a>{%- endif -%}
+          {%- if settings.x_url != blank -%}<a href="{{ settings.x_url }}" aria-label="X">{% render 'icon', name: 'x' %}</a>{%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap ft-bot">
+    <div class="ft-b1">
+      {% render 'logo' %}
+      <span class="xs">© {{ 'now' | date: '%Y' }} {{ shop.name }}. Independent parts maker, not affiliated with Mattel, Hot Wheels or Matchbox.</span>
+    </div>
+    <div class="ft-b2">
+      {% render 'store-switch', cls: 'on-dark' %}
+      {%- if shop.enabled_payment_types.size > 0 -%}
+        <span class="pays">
+          {%- for type in shop.enabled_payment_types -%}
+            <span class="pay-svg">{{ type | payment_type_svg_tag }}</span>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+    </div>
+    <nav class="ft-legal" aria-label="Legal">
+      <a href="{{ shop.privacy_policy.url }}">Privacy</a>
+      <a href="{{ shop.terms_of_service.url }}">Terms</a>
+      <a href="{{ shop.shipping_policy.url }}">Shipping policy</a>
+      <a href="{{ shop.refund_policy.url }}">Refund policy</a>
+    </nav>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "tag": "footer",
+  "class": "shopify-section-footer",
+  "settings": [
+    { "type": "text", "id": "news_eyebrow", "label": "Newsletter eyebrow", "default": "Drop alerts" },
+    { "type": "text", "id": "news_title", "label": "Newsletter title", "default": "New wheels drop regularly. Be first to know." },
+    { "type": "textarea", "id": "news_text", "label": "Newsletter text", "default": "One email per drop. No spam." }
+  ],
+  "blocks": [
+    {
+      "type": "links",
+      "name": "Link column",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Heading", "default": "Shop" },
+        { "type": "link_list", "id": "menu", "label": "Menu (optional)", "info": "Pick a menu to use it, or fill the links below." },
+        { "type": "text", "id": "label_1", "label": "Link 1 text" }, { "type": "url", "id": "url_1", "label": "Link 1 URL" },
+        { "type": "text", "id": "label_2", "label": "Link 2 text" }, { "type": "url", "id": "url_2", "label": "Link 2 URL" },
+        { "type": "text", "id": "label_3", "label": "Link 3 text" }, { "type": "url", "id": "url_3", "label": "Link 3 URL" },
+        { "type": "text", "id": "label_4", "label": "Link 4 text" }, { "type": "url", "id": "url_4", "label": "Link 4 URL" },
+        { "type": "text", "id": "label_5", "label": "Link 5 text" }, { "type": "url", "id": "url_5", "label": "Link 5 URL" },
+        { "type": "text", "id": "label_6", "label": "Link 6 text" }, { "type": "url", "id": "url_6", "label": "Link 6 URL" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Footer", "blocks": [ { "type": "links" }, { "type": "links" } ] }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,46 @@
+{%- comment -%}
+  Search overlay content (inside .search#search in layout/theme.liquid). Driven by assets/search.js.
+  Popular chips: settings.search_popular (comma separated). Categories: real collections.
+{%- endcomment -%}
+{%- assign popular = settings.search_popular | default: 'TE37, BBS, R34, decal, 9.5mm, bearing' | split: ',' -%}
+{%- assign cat_handles = 'wheels,decals,body-kit,engines,exterior-detail,interior-detail,dioramas' | split: ',' -%}
+<div class="sr-top">
+  <form class="wrap sr-in" action="{{ routes.search_url }}" method="get" role="search" data-sr-form>
+    {% render 'icon', name: 'search' %}
+    <input id="sr-q" type="search" name="q" placeholder="{{ 'hpz.catalog.search_placeholder' | t }}" autocomplete="off" aria-label="{{ 'hpz.catalog.search_label' | t }}" aria-controls="sr-res">
+    <input type="hidden" name="type" value="product">
+    <kbd>{{ 'hpz.catalog.esc' | t }}</kbd>
+    <button type="button" class="dr-x" data-close aria-label="{{ 'hpz.catalog.close' | t }}">{% render 'icon', name: 'close' %}</button>
+  </form>
+</div>
+<div class="sr-body">
+  <div class="wrap" id="sr-res" aria-live="polite">
+    <div class="sr-cols" data-sr-home>
+      <div>
+        <h6>{{ 'hpz.catalog.popular' | t }}</h6>
+        <div class="sr-chips">
+          {%- for term in popular -%}
+            {%- assign term = term | strip -%}
+            {%- if term != blank -%}
+              <a class="chip" href="{{ routes.search_url }}?q={{ term | url_encode }}&type=product" data-sq="{{ term | escape }}">{{ term | escape }}</a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <h6>{{ 'hpz.catalog.categories' | t }}</h6>
+        <div class="sr-cats">
+          {%- for h in cat_handles -%}
+            {%- assign cc = collections[h] -%}
+            {%- if cc.title != blank -%}<a href="{{ cc.url }}">{{ cc.title | escape }}</a>{%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+      <div>
+        <div data-sr-recent hidden>
+          <h6>{{ 'hpz.catalog.recently_viewed' | t }}</h6>
+          <div class="sr-grid" data-sr-recent-list></div>
+        </div>
+        <p class="muted" data-sr-hint>{{ 'hpz.catalog.start_typing' | t }}</p>
+      </div>
+    </div>
+  </div>
+</div>

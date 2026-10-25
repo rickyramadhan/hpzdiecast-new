@@ -1,0 +1,13 @@
+{%- comment -%}
+  Client-side quick filter bar over the cards currently loaded in the grid (NOT server facets).
+  Filled and shown by assets/collection.js when 6 or more cards are present. Strings are passed as data attributes.
+{%- endcomment -%}
+<div class="qf" data-qf hidden
+  data-note="{{ 'hpz.catalog.qf_note' | t: n: '__n__' | escape }}"
+  data-all="{{ 'hpz.catalog.qf_all' | t | escape }}"
+  data-bearing="{{ 'hpz.catalog.qf_bearing' | t | escape }}"
+  data-clear="{{ 'hpz.catalog.qf_clear' | t | escape }}"
+  data-est-note="{{ 'hpz.catalog.est_note' | t: n: '__n__', name: '__name__' | escape }}"
+  data-est-tag="{{ 'hpz.catalog.est_tag' | t | escape }}"
+  data-est-close="{{ 'hpz.catalog.est_close' | t | escape }}"
+  data-est="{{ 'hpz.catalog.est' | t | escape }}"></div>

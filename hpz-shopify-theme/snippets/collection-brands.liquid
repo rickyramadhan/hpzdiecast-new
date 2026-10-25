@@ -1,0 +1,71 @@
+{%- comment -%}
+  Logo tiles at the top of a collection page.
+  - Category pages (wheels, body-kit, engines ...): the brands that sell parts there, as logo tiles linking to each brand's collection.
+    The list and the order are Theme settings > Collection tiles > brand_strip_map ("category: brand, brand").
+  - Brand pages (JV Custom, Sakura Model ...): the part categories that brand has, with an icon and the number of parts
+    (brand_cat_map). The link goes to "that category, only this brand" when brand_tags_ready is on (products carry a brand-<handle> tag).
+  Brands without any product are never shown. Usage: {% render 'collection-brands' %}
+{%- endcomment -%}
+{%- assign ch = collection.handle -%}
+{%- assign strip_list = '' -%}
+{%- assign strip_lines = settings.brand_strip_map | newline_to_br | split: '<br />' -%}
+{%- for line in strip_lines -%}
+  {%- assign kv = line | split: ':' -%}
+  {%- assign k = kv[0] | strip -%}
+  {%- if k == ch -%}{%- assign strip_list = kv[1] -%}{%- endif -%}
+{%- endfor -%}
+{%- assign cat_list = '' -%}
+{%- if strip_list == blank -%}
+  {%- assign cat_lines = settings.brand_cat_map | newline_to_br | split: '<br />' -%}
+  {%- for line in cat_lines -%}
+    {%- assign kv = line | split: ':' -%}
+    {%- assign k = kv[0] | strip -%}
+    {%- if k == ch -%}{%- assign cat_list = kv[1] -%}{%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- if strip_list != blank -%}
+  {%- assign handles = strip_list | split: ',' -%}
+  {{ 'p-brands.css' | asset_url | stylesheet_tag }}
+  <div class="col-tiles" data-brand-tiles>
+    <div class="ct-h"><span class="eyebrow"><b>{{ 'hpz.catalog.brand_title' | t }}</b></span></div>
+    <div class="ct-list">
+      {%- for h in handles -%}
+        {%- assign hh = h | strip -%}
+        {%- assign bc = collections[hh] -%}
+        {%- if bc != blank and bc.products_count > 0 -%}
+          <a class="bt{% if bc.handle == ch %} is-on{% endif %}" href="{{ bc.url }}" title="{{ bc.title | escape }}">
+            <span class="bt-logo">
+              {%- if bc.image -%}{{ bc.image | image_url: width: 280 | image_tag: loading: 'lazy', alt: bc.title, width: 140, height: 140 }}{%- else -%}<b>{{ bc.title | slice: 0, 2 | upcase }}</b>{%- endif -%}
+            </span>
+            <span class="bt-n">{{ bc.title }}</span>
+            <span class="bt-c">{{ bc.products_count }} {{ 'hpz.catalog.parts' | t }}</span>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+{%- elsif cat_list != blank -%}
+  {%- assign pairs = cat_list | split: ',' -%}
+  {{ 'p-brands.css' | asset_url | stylesheet_tag }}
+  <div class="col-tiles" data-brand-tiles>
+    <div class="ct-h"><span class="eyebrow"><b>{{ 'hpz.catalog.cat_title' | t }}</b></span></div>
+    <div class="ct-list">
+      {%- for p in pairs -%}
+        {%- assign cv = p | split: '=' -%}
+        {%- assign ch2 = cv[0] | strip -%}
+        {%- assign cc = collections[ch2] -%}
+        {%- assign n = cv[1] | strip | plus: 0 -%}
+        {%- if cc != blank and n > 0 -%}
+          {%- assign href = cc.url -%}
+          {%- if settings.brand_tags_ready -%}{%- assign href = cc.url | append: '/brand-' | append: ch -%}{%- endif -%}
+          <a class="bt bt-cat" href="{{ href }}" title="{{ cc.title | escape }}">
+            <span class="bt-logo">{% render 'cat-icon', handle: ch2 %}</span>
+            <span class="bt-n">{{ cc.title }}</span>
+            <span class="bt-c">{{ n }} {{ 'hpz.catalog.parts' | t }}</span>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}

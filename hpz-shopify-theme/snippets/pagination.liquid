@@ -1,0 +1,34 @@
+{%- comment -%}
+  Load-more pager (progressive enhancement: real links stay in the markup).
+  Params: paginate, shown (items shown up to and including this page)
+{%- endcomment -%}
+{%- if paginate.pages > 0 and paginate.items > 0 -%}
+  {%- assign current_str = paginate.current_page | append: '' -%}
+  {%- assign pct =shown | times: 100.0 | divided_by: paginate.items | round: 1 -%}
+  <div class="pager" id="pager">
+    <div class="pg-t mono">{{ 'hpz.catalog.showing' | t: shown: shown, total: paginate.items }}</div>
+    <div class="pg-bar"><i style="width:{{ pct }}%"></i></div>
+    {%- if paginate.next -%}
+      <a class="btn btn-ink btn-lg" id="more" href="{{ paginate.next.url }}" rel="next">{{ 'hpz.catalog.load_more' | t }}</a>
+    {%- else -%}
+      <span class="xs muted">{{ 'hpz.catalog.everything' | t }}</span>
+    {%- endif -%}
+    {%- if paginate.pages > 1 -%}
+      <nav class="pg-pages" data-pages aria-label="{{ 'hpz.catalog.pages' | t }}">
+        {%- if paginate.previous -%}<a class="link xs" href="{{ paginate.previous.url }}" rel="prev">{{ 'hpz.catalog.previous' | t }}</a>{%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" aria-label="{{ 'hpz.catalog.page_n' | t: n: part.title }}">{{ part.title }}</a>
+          {%- elsif part.title == current_str -%}
+            <span class="is-on" aria-current="page">{{ part.title }}</span>
+          {%- else -%}
+            <span>{{ part.title }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next -%}<a class="link xs" href="{{ paginate.next.url }}">{{ 'hpz.catalog.next' | t }}</a>{%- endif -%}
+      </nav>
+    {%- endif -%}
+  </div>
+{%- else -%}
+  <div class="pager" id="pager"></div>
+{%- endif -%}

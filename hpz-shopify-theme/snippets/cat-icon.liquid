@@ -1,0 +1,10 @@
+{%- comment -%}
+  Icon for a part category, by collection handle. Usage: {% render 'cat-icon', handle: c.handle %}
+{%- endcomment -%}
+{%- assign ci_map = 'wheels:wheel,decals:tag,body-kit:layers,wide-body-kit:layers,engines:bolt,exterior-detail:spark,interior-detail:car,interior-set:car,dioramas:box,premium-alloy-disc-brake:wheel' | split: ',' -%}
+{%- assign ci_name = 'grid' -%}
+{%- for pair in ci_map -%}
+  {%- assign kv = pair | split: ':' -%}
+  {%- if kv[0] == handle -%}{%- assign ci_name = kv[1] -%}{%- endif -%}
+{%- endfor -%}
+{% render 'icon', name: ci_name %}

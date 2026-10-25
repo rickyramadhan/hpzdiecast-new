@@ -1,0 +1,36 @@
+{%- comment -%}
+  Add-on switches (rigid box, shipping protection). Products are looked up by handle from theme settings.
+  Hidden entirely if a handle is blank or the product is missing/unavailable. Toggled by assets/cart.js ([data-addon]).
+{%- endcomment -%}
+{%- liquid
+  assign box_p = null
+  assign prot_p = null
+  if settings.addon_box_handle != blank
+    assign box_p = all_products[settings.addon_box_handle]
+  endif
+  if settings.addon_protect_handle != blank
+    assign prot_p = all_products[settings.addon_protect_handle]
+  endif
+-%}
+{%- assign pairs = 'box,protect' | split: ',' -%}
+{%- capture rows -%}
+  {%- for pair in pairs -%}
+    {%- if pair == 'box' -%}{%- assign ap = box_p -%}{%- else -%}{%- assign ap = prot_p -%}{%- endif -%}
+    {%- if ap != blank -%}
+      {%- assign av = ap.selected_or_first_available_variant -%}
+      {%- if av != blank and av.available -%}
+        {%- assign on = false -%}
+        {%- for item in cart.items -%}{%- if item.variant_id == av.id -%}{%- assign on = true -%}{%- endif -%}{%- endfor -%}
+        <label class="addon">
+          <span class="switch"><input type="checkbox" data-addon="{{ pair }}" data-variant-id="{{ av.id }}" {% if on %}checked{% endif %}><span></span></span>
+          <span class="addon-t"><b>{{ ap.title }}</b>{% assign d = ap.description | strip_html | strip | truncate: 70 %}{% if d != blank %}<em>{{ d }}</em>{% endif %}</span>
+          <span class="mono">+{{ av.price | money }}</span>
+        </label>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign rows_trim = rows | strip -%}
+{%- if rows_trim != blank -%}
+  <div class="addons" data-addons>{{ rows_trim }}</div>
+{%- endif -%}

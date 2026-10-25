@@ -1,0 +1,12 @@
+{%- comment -%} Round diameter chips (mockup .fdia). Params: filter {%- endcomment -%}
+<div class="fdia">
+  {%- for value in filter.values -%}
+    {%- assign off = false -%}
+    {%- if value.count == 0 and value.active == false -%}{%- assign off = true -%}{%- endif -%}
+    <label class="fdia-b{% if value.active %} is-on{% endif %}{% if off %} is-dis{% endif %}" data-dia="{{ value.label | remove: 'mm' | strip | escape }}">
+      <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value | escape }}"{% if value.active %} checked{% endif %}{% if off %} disabled{% endif %}>
+      <b>{{ value.label | remove: 'mm' | strip | escape }}</b><span>mm</span><em class="mono">{{ value.count }}</em>
+    </label>
+  {%- endfor -%}
+</div>
+<p class="fhint" data-dia-hint hidden>{% render 'icon', name: 'info' %}<span></span></p>

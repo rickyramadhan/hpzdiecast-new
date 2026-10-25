@@ -1,0 +1,15 @@
+{%- comment -%}
+  Renders one product card for the product in context. Fetched by assets/collection.js:
+  /products/{handle}?section_id=product-card-single (recently viewed rail).
+{%- endcomment -%}
+<div data-single>
+  {%- if product -%}
+    {%- render 'product-card', product: product, index: 0, lazy: true -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Product card (ajax)"
+}
+{% endschema %}

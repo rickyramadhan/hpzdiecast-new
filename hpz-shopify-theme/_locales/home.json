@@ -1,0 +1,308 @@
+{
+  "en": {
+    "hpz": {
+      "home": {
+        "hero": {
+          "eyebrow": "Workshop · {{ city }}",
+          "headline_html": "Every<br>millimetre<br>matters.",
+          "lead": "Wheels, waterslide decals, resin body kits and engines for 1:64 builders. Designed, checked and packed by hand.",
+          "cta_shop": "Shop wheels",
+          "cta_find": "Find parts for my casting",
+          "finish": "Finish",
+          "bench_label": "Featured parts on the workbench"
+        },
+        "ticker": {
+          "new": "NEW",
+          "label": "New arrivals"
+        },
+        "bento": {
+          "heading": "Shop by system",
+          "sub": "Organised like a real parts catalogue, from the wheels up to the engine bay.",
+          "all": "All {{ count }} parts",
+          "parts": "parts"
+        },
+        "fit": {
+          "eyebrow": "Fitment finder",
+          "heading_html": "Pick a casting.<br>We do the maths.",
+          "lead": "Choose your car and see the wheel diameter and axle it needs, then jump straight to the parts that fit.",
+          "label": "Your casting",
+          "diameter": "Wheel diameter",
+          "axle": "Axle",
+          "maker": "Maker",
+          "year": "Year",
+          "axle_long": "Long",
+          "axle_short": "Short",
+          "cta": "Show wheels that fit",
+          "made": "Made for this casting",
+          "estimated": "estimated size",
+          "verified": "verified"
+        },
+        "common": {
+          "prev": "Previous",
+          "next": "Next"
+        },
+        "anat": {
+          "eyebrow": "Anatomy",
+          "heading_html": "Five parts.<br>One small wheel.",
+          "lead": "A detailed 1:64 wheel is more than one piece of plastic. Hover each component to see how it is built.",
+          "cta": "Shop wheels",
+          "tyre_title": "Rubber tyre",
+          "tyre_text": "The tyre sits on the outside of the wheel and grips the track.",
+          "lip_title": "Lip / barrel",
+          "lip_text": "The lip and barrel give the wheel its depth and dish.",
+          "face_title": "Wheel face",
+          "face_text": "The face carries the spoke design and the finish.",
+          "disc_title": "Disc brake and caliper",
+          "disc_text": "A separate rotor behind the spokes, so the wheel looks right from every angle.",
+          "hub_title": "Hub",
+          "hub_text": "The centre of the wheel, where it meets the axle."
+        },
+        "tabs": {
+          "heading": "On the bench this week",
+          "view_all": "View all"
+        },
+        "ugc": {
+          "heading": "Built by you",
+          "sub": "Real builds from the community. Tap the dots on a photo to buy the parts used.",
+          "gallery": "Full gallery",
+          "add": "Add to cart",
+          "tagged": "{{ count }} parts tagged",
+          "cta_eyebrow": "Your build here",
+          "cta_title": "Tag @hpzdiecast or submit your build to be featured.",
+          "cta_link": "Submit a build"
+        },
+        "svc": {
+          "heading": "More than a parts shop",
+          "sub": "We also design decals, build cars to order and supply hobby shops.",
+          "start": "Start a request"
+        },
+        "reviews": {
+          "eyebrow": "Customer reviews",
+          "reviews": "reviews",
+          "in_countries": "in {{ count }} countries",
+          "verified": "Verified buyer"
+        },
+        "acad": {
+          "sub": "Step-by-step guides from our workshop. Free, no fluff.",
+          "all": "All guides",
+          "min": "{{ count }} min"
+        },
+        "promise": {
+          "t1": "Tracked worldwide shipping",
+          "d1": "Shipped from Jakarta Selatan, Indonesia.",
+          "d1_count": "Shipped from Jakarta Selatan, Indonesia to {{ count }} countries.",
+          "t2": "Duties paid by recipient",
+          "d2": "Duties and import taxes, if any, are paid by the recipient.",
+          "t3": "Packed like jewellery",
+          "d3": "Every set is bagged and boxed. A rigid case is available as an add-on.",
+          "t4": "Fitment finder",
+          "d4": "Pick your casting and see the wheel size and parts made for it."
+        }
+      }
+    }
+  },
+  "id": {
+    "hpz": {
+      "home": {
+        "hero": {
+          "eyebrow": "Workshop · {{ city }}",
+          "headline_html": "Setiap<br>milimeter<br>berarti.",
+          "lead": "Velg, waterslide decal, body kit resin dan mesin untuk builder 1:64. Didesain, dicek dan dikemas manual.",
+          "cta_shop": "Belanja velg",
+          "cta_find": "Cari parts untuk casting saya",
+          "finish": "Warna",
+          "bench_label": "Parts pilihan di meja kerja"
+        },
+        "ticker": {
+          "new": "BARU",
+          "label": "Baru masuk"
+        },
+        "bento": {
+          "heading": "Belanja per sistem",
+          "sub": "Diatur seperti katalog parts sungguhan, dari roda sampai ruang mesin.",
+          "all": "Semua {{ count }} parts",
+          "parts": "item"
+        },
+        "fit": {
+          "eyebrow": "Fitment finder",
+          "heading_html": "Pilih casting.<br>Kami yang hitung.",
+          "lead": "Pilih mobilmu dan lihat diameter velg dan axle yang dibutuhkan, lalu langsung ke parts yang pas.",
+          "label": "Casting kamu",
+          "diameter": "Diameter velg",
+          "axle": "Axle",
+          "maker": "Pabrikan",
+          "year": "Tahun",
+          "axle_long": "Panjang",
+          "axle_short": "Pendek",
+          "cta": "Lihat velg yang pas",
+          "made": "Khusus casting ini",
+          "estimated": "ukuran perkiraan",
+          "verified": "terverifikasi"
+        },
+        "common": {
+          "prev": "Sebelumnya",
+          "next": "Berikutnya"
+        },
+        "anat": {
+          "eyebrow": "Anatomi",
+          "heading_html": "Lima part.<br>Satu velg kecil.",
+          "lead": "Velg 1:64 yang detail bukan satu potong plastik. Arahkan kursor ke tiap komponen.",
+          "cta": "Belanja velg",
+          "tyre_title": "Ban karet",
+          "tyre_text": "Ban berada di sisi luar velg dan mencengkeram track.",
+          "lip_title": "Lip / barrel",
+          "lip_text": "Lip dan barrel memberi kedalaman pada velg.",
+          "face_title": "Face velg",
+          "face_text": "Face membawa desain spoke dan warna.",
+          "disc_title": "Disc brake dan kaliper",
+          "disc_text": "Rotor terpisah di balik spoke agar velg tampak benar dari semua sudut.",
+          "hub_title": "Hub",
+          "hub_text": "Pusat velg, tempat bertemu axle."
+        },
+        "tabs": {
+          "heading": "Di meja kerja minggu ini",
+          "view_all": "Lihat semua"
+        },
+        "ugc": {
+          "heading": "Dibangun oleh kalian",
+          "sub": "Build nyata dari komunitas. Klik titik pada foto untuk membeli part yang dipakai.",
+          "gallery": "Galeri lengkap",
+          "add": "Tambah ke keranjang",
+          "tagged": "{{ count }} part ditandai",
+          "cta_eyebrow": "Build kamu di sini",
+          "cta_title": "Tag @hpzdiecast atau kirim build-mu untuk tampil di sini.",
+          "cta_link": "Kirim build"
+        },
+        "svc": {
+          "heading": "Lebih dari toko parts",
+          "sub": "Kami juga mendesain decal, membangun mobil pesanan dan memasok toko hobi.",
+          "start": "Mulai request"
+        },
+        "reviews": {
+          "eyebrow": "Ulasan pelanggan",
+          "reviews": "ulasan",
+          "in_countries": "di {{ count }} negara",
+          "verified": "Pembeli terverifikasi"
+        },
+        "acad": {
+          "sub": "Panduan langkah demi langkah dari workshop kami. Gratis, tanpa basa-basi.",
+          "all": "Semua panduan",
+          "min": "{{ count }} mnt"
+        },
+        "promise": {
+          "t1": "Pengiriman terlacak ke seluruh dunia",
+          "d1": "Dikirim dari Jakarta Selatan, Indonesia.",
+          "d1_count": "Dikirim dari Jakarta Selatan, Indonesia ke {{ count }} negara.",
+          "t2": "Bea masuk ditanggung penerima",
+          "d2": "Bea masuk dan pajak impor, jika ada, dibayar oleh penerima.",
+          "t3": "Dikemas seperti perhiasan",
+          "d3": "Setiap set dikantong dan dibox. Hard case tersedia sebagai add-on.",
+          "t4": "Fitment finder",
+          "d4": "Pilih casting kamu dan lihat ukuran velg serta parts yang dibuat untuknya."
+        }
+      }
+    }
+  },
+  "ja": {
+    "hpz": {
+      "home": {
+        "hero": {
+          "eyebrow": "工房 · {{ city }}",
+          "headline_html": "1ミリに<br>こだわる<br>パーツ。",
+          "lead": "1/64ビルダーのためのホイール、デカール、レジン製ボディキット、エンジン。設計・検品・梱包はすべて手作業。",
+          "cta_shop": "ホイールを見る",
+          "cta_find": "車種から探す",
+          "finish": "仕上げ",
+          "bench_label": "作業台のピックアップパーツ"
+        },
+        "ticker": {
+          "new": "新着",
+          "label": "新着アイテム"
+        },
+        "bento": {
+          "heading": "カテゴリーで探す",
+          "sub": "本物のパーツカタログのように整理。",
+          "all": "全{{ count }}点",
+          "parts": "点"
+        },
+        "fit": {
+          "eyebrow": "フィットメント検索",
+          "heading_html": "車種を選ぶだけ。<br>計算はおまかせ。",
+          "lead": "車種を選ぶと必要なホイール径とアクスルが分かり、適合パーツへ進めます。",
+          "label": "あなたの車種",
+          "diameter": "ホイール径",
+          "axle": "アクスル",
+          "maker": "メーカー",
+          "year": "年式",
+          "axle_long": "ロング",
+          "axle_short": "ショート",
+          "cta": "適合ホイールを表示",
+          "made": "この車種専用",
+          "estimated": "推定サイズ",
+          "verified": "検証済み"
+        },
+        "common": {
+          "prev": "前へ",
+          "next": "次へ"
+        },
+        "anat": {
+          "eyebrow": "構造",
+          "heading_html": "5つの部品。<br>ひとつの小さなホイール。",
+          "lead": "精密な1/64ホイールは一体成形ではありません。各部品にカーソルを合わせてください。",
+          "cta": "ホイールを見る",
+          "tyre_title": "ラバータイヤ",
+          "tyre_text": "ホイール外周のタイヤがトラックをグリップします。",
+          "lip_title": "リップ / バレル",
+          "lip_text": "リップとバレルがホイールの奥行きを生みます。",
+          "face_title": "ホイールフェイス",
+          "face_text": "フェイスにスポークデザインと仕上げが入ります。",
+          "disc_title": "ブレーキ＆キャリパー",
+          "disc_text": "スポークの奥にある別体ローター。",
+          "hub_title": "ハブ",
+          "hub_text": "アクスルと接するホイールの中心。"
+        },
+        "tabs": {
+          "heading": "今週のピックアップ",
+          "view_all": "すべて見る"
+        },
+        "ugc": {
+          "heading": "みんなのビルド",
+          "sub": "コミュニティの実例。写真の点をタップすると使用パーツを購入できます。",
+          "gallery": "ギャラリー",
+          "add": "カートに追加",
+          "tagged": "{{ count }}点のパーツ",
+          "cta_eyebrow": "あなたのビルドを",
+          "cta_title": "@hpzdiecastをタグ付けするか、ビルドを投稿して掲載されましょう。",
+          "cta_link": "投稿する"
+        },
+        "svc": {
+          "heading": "パーツショップ以上の存在",
+          "sub": "デカール設計、受注ビルド、ホビーショップへの卸売も行っています。",
+          "start": "依頼する"
+        },
+        "reviews": {
+          "eyebrow": "お客様のレビュー",
+          "reviews": "件のレビュー",
+          "in_countries": "{{ count }}ヶ国",
+          "verified": "購入者"
+        },
+        "acad": {
+          "sub": "工房から届けるステップガイド。",
+          "all": "すべてのガイド",
+          "min": "{{ count }}分"
+        },
+        "promise": {
+          "t1": "追跡付きで世界へ発送",
+          "d1": "インドネシア・南ジャカルタから発送。",
+          "d1_count": "インドネシア・南ジャカルタから{{ count }}ヶ国へ発送。",
+          "t2": "関税は受取人負担",
+          "d2": "関税・輸入税が発生する場合は受取人のご負担となります。",
+          "t3": "丁寧な梱包",
+          "d3": "全セット個包装。ハードケースはオプションで追加できます。",
+          "t4": "フィットメント検索",
+          "d4": "車種を選んで、ホイールサイズと専用パーツを確認。"
+        }
+      }
+    }
+  }
+}

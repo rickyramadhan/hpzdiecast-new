@@ -1,0 +1,136 @@
+{%- comment -%}
+  PDP gallery: thumbs, main image (hover zoom / lightbox / arrows / swipe handled by assets/product.js),
+  optional technical drawing (Wheels with hpz.diameter) and before/after compare slider (decals).
+  Params: product, variant, show_compare (bool), show_drawing (bool)
+{%- endcomment -%}
+{%- liquid
+  assign cur_idx = 0
+  if variant.featured_media
+    for m in product.media
+      if m.id == variant.featured_media.id
+        assign cur_idx = forloop.index0
+        break
+      endif
+    endfor
+  endif
+  assign total = product.media.size
+  assign cur_media = product.media[cur_idx]
+  capture facts_json
+    render 'product-facts', product: product
+  endcapture
+  assign f_raw = facts_json | strip | split: '~'
+  assign f_brand = f_raw[0]
+  assign f_kind = f_raw[2]
+  assign f_dia = f_raw[3]
+  assign f_face = f_raw[6]
+  assign f_lip = f_raw[7]
+  assign f_sheet = f_raw[8]
+  assign f_own = false
+  if f_raw[1] == 'true'
+    assign f_own = true
+  endif
+  assign f_bearing = false
+  if f_raw[4] == 'true'
+    assign f_bearing = true
+  endif
+  assign f_disc = false
+  if f_raw[5] == 'true'
+    assign f_disc = true
+  endif
+  assign f_precoated = false
+  if f_raw[9] == 'true'
+    assign f_precoated = true
+  endif
+  assign f_made = f_raw[10] | split: ',' | join: ','
+  assign g_dia = f_dia
+  assign g_width = product.metafields.hpz.width.value
+-%}
+<div class="gal{% if total <= 1 %} is-single{% endif %}" data-gal data-index="{{ cur_idx }}" data-total="{{ total }}">
+  {%- if total > 1 -%}
+    <div class="gal-th">
+      {%- for m in product.media -%}
+        <button type="button" class="{% if forloop.index0 == cur_idx %}is-on{% endif %}" data-gi="{{ forloop.index0 }}" data-media-id="{{ m.id }}" data-main="{{ m.preview_image | image_url: width: 1100 }}" data-full="{{ m.preview_image | image_url: width: 1600 }}" data-alt="{{ m.alt | default: product.title | escape }}" aria-label="{{ 'hpz.product.image_n' | t: n: forloop.index }}">
+          {{- m.preview_image | image_url: width: 160 | image_tag: width: 76, height: 76, alt: '', loading: 'lazy' -}}
+        </button>
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <div class="gal-th" hidden></div>
+  {%- endif -%}
+  <div class="gal-main" data-gal-main>
+    <div class="gal-zoom" data-gal-zoom>
+      {%- if cur_media -%}
+        <img data-gal-img src="{{ cur_media.preview_image | image_url: width: 1100 }}" srcset="{{ cur_media.preview_image | image_url: width: 600 }} 600w, {{ cur_media.preview_image | image_url: width: 1100 }} 1100w, {{ cur_media.preview_image | image_url: width: 1600 }} 1600w" sizes="(min-width: 1001px) 52vw, calc(100vw - 40px)" alt="{{ cur_media.alt | default: product.title | escape }}" width="{{ cur_media.preview_image.width }}" height="{{ cur_media.preview_image.height }}" fetchpriority="high">
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag }}
+      {%- endif -%}
+    </div>
+    <div class="gal-badges">
+      {%- unless product.available -%}<span class="badge out">{{ 'hpz.product.sold_out' | t }}</span>{%- endunless -%}
+      {%- if product.tags contains 'new' -%}<span class="badge new">{{ 'hpz.product.new' | t }}</span>{%- endif -%}
+      {%- if f_own == true -%}<span class="badge own">{{ 'hpz.product.original' | t }}</span>{%- endif -%}
+    </div>
+    {%- if total > 1 -%}
+      <span class="gal-n mono" data-gal-n>{{ cur_idx | plus: 1 | prepend: '0' | slice: -2, 2 }} / {{ total | prepend: '0' | slice: -2, 2 }}</span>
+      <button type="button" class="gal-ar gal-prev" data-gstep="-1" aria-label="{{ 'hpz.product.prev' | t }}">{% render 'icon', name: 'left' %}</button>
+      <button type="button" class="gal-ar gal-next" data-gstep="1" aria-label="{{ 'hpz.product.next' | t }}">{% render 'icon', name: 'right' %}</button>
+    {%- endif -%}
+    {%- if cur_media -%}
+      <button type="button" class="gal-full" data-lb aria-label="{{ 'hpz.product.fullscreen' | t }}">{% render 'icon', name: 'zoom' %}<span>{{ 'hpz.product.hover_zoom' | t }}</span></button>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- if show_drawing and g_dia != blank and f_kind == 'wheels' -%}
+  {%- assign d = g_dia | round: 2 -%}
+  <figure class="drw" data-reveal>
+    <svg viewBox="0 0 640 260" aria-label="{{ 'hpz.product.drawing_label' | t }}" role="img">
+      <g class="drw-grid">
+        {%- for i in (0..32) -%}<line x1="{{ i | times: 20 }}" y1="0" x2="{{ i | times: 20 }}" y2="260"/>{%- endfor -%}
+        {%- for i in (0..13) -%}<line x1="0" y1="{{ i | times: 20 }}" x2="640" y2="{{ i | times: 20 }}"/>{%- endfor -%}
+      </g>
+      <g class="drw-l">
+        <circle cx="110" cy="110" r="78"/><circle cx="110" cy="110" r="66"/><circle cx="110" cy="110" r="60" stroke-dasharray="3 3"/><circle cx="110" cy="110" r="14"/><circle cx="110" cy="110" r="5"/>
+        {%- for i in (0..5) -%}<path transform="rotate({{ i | times: 60 }} 110 110)" d="M106 104 L107.5 52 L112.5 52 L114 104" />{%- endfor -%}
+        <path class="ctr" d="M20 110 H200 M110 20 V200"/>
+        <rect x="270" y="32" width="44" height="156" rx="6"/><rect x="276" y="44" width="32" height="132"/><path d="M270 110 H314" class="ctr"/><rect x="314" y="102" width="40" height="16"/><path d="M354 110 H380" class="ctr"/>
+      </g>
+      <g class="drw-dim">
+        <path d="M32 214 H188 M32 206 V222 M188 206 V222"/><path d="M36 214 l8 -3 v6 z M184 214 l-8 -3 v6 z" class="fill"/>
+        <path d="M270 210 H314 M270 202 V218 M314 202 V218"/>
+        <path d="M236 32 V188 M228 32 H244 M228 188 H244"/>
+      </g>
+      <g class="drw-t mono">
+        <text x="110" y="234" text-anchor="middle">&Oslash; {{ d }}</text>
+        {%- if g_width != blank -%}<text x="292" y="234" text-anchor="middle">{{ g_width | round: 2 }}</text>{%- endif -%}
+        <text x="222" y="114" text-anchor="middle" transform="rotate(-90 222 114)">&Oslash; {{ d }}</text>
+        <text x="120" y="16">A &mdash; FRONT</text><text x="270" y="16">B &mdash; SECTION</text>
+      </g>
+      <g class="drw-tb">
+        <rect x="420" y="20" width="200" height="220"/><path d="M420 64 H620 M420 100 H620 M420 136 H620 M420 172 H620 M420 208 H620 M520 100 V208"/>
+        <text class="mono" x="430" y="38">{{ shop.name | upcase | escape }}</text>
+        <text x="430" y="56" class="drw-big">{{ product.title | truncate: 22, '' | escape }}</text>
+        <text class="mono" x="430" y="80">PART NO.</text><text class="mono drw-v" x="430" y="93">{{ variant.sku | default: '-' | truncate: 16, '' | escape }}</text>
+        <text class="mono" x="430" y="116">DIA</text><text class="mono drw-v" x="430" y="129">{{ d }}</text><text class="mono" x="530" y="116">UNIT</text><text class="mono drw-v" x="530" y="129">mm</text>
+        <text class="mono" x="430" y="152">FACE</text><text class="mono drw-v" x="430" y="165">{{ f_face | default: '-' | upcase | truncate: 9, '' | escape }}</text>
+        <text class="mono" x="530" y="152">LIP</text><text class="mono drw-v" x="530" y="165">{{ f_lip | default: '-' | upcase | truncate: 9, '' | escape }}</text>
+        <text class="mono" x="430" y="188">BEARING</text><text class="mono drw-v" x="430" y="201">{% if f_bearing %}YES{% else %}-{% endif %}</text>
+        <text class="mono" x="530" y="188">AXLE</text><text class="mono drw-v" x="530" y="201">{{ product.metafields.hpz.axle.value | default: '-' | upcase | escape }}</text>
+        <text class="mono" x="430" y="228">{{ product.vendor | upcase | truncate: 26, '' | escape }}</text>
+      </g>
+    </svg>
+    <figcaption class="xs muted">{{ 'hpz.product.drawing_caption' | t }}</figcaption>
+  </figure>
+{%- endif -%}
+
+{%- if show_compare and total > 1 -%}
+  <figure class="cmp" data-reveal>
+    <div class="cmp-h"><span class="eyebrow"><b>{{ 'hpz.product.compare' | t }}</b></span><span class="xs muted">{{ 'hpz.product.drag_handle' | t }}</span></div>
+    <div class="cmp-box" data-cmp style="--x:50%">
+      {{ product.media[1].preview_image | image_url: width: 900 | image_tag: alt: '', loading: 'lazy' }}
+      <div class="cmp-top">{{ product.media[0].preview_image | image_url: width: 900 | image_tag: alt: '', loading: 'lazy' }}</div>
+      <span class="cmp-bar"><i>{% render 'icon', name: 'left' %}{% render 'icon', name: 'right' %}</i></span>
+      <input type="range" min="0" max="100" value="50" aria-label="{{ 'hpz.product.compare' | t }}">
+    </div>
+  </figure>
+{%- endif -%}

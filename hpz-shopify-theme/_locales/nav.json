@@ -1,0 +1,38 @@
+{
+  "en": { "hpz": { "nav": {
+    "wheels": "Wheels", "parts": "Parts", "decals": "Decals", "brands": "Brands", "builds": "Built by You",
+    "planner": "Build Planner", "new": "New", "services": "Services", "academy": "Academy",
+    "search": "Search parts, castings…",
+    "by_diameter": "By diameter",
+    "diameter_hint": "Diameter filter appears here once wheel sizes are set up.",
+    "not_sure": "Not sure what fits?", "use_finder": "Use the Build Planner",
+    "by_type": "By type", "all_wheels": "All wheels", "disc_brake": "With disc brake", "tyres": "Tyres",
+    "by_maker": "By maker", "latest": "Latest drop", "all_originals": "All HPZ Originals",
+    "body_kits": "Body kits", "engines": "Engines", "exterior": "Aero & exterior", "interior": "Interior", "dioramas": "Dioramas",
+    "parts_count": "parts", "products": "products"
+  } } },
+  "id": { "hpz": { "nav": {
+    "wheels": "Velg", "parts": "Parts", "decals": "Decal", "brands": "Brand", "builds": "Karya Kalian",
+    "planner": "Build Planner", "new": "Baru", "services": "Layanan", "academy": "Academy",
+    "search": "Cari parts, casting…",
+    "by_diameter": "Berdasarkan diameter",
+    "diameter_hint": "Filter diameter muncul di sini setelah ukuran velg diisi.",
+    "not_sure": "Bingung ukuran?", "use_finder": "Pakai Build Planner",
+    "by_type": "Berdasarkan tipe", "all_wheels": "Semua velg", "disc_brake": "Dengan disc brake", "tyres": "Ban",
+    "by_maker": "Berdasarkan pabrikan", "latest": "Rilis terbaru", "all_originals": "Semua HPZ Original",
+    "body_kits": "Body kit", "engines": "Mesin", "exterior": "Aero & eksterior", "interior": "Interior", "dioramas": "Diorama",
+    "parts_count": "item", "products": "produk"
+  } } },
+  "ja": { "hpz": { "nav": {
+    "wheels": "ホイール", "parts": "パーツ", "decals": "デカール", "brands": "ブランド", "builds": "みんなのビルド",
+    "planner": "ビルドプランナー", "new": "新", "services": "サービス", "academy": "アカデミー",
+    "search": "パーツ・車種を検索…",
+    "by_diameter": "径で選ぶ",
+    "diameter_hint": "ホイール径の登録後にここへフィルターが表示されます。",
+    "not_sure": "サイズが不明？", "use_finder": "ビルドプランナーを使う",
+    "by_type": "タイプ別", "all_wheels": "すべてのホイール", "disc_brake": "ディスク付", "tyres": "タイヤ",
+    "by_maker": "メーカー別", "latest": "最新", "all_originals": "HPZオリジナル一覧",
+    "body_kits": "ボディキット", "engines": "エンジン", "exterior": "エアロ・外装", "interior": "インテリア", "dioramas": "ジオラマ",
+    "parts_count": "点", "products": "商品"
+  } } }
+}

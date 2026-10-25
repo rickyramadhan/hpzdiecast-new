@@ -1,0 +1,36 @@
+{%- comment -%}
+  "Finish the build" list for the cart drawer. Params: list (products), pids (",id,id," of products already in the cart).
+  Available products first; sold-out products only fill the list when nothing is purchasable (they link to the product page).
+{%- endcomment -%}
+{%- assign shown = 0 -%}
+{%- capture ups_items -%}
+  {%- for pass in (1..2) -%}
+    {%- if pass == 1 or shown == 0 -%}
+      {%- for up in list -%}
+        {%- assign pk = ',' | append: up.id | append: ',' -%}
+        {%- assign in_cart = false -%}
+        {%- if pids contains pk -%}{%- assign in_cart = true -%}{%- endif -%}
+        {%- assign ok = false -%}
+        {%- if pass == 2 or up.available -%}{%- assign ok = true -%}{%- endif -%}
+        {%- if shown < 5 and ok and in_cart == false and up.handle != settings.addon_box_handle and up.handle != settings.addon_protect_handle -%}
+          {%- assign shown = shown | plus: 1 -%}
+          {%- assign uv = up.selected_or_first_available_variant -%}
+          <div class="ups-i" data-pid="{{ up.id }}">
+            <a href="{{ up.url }}">{% if up.featured_image %}{{ up.featured_image | image_url: width: 160 | image_tag: width: 52, height: 52, alt: up.title, loading: 'lazy' }}{% endif %}</a>
+            <div><a href="{{ up.url }}">{{ up.title }}</a><span>{{ uv.price | money }}</span></div>
+            {%- if up.variants.size == 1 and up.available -%}
+              <button type="button" class="btn-icon btn btn-ghost" data-add-to-cart data-variant-id="{{ uv.id }}" data-keep-open aria-label="{{ 'hpz.cart.add' | t }}">{% render 'icon', name: 'plus' %}</button>
+            {%- else -%}
+              <a class="btn-icon btn btn-ghost" href="{{ up.url }}" aria-label="{{ 'hpz.cart.view' | t }}">{% render 'icon', name: 'arrow' %}</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign ups_items = ups_items | strip -%}
+{%- if ups_items != blank -%}
+  <div class="ups-h"><b>{{ 'hpz.cart.finish_build' | t }}</b><span class="mono xs muted">{{ 'hpz.cart.finish_build_sub' | t }}</span></div>
+  <div class="ups-r">{{ ups_items }}</div>
+{%- endif -%}

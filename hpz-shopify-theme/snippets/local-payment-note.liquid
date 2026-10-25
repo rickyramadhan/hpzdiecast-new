@@ -1,0 +1,14 @@
+{%- comment -%}
+  Short info box about manual local payment (QRIS / BCA transfer). Only for visitors whose country is Indonesia.
+  Usage: {% render 'local-payment-note' %}
+{%- endcomment -%}
+{%- if settings.local_payment_enabled and settings.store_role == 'indonesia' -%}
+  {{ 'p-payment.css' | asset_url | stylesheet_tag }}
+  <div class="lp-note" role="note">
+    {% render 'icon', name: 'info' %}
+    <div>
+      <b>{{ 'hpz.pay.note_t' | t }}</b>
+      {{ 'hpz.pay.note_d' | t }} <a href="/pages/bayar">{{ 'hpz.pay.note_link' | t }}</a>
+    </div>
+  </div>
+{%- endif -%}

@@ -1,0 +1,115 @@
+{%- comment -%}
+  Product card (mockup: card() in core.js). Used by every collection, rail, recommendation and search grid.
+  Usage: {% render 'product-card', product: product, index: forloop.index0, lazy: true %}
+  Data attributes read by theme.js / cart.js / collection.js:
+    data-pid, data-dia, data-made-for (comma list of casting handles), data-kind, data-wish, data-quick
+  Fitment tag renders into [data-fit-slot] via HPZ.tagFit().
+{%- endcomment -%}
+{%- capture facts_raw -%}{%- render 'product-facts', product: product -%}{%- endcapture -%}
+{%- assign f = facts_raw | strip | split: '~' -%}
+{%- liquid
+  assign v = product.selected_or_first_available_variant
+  assign dia = f[3]
+  assign made = f[10]
+  assign kind = f[2]
+  assign img0 = product.featured_image | default: product.images.first
+  assign img1 = product.images[1]
+  assign brand_name = f[0] | default: product.vendor
+  assign sku = v.sku
+  assign age_days = 'now' | date: '%s' | minus: product.published_at | date: '%s' | divided_by: 86400
+  assign is_new = false
+  if age_days <= 21
+    assign is_new = true
+  endif
+  assign low_t = settings.low_stock_threshold | default: 4
+  assign show_low = false
+  if v.inventory_management == 'shopify' and v.inventory_quantity > 0 and v.inventory_quantity <= low_t
+    assign show_low = true
+  endif
+  assign discount = 0
+  if v.compare_at_price > v.price
+    assign discount = v.compare_at_price | minus: v.price | times: 100 | divided_by: v.compare_at_price
+  endif
+  assign loading_mode = 'eager'
+  if lazy
+    assign loading_mode = 'lazy'
+  endif
+  assign has_colour = false
+  if product.options.first == 'Color' and product.variants.size > 1
+    assign has_colour = true
+  endif
+-%}
+<article class="pc{% unless product.available %} is-out{% endunless %}"
+  data-pid="{{ product.id }}"
+  data-kind="{{ kind }}"
+  data-dia="{{ dia }}"
+  data-made-for="{{ made }}"
+  data-bearing="{{ f[4] }}"
+  data-maker="{{ brand_name | escape }}"
+  data-reveal style="--i:{{ index | default: 0 | modulo: 8 }}">
+  <a class="pc-media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+    {%- if img0 -%}
+      {{- img0 | image_url: width: 600 | image_tag: class: 'pc-a', alt: product.title, loading: loading_mode, widths: '300,450,600' -}}
+    {%- endif -%}
+    {%- if img1 and img1 != img0 -%}
+      {{- img1 | image_url: width: 600 | image_tag: class: 'pc-b', alt: '', loading: 'lazy' -}}
+    {%- endif -%}
+    <span class="pc-badges">
+      {%- unless product.available -%}<span class="badge out">{{ 'products.product.sold_out' | t }}</span>{%- endunless -%}
+      {%- if product.available and is_new -%}<span class="badge new">{{ 'products.product.new' | t }}</span>{%- endif -%}
+      {%- if settings.show_discount_badge and product.available and discount >= 10 -%}<span class="badge sale">&minus;{{ discount }}%</span>{%- endif -%}
+      {%- if f[1] == 'true' -%}<span class="badge own">HPZ Original</span>{%- endif -%}
+    </span>
+    {%- if show_low -%}
+      <span class="pc-low"><i class="dot low"></i>{{ 'products.product.only_left' | t: count: v.inventory_quantity }}</span>
+    {%- endif -%}
+  </a>
+
+  <button class="pc-wish" data-wish="{{ product.handle }}" aria-label="{{ 'customer.wishlist.save' | t }}">{% render 'icon', name: 'heart' %}</button>
+
+  <div class="pc-quick">
+    {%- if product.available and product.variants.size == 1 -%}
+      <button class="pc-qbtn" data-add-to-cart data-variant-id="{{ v.id }}">{% render 'icon', name: 'plus' %}<span>{{ 'products.product.add_to_cart' | t }}</span></button>
+    {%- elsif product.available -%}
+      <button class="pc-qbtn" data-quick="{{ product.handle }}">{% render 'icon', name: 'plus' %}<span>{{ 'products.product.choose_option' | t }}</span></button>
+    {%- else -%}
+      <button class="pc-qbtn is-notify" data-notify="{{ product.handle }}" data-notify-title="{{ product.title | escape }}">{% render 'icon', name: 'bell' %}<span>{{ 'products.product.notify' | t }}</span></button>
+    {%- endif -%}
+    {%- if product.available and product.variants.size > 1 -%}
+      <button class="pc-qv" data-quick="{{ product.handle }}" aria-label="{{ 'products.product.quick_view' | t }}">{% render 'icon', name: 'eye' %}</button>
+    {%- endif -%}
+  </div>
+
+  <div class="pc-body">
+    <div class="pc-meta">
+      <span>{{ brand_name }}</span>
+      {%- if sku != blank -%}<span class="mono">{{ sku }}</span>{%- endif -%}
+    </div>
+    <a class="pc-title" href="{{ product.url }}">{{ product.title }}</a>
+    <div class="pc-spec">
+      {%- if dia != blank -%}<span>&empty;{{ dia }} mm</span>{%- endif -%}
+      {%- if f[4] == 'true' -%}<span>{{ 'products.product.bearing' | t }}</span>{%- endif -%}
+      {%- if f[6] == 'resin' -%}<span>{{ 'products.product.resin' | t }}</span>{%- endif -%}
+      {%- if f[8] == 'white-toner' -%}<span>{{ 'products.product.white_toner' | t }}</span>{%- endif -%}
+      {%- if f[8] == 'transparent' -%}<span>{{ 'products.product.transparent' | t }}</span>{%- endif -%}
+    </div>
+    <div class="fit-slot" data-fit-slot></div>
+    <div class="pc-foot">
+      {%- render 'price', product: product, variant: v, from: true -%}
+      {%- if has_colour -%}
+        <div class="sw">
+          {%- for sv in product.variants limit: 6 -%}
+            {%- assign sw_css = '' -%}
+            {%- capture sw_css -%}{%- render 'color-swatch', name: sv.option1 -%}{%- endcapture -%}
+            {%- if sw_css != blank -%}
+              {%- assign sidx = 0 -%}
+              {%- for pimg in product.images -%}{%- if pimg.id == sv.featured_image.id -%}{%- assign sidx = forloop.index0 -%}{%- endif -%}{%- endfor -%}
+              <button class="sw-i{% unless sv.available %} is-out{% endunless %}" style="--c:{{ sw_css | strip }}" data-sw="{{ sv.id }}" data-img="{{ sidx }}" title="{{ sv.option1 | escape }}" aria-label="{{ sv.option1 | escape }}"></button>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if product.variants.size > 6 -%}<span class="sw-more">+{{ product.variants.size | minus: 6 }}</span>{%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</article>

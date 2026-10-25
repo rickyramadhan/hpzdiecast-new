@@ -1,0 +1,11 @@
+{%- comment -%}
+  Usage: {% render 'stars', rating: 4.9 %}   (renders nothing for blank rating)
+{%- endcomment -%}
+{%- if rating -%}
+  {%- assign full = rating | round -%}
+  <span class="stars" aria-label="{{ rating }} / 5">
+    {%- for i in (1..5) -%}
+      <i class="{% if i <= full %}on{% endif %}">{% render 'icon', name: 'star' %}</i>
+    {%- endfor -%}
+  </span>
+{%- endif -%}

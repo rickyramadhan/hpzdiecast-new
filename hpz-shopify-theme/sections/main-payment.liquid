@@ -1,0 +1,170 @@
+{%- comment -%}
+  Manual payment page for Indonesia (QRIS + bank transfer) with WhatsApp confirmation.
+  Page handle: bayar  (Pages > Add page, template "page.payment").
+  Email / thank-you links can prefill it: /pages/bayar?order=%231234&total=250000&cur=IDR
+  No payment gateway is used: the admin confirms each payment by hand.
+{%- endcomment -%}
+{{ 'p-payment.css' | asset_url | stylesheet_tag }}
+{%- assign wa = settings.payment_whatsapp | default: settings.whatsapp -%}
+{%- assign has_bank = false -%}
+{%- if settings.payment_account_number != blank -%}{%- assign has_bank = true -%}{%- endif -%}
+{%- assign deadline = settings.payment_deadline_hours | default: 24 -%}
+
+<section class="pay-page" data-pay
+  data-wa="{{ wa | strip }}"
+  data-rate="{{ settings.idr_rate | default: 0 }}"
+  data-deadline="{{ deadline }}"
+  data-bank="{{ settings.payment_bank_name | escape }}"
+  data-account="{{ settings.payment_account_number | escape }}"
+  data-holder="{{ settings.payment_account_name | escape }}"
+  data-store="{{ shop.name | escape }}">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">{{ 'hpz.pay.home' | t }}</a><span>{{ 'hpz.pay.crumb' | t }}</span></nav>
+
+    <header class="pay-head">
+      <span class="eyebrow"><b>ID</b> {{ 'hpz.pay.eyebrow' | t }}</span>
+      <h1 class="h1">{% if section.settings.title != blank %}{{ section.settings.title }}{% else %}{{ 'hpz.pay.title' | t }}{% endif %}</h1>
+      <p class="lead">{{ 'hpz.pay.lead' | t }}</p>
+    </header>
+
+    <ol class="pay-steps">
+      <li><span class="mono">01</span><div><b>{{ 'hpz.pay.s1_t' | t }}</b><p>{{ 'hpz.pay.s1_d' | t }}</p></div></li>
+      <li><span class="mono">02</span><div><b>{{ 'hpz.pay.s2_t' | t }}</b><p>{{ 'hpz.pay.s2_d' | t }}</p></div></li>
+      <li><span class="mono">03</span><div><b>{{ 'hpz.pay.s3_t' | t }}</b><p>{{ 'hpz.pay.s3_d' | t }}</p></div></li>
+      <li><span class="mono">04</span><div><b>{{ 'hpz.pay.s4_t' | t }}</b><p>{{ 'hpz.pay.s4_d' | t: hours: settings.workshop_hours }}</p></div></li>
+    </ol>
+
+    <div class="pay-warn" role="note">
+      {% render 'icon', name: 'info' %}
+      <div>
+        <b>{{ 'hpz.pay.warn_t' | t }}</b>
+        <ul>
+          <li>{{ 'hpz.pay.warn_1' | t }}</li>
+          <li>{{ 'hpz.pay.warn_2' | t }}</li>
+          <li>{{ 'hpz.pay.warn_3' | t: hours: deadline }}</li>
+          <li>{{ 'hpz.pay.warn_4' | t }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pay-grid">
+      {%- comment -%} Amount to pay {%- endcomment -%}
+      <div class="pay-card pay-amount">
+        <span class="eyebrow"><b>{{ 'hpz.pay.amount_k' | t }}</b></span>
+        <label class="lbl" for="pay-order">{{ 'hpz.pay.order_no' | t }}</label>
+        <input class="input mono" id="pay-order" inputmode="text" autocomplete="off" placeholder="#1234" data-pay-order>
+        <p class="err-msg" data-pay-order-err>{{ 'hpz.pay.order_err' | t }}</p>
+        <label class="lbl" for="pay-total">{{ 'hpz.pay.total_in' | t }}</label>
+        <div class="pay-total-row">
+          <select class="select" id="pay-cur" data-pay-cur aria-label="Currency">
+            <option value="IDR">IDR (Rp)</option>
+            <option value="USD">USD ($)</option>
+          </select>
+          <input class="input mono" id="pay-total" inputmode="decimal" placeholder="250000" data-pay-total>
+        </div>
+        <div class="pay-due" data-pay-due hidden>
+          <span class="xs muted">{{ 'hpz.pay.due_k' | t }}</span>
+          <b class="mono" data-pay-due-v></b>
+          <span class="xs muted" data-pay-due-note></span>
+        </div>
+        <p class="xs muted">{{ 'hpz.pay.amount_hint' | t }}</p>
+      </div>
+
+      {%- comment -%} QRIS {%- endcomment -%}
+      <div class="pay-card pay-qris">
+        <div class="pay-card-h"><span class="eyebrow"><b>QRIS</b></span><span class="badge">{{ 'hpz.pay.qris_badge' | t }}</span></div>
+        <div class="qr-wrap"><img src="{{ 'qris-hpz.jpg' | asset_url }}" alt="QRIS {{ settings.payment_qris_name }}" width="567" height="800" loading="lazy" data-qris-img></div>
+        <dl class="pay-dl">
+          <div><dt>{{ 'hpz.pay.merchant' | t }}</dt><dd>{{ settings.payment_qris_name }}</dd></div>
+          <div><dt>NMID</dt><dd class="mono">{{ settings.payment_qris_nmid }}</dd></div>
+        </dl>
+        <a class="btn btn-ghost btn-block" href="{{ 'qris-hpz.jpg' | asset_url }}" download="qris-hpz-store-n-toys.jpg">{% render 'icon', name: 'arrow' %}{{ 'hpz.pay.qris_save' | t }}</a>
+        <ol class="pay-mini">
+          <li>{{ 'hpz.pay.qris_1' | t }}</li>
+          <li>{{ 'hpz.pay.qris_2' | t }}</li>
+          <li>{{ 'hpz.pay.qris_3' | t }}</li>
+        </ol>
+      </div>
+
+      {%- comment -%} Bank transfer {%- endcomment -%}
+      <div class="pay-card pay-bank">
+        <div class="pay-card-h"><span class="eyebrow"><b>{{ 'hpz.pay.bank_k' | t }}</b></span><span class="badge">{{ settings.payment_bank_name }}</span></div>
+        {%- if has_bank -%}
+          <dl class="pay-dl is-big">
+            <div><dt>{{ 'hpz.pay.bank' | t }}</dt><dd>{{ settings.payment_bank_name }}</dd></div>
+            <div class="has-copy"><dt>{{ 'hpz.pay.account_no' | t }}</dt><dd class="mono" data-copy-src="account">{{ settings.payment_account_number }}</dd>
+              <button class="btn btn-sm btn-ink" type="button" data-copy="{{ settings.payment_account_number | escape }}">{{ 'hpz.pay.copy' | t }}</button></div>
+            <div><dt>{{ 'hpz.pay.holder' | t }}</dt><dd>{{ settings.payment_account_name }}</dd></div>
+          </dl>
+          <p class="pay-check">{% render 'icon', name: 'shield' %}{{ 'hpz.pay.holder_check' | t: name: settings.payment_account_name }}</p>
+          <ol class="pay-mini">
+            <li>{{ 'hpz.pay.bank_1' | t }}</li>
+            <li>{{ 'hpz.pay.bank_2' | t }}</li>
+            <li>{{ 'hpz.pay.bank_3' | t }}</li>
+          </ol>
+        {%- else -%}
+          <p class="pay-missing">{{ 'hpz.pay.bank_missing' | t }}</p>
+          {%- if request.design_mode -%}<p class="xs muted">Theme settings > Local payment (Indonesia) > Bank account number</p>{%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} WhatsApp confirmation {%- endcomment -%}
+    <div class="pay-confirm">
+      <div class="pay-confirm-t">
+        <span class="eyebrow"><b>{{ 'hpz.pay.confirm_k' | t }}</b></span>
+        <h2 class="h2">{{ 'hpz.pay.confirm_t' | t }}</h2>
+        <p>{{ 'hpz.pay.confirm_d' | t }}</p>
+      </div>
+      <div class="pay-confirm-f">
+        <label class="lbl" for="pay-name">{{ 'hpz.pay.name' | t }}</label>
+        <input class="input" id="pay-name" autocomplete="name" data-pay-name>
+        <div class="pay-method" role="radiogroup" aria-label="{{ 'hpz.pay.method' | t }}">
+          <label class="check radio"><input type="radio" name="pay-method" value="QRIS" checked><span class="box">{% render 'icon', name: 'check' %}</span><span>QRIS</span></label>
+          {%- if has_bank -%}
+            <label class="check radio"><input type="radio" name="pay-method" value="Transfer {{ settings.payment_bank_name }}"><span class="box">{% render 'icon', name: 'check' %}</span><span>{{ 'hpz.pay.bank_k' | t }} {{ settings.payment_bank_name }}</span></label>
+          {%- endif -%}
+        </div>
+        {%- if wa != blank -%}
+          <a class="btn btn-signal btn-lg btn-block" href="#" target="_blank" rel="noopener" data-pay-wa>{% render 'icon', name: 'wa' %}<span>{{ 'hpz.pay.wa_btn' | t }}</span></a>
+        {%- else -%}
+          <p class="pay-missing">{{ 'hpz.pay.wa_missing' | t }}</p>
+        {%- endif -%}
+        <p class="xs muted">{{ 'hpz.pay.wa_hint' | t }}</p>
+      </div>
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="pay-faq">
+        <h2 class="h2">{{ 'hpz.pay.faq' | t }}</h2>
+        {%- for block in section.blocks -%}
+          <div class="acc" data-acc {{ block.shopify_attributes }}>
+            <button class="acc-h" type="button" aria-expanded="false">{{ block.settings.question }}<span class="acc-ic"></span></button>
+            <div class="acc-b" style="height:0"><div class="acc-c">{{ block.settings.answer }}</div></div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+<script src="{{ 'payment.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Local payment",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "info": "Leave empty to use the translated default." }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Local payment" }]
+}
+{% endschema %}

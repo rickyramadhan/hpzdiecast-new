@@ -1,0 +1,58 @@
+{%- comment -%}
+  Filter sidebar content (rendered inside <aside class="filters" id="filters">).
+  Params: filters, count, action, clear_url, search_q (optional), search_type (optional)
+{%- endcomment -%}
+<form id="col-form" action="{{ action }}" method="get" data-col-form>
+  {%- if search_q != blank -%}<input type="hidden" name="q" value="{{ search_q | escape }}">{%- endif -%}
+  {%- if search_type != blank -%}<input type="hidden" name="type" value="{{ search_type | escape }}">{%- endif -%}
+  <div class="fl-h"><h3>{{ 'hpz.catalog.filters' | t }}</h3><button type="button" class="dr-x fl-x" data-fclose aria-label="{{ 'hpz.catalog.close' | t }}">{% render 'icon', name: 'close' %}</button></div>
+  <div class="fl-body">
+    <div class="fl-toggles">
+      {%- for f in filters -%}
+        {%- if f.type == 'boolean' or f.param_name == 'filter.v.availability' -%}
+          {%- assign want = 'true' -%}
+          {%- assign lbl = f.label -%}
+          {%- if f.param_name == 'filter.v.availability' -%}
+            {%- assign want = '1' -%}
+            {%- assign lbl = 'hpz.catalog.in_stock_only' | t -%}
+          {%- endif -%}
+          {%- for v in f.values -%}
+            {%- if v.value == want -%}{% render 'facet-switch', value: v, label: lbl %}{%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endfor -%}
+      <label class="ft is-dis" data-cast-toggle>
+        <span><b>{{ 'hpz.catalog.fits_my_casting' | t }}</b><em><span data-cast-name hidden></span><button type="button" class="link" data-open="garage" data-cast-add>{{ 'hpz.catalog.add_casting' | t }}</button></em></span>
+        <span class="switch"><input type="checkbox" data-cast-only disabled><span></span></span>
+      </label>
+    </div>
+    {%- assign gi = 0 -%}
+    {%- for f in filters -%}
+      {%- if f.type == 'boolean' or f.param_name == 'filter.v.availability' -%}{%- continue -%}{%- endif -%}
+      {%- if f.type != 'price_range' and f.values.size == 0 -%}{%- continue -%}{%- endif -%}
+      {%- assign gi = gi | plus: 1 -%}
+      {%- assign open = false -%}
+      {%- if gi <= 3 or f.active_values.size > 0 -%}{%- assign open = true -%}{%- endif -%}
+      {%- if f.type == 'price_range' -%}
+        {%- if f.min_value.value or f.max_value.value -%}{%- assign open = true -%}{%- endif -%}
+      {%- endif -%}
+      {%- assign key = f.label | append: ' ' | append: f.param_name | downcase -%}
+      {%- capture body -%}
+        {%- if f.type == 'price_range' -%}
+          {% render 'facet-price', filter: f %}
+        {%- elsif key contains 'diameter' -%}
+          {% render 'facet-diameter', filter: f %}
+        {%- elsif f.presentation == 'swatch' or key contains 'colour' or key contains 'color' or key contains 'finish' -%}
+          {% render 'facet-swatch', filter: f %}
+        {%- else -%}
+          {% render 'facet-list', filter: f %}
+        {%- endif -%}
+      {%- endcapture -%}
+      {% render 'facet-group', filter: f, open: open, body: body %}
+    {%- endfor -%}
+  </div>
+  <div class="fl-f">
+    <a class="btn btn-ghost" href="{{ clear_url }}" data-ajax>{{ 'hpz.catalog.clear_all' | t }}</a>
+    <button type="submit" class="btn btn-ink">{{ 'hpz.catalog.show' | t }} <span class="mono">{{ count }}</span></button>
+  </div>
+</form>

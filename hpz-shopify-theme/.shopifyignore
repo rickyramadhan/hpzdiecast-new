@@ -1,0 +1,10 @@
+hpz-redesign/*
+_src/*
+.qa/*
+tools/*
+docs/*
+setup/*
+node_modules/*
+*.zip
+*.log
+worker/*

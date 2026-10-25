@@ -1,0 +1,29 @@
+{%- comment -%}
+  Contact cards with live open/closed status (JS in services.js reads [data-hours]).
+  Params: email (optional), days, open, close, tz, tz_label, note
+{%- endcomment -%}
+{%- assign wa = settings.whatsapp | strip -%}
+{%- assign mail = email | default: shop.email -%}
+{%- if wa != blank -%}
+  {%- if wa contains 'http' -%}
+    {%- assign wa_url = wa -%}
+    {%- assign wa_show = 'WhatsApp' -%}
+  {%- else -%}
+    {%- assign wa_digits = wa | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')' -%}
+    {%- assign wa_url = 'https://wa.me/' | append: wa_digits -%}
+    {%- assign wa_show = wa -%}
+  {%- endif -%}
+{%- endif -%}
+<div class="hc-open" data-hours data-days="{{ days | default: '1,2,3,4,5,6' }}" data-open="{{ open | default: 9 }}" data-close="{{ close | default: 17 }}" data-tz="{{ tz | default: 7 }}" data-tz-label="{{ tz_label | escape }}" data-t-open="{{ 'hpz.svc.open_now' | t }}" data-t-closed="{{ 'hpz.svc.closed_now' | t }}" data-t-yours="{{ 'hpz.svc.your_time' | t }}">
+  <span class="dot out" data-hours-dot></span><span data-hours-text>{{ 'hpz.svc.hours' | t }}</span>
+</div>
+{%- if wa != blank -%}
+<a class="cc cc-wa" href="{{ wa_url }}" target="_blank" rel="noopener"><span class="cc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5 5 16a8.5 8.5 0 1 1 3.2 3.1L3.5 20.5Z"/><path d="M9 8.8c.3 2.6 2.700 5 5.600 6l1.300-1.400-2-1-.9.8c-.8-.4-1.600-1.100-2-2l.8-.9-1-2L9 8.800Z"/></svg></span><span class="cc-t"><em>WhatsApp</em><b class="mono">{{ wa_show }}</b><span>{{ 'hpz.svc.wa_note' | t }}</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a>
+{%- endif -%}
+{%- if mail != blank -%}
+<a class="cc" href="mailto:{{ mail }}"><span class="cc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/><path d="m4 7 8 6 8-6"/></svg></span><span class="cc-t"><em>Email</em><b>{{ mail }}</b><span>{{ 'hpz.svc.mail_note' | t }}</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a>
+{%- endif -%}
+{%- if settings.workshop_city != blank or settings.workshop_address != blank -%}
+<div class="cc"><span class="cc-ic">{% render 'icon', name: 'pin' %}</span><span class="cc-t"><em>{{ 'hpz.svc.workshop' | t }}</em>{% if settings.workshop_address != blank %}<b>{{ settings.workshop_address }}</b>{% endif %}<span>{{ settings.workshop_city }}{% if settings.workshop_city != blank %}, {% endif %}Indonesia</span></span></div>
+{%- endif -%}
+<div class="cc"><span class="cc-ic">{% render 'icon', name: 'clock' %}</span><span class="cc-t"><em>{{ 'hpz.svc.hours' | t }}</em><b class="mono" data-hours-range>{% if settings.workshop_hours != blank %}{{ settings.workshop_hours }}{% else %}{{ open | default: 9 }}:00-{{ close | default: 17 }}:00 {{ tz_label }}{% endif %}</b><span data-hours-local></span>{% if note != blank %}<span>{{ note }}</span>{% endif %}</span></div>

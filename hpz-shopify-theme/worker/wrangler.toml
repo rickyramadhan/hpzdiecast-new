@@ -1,0 +1,10 @@
+name = "hpz-ongkir"
+main = "ongkir-worker.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+# both storefronts and the Shopify preview domain may call the Worker; nothing else
+ALLOWED_ORIGIN = "https://hpzdiecast.com,https://www.hpzdiecast.com,https://id.hpzdiecast.com,https://hpzdiecastid.myshopify.com"
+# RajaOngkir/Komerce destination id of the warehouse (17549 = Kebayoran Lama Selatan, Jakarta Selatan). Confirm the real warehouse kecamatan.
+ORIGIN_ID = "17549"
+# KOMERCE_KEY is a secret, set with: npx wrangler secret put KOMERCE_KEY

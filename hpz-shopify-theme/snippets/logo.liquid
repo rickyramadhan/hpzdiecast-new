@@ -1,0 +1,15 @@
+{%- comment -%}
+  HPZ logo mark + wordmark. Usage: {% render 'logo' %} or {% render 'logo', dark: true %} for the light header.
+  Uses the store logo when one is uploaded in Theme settings > Logo, otherwise the built-in mark.
+{%- endcomment -%}
+<a class="logo{% if dark %} is-ink{% endif %}" href="{{ routes.root_url }}" aria-label="{{ shop.name }} — home">
+  {%- if settings.logo != blank -%}
+    {{- settings.logo | image_url: width: 300 | image_tag: class: 'logo-img', alt: shop.name, loading: 'eager', width: 150 -}}
+  {%- else -%}
+    <svg class="logo-mark" viewBox="0 0 96 34" aria-hidden="true">
+      <g transform="skewX(-8)"><rect x="5" y="1" width="28" height="32" rx="2" fill="#e5306b"/><rect x="36" y="1" width="28" height="32" rx="2" fill="#ffb000"/><rect x="67" y="1" width="28" height="32" rx="2" fill="#12a197"/></g>
+      <g fill="#fff" font-family="Archivo, sans-serif" font-weight="900" font-size="24" text-anchor="middle"><text x="17" y="25.5">H</text><text x="48" y="25.5">P</text><text x="79" y="25.5">Z</text></g>
+    </svg>
+  {%- endif -%}
+  <span class="logo-t"><b>DIECAST</b><i>parts · 1:64</i></span>
+</a>

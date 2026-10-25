@@ -1,0 +1,141 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-academy-index",
+      "blocks": {
+        "term_1": {
+          "type": "term",
+          "settings": {
+            "term": "Bearing series",
+            "definition": "HPZ wheels with a miniature ball bearing in each hub. They roll much farther than plain-axle wheels on a track."
+          }
+        },
+        "term_2": {
+          "type": "term",
+          "settings": {
+            "term": "Long axle",
+            "definition": "The longer of the two axle lengths, for wide-track castings. Puts the tyre flush with a wide arch instead of tucked inside it."
+          }
+        },
+        "term_3": {
+          "type": "term",
+          "settings": {
+            "term": "Precoated",
+            "definition": "A decal sheet sealed with clear film at the factory, so the ink will not dissolve in water. No need to spray the sheet before cutting."
+          }
+        },
+        "term_4": {
+          "type": "term",
+          "settings": {
+            "term": "White toner",
+            "definition": "Opaque white printing for decals on dark paint. Printed mirrored and applied face-down."
+          }
+        },
+        "term_5": {
+          "type": "term",
+          "settings": {
+            "term": "Flash",
+            "definition": "The thin film of excess resin along mould seams. Scrape it off with an upright blade, then sand."
+          }
+        },
+        "term_6": {
+          "type": "term",
+          "settings": {
+            "term": "Pour stub",
+            "definition": "The plug of resin where it entered the mould. Clip it close, then sand flat."
+          }
+        },
+        "term_7": {
+          "type": "term",
+          "settings": {
+            "term": "CA glue",
+            "definition": "Cyanoacrylate, or super glue. Thin CA wicks into tight joints, medium is for general assembly, gel bridges gaps."
+          }
+        },
+        "term_8": {
+          "type": "term",
+          "settings": {
+            "term": "Tucked fitment",
+            "definition": "The tyre sits just inside the arch lip, with a small even gap above it. The default clean look."
+          }
+        },
+        "term_9": {
+          "type": "term",
+          "settings": {
+            "term": "Poke",
+            "definition": "Wheels that stick out past the fender. Right for a stanced build, wrong on a stock-look car."
+          }
+        },
+        "term_10": {
+          "type": "term",
+          "settings": {
+            "term": "Track width",
+            "definition": "Distance across the outside faces of both wheels on one axle. Set by axle length."
+          }
+        },
+        "term_11": {
+          "type": "term",
+          "settings": {
+            "term": "Rivet",
+            "definition": "The mushroom-headed post that holds a Hot Wheels base to its body. Shave the head, keep the post."
+          }
+        },
+        "term_12": {
+          "type": "term",
+          "settings": {
+            "term": "Decal softener",
+            "definition": "A setting solution that softens decal film so it pulls down over curves and panel lines."
+          }
+        },
+        "term_13": {
+          "type": "term",
+          "settings": {
+            "term": "Surfacer",
+            "definition": "A fine filler primer, usually grey. Shows the defects you missed before colour goes on."
+          }
+        },
+        "term_14": {
+          "type": "term",
+          "settings": {
+            "term": "Dry-brushing",
+            "definition": "Painting with an almost-dry brush so pigment only catches raised edges. Makes 1:64 metal detail readable."
+          }
+        },
+        "term_15": {
+          "type": "term",
+          "settings": {
+            "term": "Panel-line wash",
+            "definition": "Very thin dark paint flowed into recesses and wiped off the high points. Adds depth to engines and body lines."
+          }
+        }
+      },
+      "block_order": [
+        "term_1",
+        "term_2",
+        "term_3",
+        "term_4",
+        "term_5",
+        "term_6",
+        "term_7",
+        "term_8",
+        "term_9",
+        "term_10",
+        "term_11",
+        "term_12",
+        "term_13",
+        "term_14",
+        "term_15"
+      ],
+      "settings": {
+        "per_page": 12,
+        "show_glossary": true,
+        "help_title": "Stuck halfway through a build?",
+        "help_text": "Send us a photo and we will help.",
+        "help_label": "Ask the workshop"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,86 @@
+{%- comment -%}
+  Spec table rows. Values come from the product-facts snippet (metafield first, then only what the title or description states).
+  Empty values are skipped; prints nothing when there are no rows.
+  Params: product, variant
+{%- endcomment -%}
+{%- liquid
+  capture sp_json
+    render 'product-facts', product: product
+  endcapture
+  assign f_raw = sp_json | strip | split: '~'
+  assign f_brand = f_raw[0]
+  assign f_kind = f_raw[2]
+  assign f_dia = f_raw[3]
+  assign f_face = f_raw[6]
+  assign f_lip = f_raw[7]
+  assign f_sheet = f_raw[8]
+  assign f_own = false
+  if f_raw[1] == 'true'
+    assign f_own = true
+  endif
+  assign f_bearing = false
+  if f_raw[4] == 'true'
+    assign f_bearing = true
+  endif
+  assign f_disc = false
+  if f_raw[5] == 'true'
+    assign f_disc = true
+  endif
+  assign f_precoated = false
+  if f_raw[9] == 'true'
+    assign f_precoated = true
+  endif
+  assign f_made = f_raw[10] | split: ',' | join: ','
+  assign mf = product.metafields.hpz
+  assign sp_material = ''
+  assign sp_colour = ''
+  assign sp_chunks = product.description | replace: '<br />', '<br>' | replace: '<br>', '</p>' | split: '</p>'
+  for ch in sp_chunks
+    assign ch_t = ch | strip_html | strip
+    assign ch_l = ch_t | downcase
+    assign ch_p = ch_l | slice: 0, 9
+    if ch_p == 'material:' and sp_material == ''
+      assign sp_material = ch_t | slice: 9, 80 | strip
+    endif
+    assign ch_p = ch_l | slice: 0, 6
+    if ch_p == 'color:' and sp_colour == ''
+      assign sp_colour = ch_t | slice: 6, 80 | strip
+    endif
+  endfor
+  assign made_names = ''
+  if f_made != blank
+    capture dc_raw
+      render 'default-castings-list'
+    endcapture
+    assign dc_recs = dc_raw | strip | split: ';;'
+    assign made_list = f_made | split: ','
+    for h in made_list
+      for r in dc_recs
+        assign cr = r | split: '|'
+        if cr[0] == h
+          assign made_names = made_names | append: cr[1] | append: ', '
+        endif
+      endfor
+    endfor
+    assign made_names = made_names | strip | remove_last: ','
+  endif
+-%}
+{%- capture rows -%}
+  {%- if variant.sku != blank -%}<tr><th>{{ 'hpz.product.part_number' | t }}</th><td>{{ variant.sku | escape }}</td></tr>{%- endif -%}
+  {%- if f_brand != blank -%}<tr><th>{{ 'hpz.product.spec_maker' | t }}</th><td>{{ f_brand | escape }}</td></tr>{%- endif -%}
+  {%- if f_dia != blank -%}<tr><th>{{ 'hpz.product.spec_diameter' | t }}</th><td>{{ f_dia | times: 1.0 | round: 1 | replace: '.0', '' }} mm</td></tr>{%- endif -%}
+  {%- if mf.width.value != blank -%}<tr><th>{{ 'hpz.product.spec_width' | t }}</th><td>{{ mf.width.value | round: 1 }} mm</td></tr>{%- endif -%}
+  {%- if mf.wheel_style.value != blank -%}<tr><th>{{ 'hpz.product.spec_style' | t }}</th><td>{{ mf.wheel_style.value | escape }}</td></tr>{%- endif -%}
+  {%- if f_face != blank -%}<tr><th>{{ 'hpz.product.spec_face' | t }}</th><td>{{ f_face | replace: '-', ' ' | capitalize | escape }}</td></tr>{%- endif -%}
+  {%- if f_lip != blank -%}<tr><th>{{ 'hpz.product.spec_lip' | t }}</th><td>{{ f_lip | replace: '-', ' ' | capitalize | escape }}</td></tr>{%- endif -%}
+  {%- if f_bearing -%}<tr><th>{{ 'hpz.product.spec_bearing' | t }}</th><td>{{ 'hpz.product.yes' | t }}</td></tr>{%- endif -%}
+  {%- if mf.axle.value != blank -%}{%- assign axle_key = 'hpz.product.axle_' | append: mf.axle.value -%}<tr><th>{{ 'hpz.product.spec_axle' | t }}</th><td>{{ axle_key | t }}</td></tr>{%- endif -%}
+  {%- if f_disc -%}<tr><th>{{ 'hpz.product.spec_disc' | t }}</th><td>{{ 'hpz.product.yes' | t }}</td></tr>{%- endif -%}
+  {%- if f_sheet != blank -%}<tr><th>{{ 'hpz.product.spec_sheet' | t }}</th><td>{{ f_sheet | replace: '-', ' ' | capitalize | escape }}</td></tr>{%- endif -%}
+  {%- if f_precoated -%}<tr><th>{{ 'hpz.product.spec_coating' | t }}</th><td>{{ 'hpz.product.precoated' | t }}</td></tr>{%- endif -%}
+  {%- if f_kind != 'wheels' and sp_material != blank -%}<tr><th>{{ 'hpz.product.spec_material' | t }}</th><td>{{ sp_material | escape }}</td></tr>{%- endif -%}
+  {%- if sp_colour != blank -%}<tr><th>{{ 'hpz.product.spec_colour' | t }}</th><td>{{ sp_colour | escape }}</td></tr>{%- endif -%}
+  {%- if made_names != blank -%}<tr><th>{{ 'hpz.product.spec_made_for' | t }}</th><td>{{ made_names | escape }}</td></tr>{%- endif -%}
+  {%- if variant.weight > 0 -%}<tr><th>{{ 'hpz.product.spec_weight' | t }}</th><td>{{ variant.weight | weight_with_unit: variant.weight_unit }}</td></tr>{%- endif -%}
+{%- endcapture -%}
+{%- if rows contains '<tr>' -%}<table class="spec">{{ rows }}</table>{%- endif -%}

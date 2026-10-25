@@ -1,0 +1,89 @@
+{{ 'p-home.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign heading = s.heading
+  if heading == blank
+    assign heading = 'HPZ Academy'
+  endif
+  assign sub = s.subheading
+  if sub == blank
+    assign sub = 'hpz.home.acad.sub' | t
+  endif
+  assign blog = s.blog
+  assign n_articles = 0
+  if blog != blank and blog.handle != blank
+    assign n_articles = blog.articles_count | plus: 0
+  endif
+  if n_articles == 0
+    assign cand = blogs['academy']
+    if cand != blank and cand.handle != blank
+      assign c_n = cand.articles_count | plus: 0
+      if c_n > 0
+        assign blog = cand
+        assign n_articles = c_n
+      endif
+    endif
+  endif
+  if n_articles == 0
+    assign cand = blogs['news']
+    if cand != blank and cand.handle != blank
+      assign c_n = cand.articles_count | plus: 0
+      if c_n > 0
+        assign blog = cand
+        assign n_articles = c_n
+      endif
+    endif
+  endif
+  assign blog_url = routes.root_url | append: 'blogs/academy'
+  if blog != blank and blog.handle != blank
+    assign blog_url = blog.url
+  endif
+-%}
+{%- if n_articles > 0 or request.design_mode -%}
+<section class="section" {{ section.shopify_attributes }}>
+  <div class="wrap">
+    <div class="shead">
+      {%- if s.idx != blank -%}<span class="idx">{{ s.idx }}</span>{%- endif -%}
+      <div><h2 class="h2">{{ heading }}</h2><p>{{ sub }}</p></div>
+      <a class="arrow-link" href="{{ blog_url }}"><span>{{ 'hpz.home.acad.all' | t }}</span> {% render 'icon', name: 'arrow' %}</a>
+    </div>
+    <div class="acad">
+      {%- if n_articles == 0 -%}<p class="muted">Publish articles in the "academy" (or "news") blog to fill this section.</p>{%- endif -%}
+      {%- for a in blog.articles limit: s.limit -%}
+        {%- assign mins = a.metafields.hpz.minutes.value -%}
+        {%- assign level = a.metafields.hpz.level.value -%}
+        <a class="ac" href="{{ a.url }}" data-reveal style="--i:{{ forloop.index0 }}">
+          <span class="mono ac-n">{{ forloop.index | prepend: '0' }}</span>
+          <span class="ac-cat mono">{{ a.tags.first | escape }}</span>
+          <h3>{{ a.title | escape }}</h3>
+          <p>{{ a.excerpt_or_content | strip_html | truncate: 120 }}</p>
+          <span class="ac-meta mono">
+            {%- if mins != blank -%}{{ 'hpz.home.acad.min' | t: count: mins }}{%- endif -%}
+            {%- if mins != blank and level != blank %} · {% endif -%}
+            {%- if level != blank -%}{{ level | escape }}{%- endif -%}
+          </span>
+          <span class="ac-img">
+            {%- if a.image -%}{{ a.image | image_url: width: 300 | image_tag: width: 100, alt: '', loading: 'lazy' }}{%- endif -%}
+          </span>
+          {% render 'icon', name: 'arrow' %}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+<script src="{{ 'home.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Academy teaser",
+  "settings": [
+    { "type": "text", "id": "idx", "label": "Index number", "default": "09" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "HPZ Academy" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "info": "Blank = translated default." },
+    { "type": "blog", "id": "blog", "label": "Blog", "info": "Use the 'academy' blog." },
+    { "type": "range", "id": "limit", "label": "Articles", "min": 2, "max": 6, "step": 1, "default": 4 }
+  ],
+  "presets": [ { "name": "Academy teaser" } ]
+}
+{% endschema %}

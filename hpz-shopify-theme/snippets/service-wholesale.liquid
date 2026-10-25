@@ -1,0 +1,104 @@
+{%- assign svc_fx = settings.svc_price_factor | default: 1 -%}
+{%- comment -%} S-03 Wholesale. Params: section {%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- assign nl = '
+' -%}
+{%- assign tiers = s.ws_tiers | split: nl -%}
+{%- assign benefits = s.ws_benefits | split: nl -%}
+{%- assign stockists = s.ws_stockists | split: nl -%}
+{%- assign types = s.ws_types | split: nl -%}
+{%- assign vols = s.ws_volumes | split: nl -%}
+{%- assign smin = s.ws_slider_min -%}
+{%- assign smax = s.ws_slider_max -%}
+{%- assign range = smax | minus: smin -%}
+{%- assign rrp_c = s.ws_rrp | times: 100 | times: svc_fx -%}
+
+<section class="section dark ws" id="wholesale">
+  <div class="wrap">
+    <div class="shead"><span class="idx">S-03</span><div><h2 class="h2">{{ 'hpz.svc.ws_title' | t }}</h2><p>{{ 'hpz.svc.ws_intro' | t }}</p></div><a class="btn btn-line btn-sm" href="#ws-apply">{{ 'hpz.svc.apply' | t }}</a></div>
+
+    <div class="ws-top">
+      {%- if tiers.size > 0 and s.ws_tiers != blank -%}
+      <div class="ws-calc" id="ws-calc" data-rrp="{{ s.ws_rrp }}" data-min="{{ smin }}" data-max="{{ smax }}" data-min-label="{{ 'hpz.svc.min_sets' | t: n: '__N__' }}">
+        <div class="wc-h"><span class="eyebrow"><b>{{ 'hpz.svc.vol_calc' | t }}</b></span><span class="mono xs">{{ 'hpz.svc.avg_rrp' | t }} {{ rrp_c | money }}</span></div>
+        <div class="wc-in"><label class="lbl" for="ws-n">{{ 'hpz.svc.sets_per_order' | t }}</label><b class="mono wc-n" id="ws-nv">{{ s.ws_slider_start }}</b></div>
+        <input type="range" class="wc-r" id="ws-n" min="{{ smin }}" max="{{ smax }}" step="{{ s.ws_slider_step }}" value="{{ s.ws_slider_start }}" aria-label="{{ 'hpz.svc.sets_per_order' | t }}">
+        <div class="wc-scale mono"><span>{{ smin }}</span>
+          {%- for line in tiers -%}{%- assign f = line | split: '|' -%}{%- assign m = f[0] | strip | plus: 0 -%}<span style="left:{{ m | minus: smin | times: 100.0 | divided_by: range }}%">{{ m }}</span>{%- endfor -%}
+          <span style="left:100%">{{ smax }}</span></div>
+        <table class="wc-t"><thead><tr><th>{{ 'hpz.svc.tier' | t }}</th><th>{{ 'hpz.svc.sets_order' | t }}</th><th>{{ 'hpz.svc.discount' | t }}</th><th>{{ 'hpz.svc.per_set' | t }}</th></tr></thead>
+          <tbody>
+            {%- for line in tiers -%}
+              {%- assign f = line | split: '|' -%}
+              {%- assign m = f[0] | strip | plus: 0 -%}
+              {%- assign p = f[1] | strip | plus: 0 -%}
+              {%- assign inv = 100 | minus: p -%}
+              <tr data-wt="{{ forloop.index0 }}" data-min="{{ m }}" data-pct="{{ p }}"><td class="mono">W-{{ forloop.index }}</td><td class="mono">{{ m }}{% unless forloop.last %}-{{ tiers[forloop.index] | split: '|' | first | strip | minus: 1 }}{% else %}+{% endunless %}</td><td class="mono"><b>{{ p }}%</b></td><td class="mono">{{ s.ws_rrp | times: inv | times: svc_fx | money }}</td></tr>
+            {%- endfor -%}
+          </tbody></table>
+        <div class="wc-out"><div><span>{{ 'hpz.svc.your_discount' | t }}</span><b class="mono"><span id="ws-d">0</span>%</b></div><div><span>{{ 'hpz.svc.order_total' | t }}</span><b class="mono" id="ws-tot"></b></div><div><span>{{ 'hpz.svc.margin' | t }}</span><b class="mono" id="ws-m"></b></div></div>
+      </div>
+      {%- endif -%}
+      {%- if s.ws_benefits != blank -%}
+      <ul class="ws-ben" id="ws-ben">
+        {%- for line in benefits -%}
+          {%- assign f = line | split: '|' -%}
+          {%- if f.size > 0 and f[0] != blank -%}
+          <li data-reveal style="--i:{{ forloop.index0 }}"><span class="mono">0{{ forloop.index }}</span><div><b>{{ f[0] | strip }}</b>{% if f[1] != blank %}<p>{{ f[1] | strip }}</p>{% endif %}</div></li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+      {%- endif -%}
+    </div>
+
+    {%- if s.ws_stockists != blank -%}
+      {%- assign cstr = '' -%}
+      {%- for line in stockists -%}
+        {%- assign f = line | split: '|' -%}
+        {%- assign cn = f[0] | strip -%}
+        {%- if cn != blank -%}{%- assign ck = '|' | append: cn | append: '|' -%}{%- assign cw = '|' | append: cstr -%}{%- unless cw contains ck -%}{%- assign cstr = cstr | append: cn | append: '|' -%}{%- endunless -%}{%- endif -%}
+      {%- endfor -%}
+      {%- assign countries = cstr | split: '|' -%}
+      <div class="ws-stock">
+        <div class="ws-stock-h"><h3 class="h3">{{ 'hpz.svc.where_find' | t }}</h3><span class="mono xs">{{ stockists.size }} {{ 'hpz.svc.stockists' | t }} &middot; {{ countries.size }} {{ 'hpz.svc.countries' | t }}</span></div>
+        <div class="ws-list">
+          {%- for cn in countries -%}
+            {%- assign cnt = 0 -%}
+            {%- for line in stockists -%}{%- assign f = line | split: '|' -%}{%- assign fc = f[0] | strip -%}{%- if fc == cn -%}{%- assign cnt = cnt | plus: 1 -%}{%- endif -%}{%- endfor -%}
+            <div class="wl-c" data-reveal><div class="wl-h"><span class="flag flag-x mono">{{ cn | slice: 0, 2 | upcase }}</span><b>{{ cn }}</b><span class="mono">{{ cnt }}</span></div><ul>
+              {%- for line in stockists -%}{%- assign f = line | split: '|' -%}{%- assign fc = f[0] | strip -%}{%- if fc == cn -%}<li><span>{{ f[2] | strip }}</span><em class="mono">{{ f[1] | strip }}</em></li>{%- endif -%}{%- endfor -%}
+            </ul></div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- form 'contact', id: 'ws-apply', class: 'ws-form', novalidate: 'novalidate' -%}
+      <input type="hidden" name="contact[tags]" value="service-wholesale">
+      <input type="hidden" name="contact[Request type]" value="Trade account application">
+      <input type="hidden" name="contact[body]" value="Trade account application">
+      {%- if form.errors -%}<div class="sv-err" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+      {%- if form.posted_successfully? -%}
+        <div class="sv-ok" data-sent="ws-apply"><span class="q-stamp mono">{{ 'hpz.svc.received' | t }}</span><h3 class="h3">{{ 'hpz.svc.ws_ok_h' | t }}</h3><p>{{ 'hpz.svc.ws_ok_p' | t: n: s.ws_reply_days }}</p></div>
+      {%- endif -%}
+      <div data-form-body{% if form.posted_successfully? %} hidden{% endif %}>
+        <div class="ws-form-h"><span class="eyebrow"><b>{{ 'hpz.svc.application' | t }}</b></span><h3 class="h3">{{ 'hpz.svc.open_trade' | t }}</h3><p class="small">{{ 'hpz.svc.ws_reply' | t: n: s.ws_reply_days }}</p></div>
+        <div class="ws-fields">
+          <div class="field"><label for="ws-shop">{{ 'hpz.svc.shop_name' | t }}</label><input class="input" id="ws-shop" name="contact[name]" required></div>
+          <div class="field"><label for="ws-country">{{ 'hpz.svc.country' | t }}</label><select class="select" id="ws-country" name="contact[Country]">
+            {%- for c in localization.available_countries -%}<option value="{{ c.name | escape }}"{% if c.iso_code == localization.country.iso_code %} selected{% endif %}>{{ c.name }}</option>{%- endfor -%}
+          </select></div>
+          {%- if s.ws_types != blank -%}
+          <div class="field"><label for="ws-type">{{ 'hpz.svc.biz_type' | t }}</label><select class="select" id="ws-type" name="contact[Business type]">{%- for line in types -%}{%- if line != blank -%}<option value="{{ line | strip | escape }}">{{ line | strip }}</option>{%- endif -%}{%- endfor -%}</select></div>
+          {%- endif -%}
+          {%- if s.ws_volumes != blank -%}
+          <div class="field"><label for="ws-vol">{{ 'hpz.svc.volume' | t }}</label><select class="select" id="ws-vol" name="contact[Expected volume]">{%- for line in vols -%}{%- if line != blank -%}<option value="{{ line | strip | escape }}">{{ line | strip }}</option>{%- endif -%}{%- endfor -%}</select></div>
+          {%- endif -%}
+          <div class="field"><label for="ws-web">{{ 'hpz.svc.website' | t }}</label><input class="input" id="ws-web" name="contact[Website or Instagram]" placeholder="@yourshop"></div>
+          <div class="field"><label for="ws-mail">{{ 'hpz.svc.email' | t }}</label><input class="input" id="ws-mail" name="contact[email]" type="email" required><span class="err-msg">{{ 'hpz.svc.email_err' | t }}</span></div>
+        </div>
+        <button class="btn btn-signal btn-lg" type="submit" id="ws-go"><span class="spin"></span><span>{{ 'hpz.svc.send_app' | t }}</span></button>
+      </div>
+    {%- endform -%}
+  </div>
+</section>

@@ -1,0 +1,15 @@
+{%- comment -%}
+  Wishlist drawer. Items are product handles stored in localStorage (hpz.wish); rows are filled by assets/theme.js.
+{%- endcomment -%}
+<div class="dr-h">
+  <h3>Wishlist <span class="mono" id="wish-n"></span></h3>
+  <button class="dr-x" data-close aria-label="Close">{% render 'icon', name: 'close' %}</button>
+</div>
+<div class="dr-body">
+  <ul class="wl" id="wish-list"></ul>
+  <div class="dr-empty" id="wish-empty" hidden>
+    {% render 'icon', name: 'heart' %}
+    <h4>Nothing saved yet</h4>
+    <p>Tap the heart on any part to keep it here.</p>
+  </div>
+</div>

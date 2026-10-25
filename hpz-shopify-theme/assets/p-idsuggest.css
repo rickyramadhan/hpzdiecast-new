@@ -1,0 +1,16 @@
+/* HPZ — "use the Indonesia store" suggestion pop-up (international store, Indonesian visitors) */
+.idp { position: fixed; inset: 0; z-index: 1300; display: grid; place-items: center; padding: 20px; background: rgba(14, 15, 17, .55); backdrop-filter: blur(2px); animation: idp-in .25s ease-out; }
+.idp[hidden] { display: none; }
+.idp-box { position: relative; width: min(480px, 100%); display: grid; gap: 12px; padding: 28px 26px 24px; background: var(--paper, #f4f2ee); border: 1px solid var(--ink, #111); border-radius: var(--r3, 14px); box-shadow: 0 24px 60px rgba(0, 0, 0, .35); }
+.idp-box .eyebrow b { display: inline-flex; align-items: center; gap: 8px; }
+.idp-box .flag { width: 22px; }
+.idp-box .h3 { margin: 0; }
+.idp-box p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ink-2, #333); }
+.idp-a { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.idp-a .btn { flex: 1 1 180px; justify-content: center; text-align: center; }
+.idp-x { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; }
+.idp-x:hover { background: rgba(0, 0, 0, .07); }
+.idp-x svg { width: 18px; }
+.idp-open { overflow: hidden; }
+@keyframes idp-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .idp { animation: none; } }

@@ -1,0 +1,26 @@
+{
+  "en": { "hpz": { "wa": {
+    "title": "Chat on WhatsApp",
+    "subtitle": "Our team replies Mon–Sat, 07:00–18:00 WIB.",
+    "online": "Online now",
+    "offline": "Offline, we reply next working day",
+    "role": "Customer service",
+    "footer": "Questions about parts, fitment or your order? Tap an admin to start.",
+    "greeting": "Need help choosing parts or checking an order? Chat with us on WhatsApp.",
+    "prefill": "Hi HPZ, I need help with:",
+    "open": "Open WhatsApp chat",
+    "close": "Close"
+  } } },
+  "id": { "hpz": { "wa": {
+    "title": "Chat lewat WhatsApp",
+    "subtitle": "Tim kami membalas Senin–Sabtu, 07.00–18.00 WIB.",
+    "online": "Online sekarang",
+    "offline": "Sedang offline, kami balas di hari kerja berikutnya",
+    "role": "Customer service",
+    "footer": "Tanya soal part, kecocokan, atau pesananmu? Pilih admin untuk mulai.",
+    "greeting": "Butuh bantuan memilih part atau cek pesanan? Chat kami di WhatsApp.",
+    "prefill": "Halo HPZ, saya butuh bantuan soal:",
+    "open": "Buka chat WhatsApp",
+    "close": "Tutup"
+  } } }
+}

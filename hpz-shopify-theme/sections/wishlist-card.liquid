@@ -1,0 +1,6 @@
+{%- comment -%} Data section: renders one product card. Fetched as /products/<handle>?section_id=wishlist-card by account.js {%- endcomment -%}
+{%- if product -%}{% render 'product-card', product: product, index: 0, lazy: true %}{%- endif -%}
+
+{% schema %}
+{ "name": "Wishlist card (data)", "settings": [] }
+{% endschema %}

@@ -1,0 +1,323 @@
+{{ 'p-product.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  capture facts_json
+    render 'product-facts', product: product
+  endcapture
+  assign f_raw = facts_json | strip | split: '~'
+  assign f_brand = f_raw[0]
+  assign f_kind = f_raw[2]
+  assign f_dia = f_raw[3]
+  assign f_face = f_raw[6]
+  assign f_lip = f_raw[7]
+  assign f_sheet = f_raw[8]
+  assign f_own = false
+  if f_raw[1] == 'true'
+    assign f_own = true
+  endif
+  assign f_bearing = false
+  if f_raw[4] == 'true'
+    assign f_bearing = true
+  endif
+  assign f_disc = false
+  if f_raw[5] == 'true'
+    assign f_disc = true
+  endif
+  assign f_precoated = false
+  if f_raw[9] == 'true'
+    assign f_precoated = true
+  endif
+  assign f_made = f_raw[10] | split: ',' | join: ','
+  assign brand = product.metafields.hpz.brand.value
+  assign brand_name = f_brand
+  assign kind = f_kind
+  case kind
+    when 'wheels'
+      assign kind_col = 'wheels'
+    when 'decals'
+      assign kind_col = 'decals'
+    when 'bodykits'
+      assign kind_col = 'body-kit'
+    when 'engines'
+      assign kind_col = 'engines'
+    when 'exterior'
+      assign kind_col = 'exterior-detail'
+    when 'interior'
+      assign kind_col = 'interior-detail'
+    when 'dioramas'
+      assign kind_col = 'dioramas'
+    else
+      assign kind_col = ''
+  endcase
+  assign kind_coll = null
+  if kind_col != ''
+    assign kind_coll = collections[kind_col]
+  endif
+  case brand_name
+    when 'HPZ Wheels'
+      assign brand_col = 'hpz-wheels'
+    when 'JV Custom'
+      assign brand_col = 'jv-custom'
+    when 'Sakura Model'
+      assign brand_col = 'sakura-model'
+    when 'Octopus Hobbies'
+      assign brand_col = 'octopus'
+    when 'Parvus Models'
+      assign brand_col = 'parvus-models'
+    when 'Rebel x Arise'
+      assign brand_col = 'rebel-tires'
+    when 'Turbominiscale'
+      assign brand_col = 'turbo-miniscale'
+    when 'Carlomo'
+      assign brand_col = 'carlomo-alloy-wheels'
+    when 'Muscle Car 23'
+      assign brand_col = 'muscle-car-23'
+    else
+      assign brand_col = ''
+  endcase
+  assign brand_coll = null
+  if brand_col != ''
+    assign brand_coll = collections[brand_col]
+  endif
+  capture notify_title
+    echo product.title
+    unless product.has_only_default_variant
+      echo ' - ' | append: current.title
+    endunless
+  endcapture
+  capture notify_body
+    echo 'Restock alert: ' | append: notify_title | append: ' ' | append: shop.url | append: product.url | append: '?variant=' | append: current.id
+  endcapture
+  if brand != blank
+    assign brand_url = routes.collections_url | append: '/all?filter.p.m.hpz.brand=gid%3A%2F%2Fshopify%2FMetaobject%2F' | append: brand.system.id
+  elsif brand_coll != blank and brand_coll.url != blank
+    assign brand_url = brand_coll.url
+  else
+    assign brand_url = product.vendor | url_for_vendor
+  endif
+-%}
+
+<section class="pdp-top" data-pdp data-section-id="{{ section.id }}" data-product-url="{{ product.url }}" data-handle="{{ product.handle }}">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="{{ 'hpz.product.breadcrumb' | t }}">
+      <a href="{{ routes.root_url }}">{{ 'hpz.product.home' | t }}</a>
+      {%- if product.type != blank -%}<span><a href="{{ product.type | url_for_type }}">{{ product.type | escape }}</a></span>
+      {%- elsif kind_coll != blank and kind_coll.url != blank -%}<span><a href="{{ kind_coll.url }}">{{ kind_coll.title | escape }}</a></span>{%- endif -%}
+      {%- if brand_name != blank -%}<span><a href="{{ brand_url }}">{{ brand_name | escape }}</a></span>{%- endif -%}
+      <span>{{ product.title | escape }}</span>
+    </nav>
+
+    <div class="pdp" id="pdp">
+      <div class="pdp-g">
+        {% render 'product-gallery', product: product, variant: current, show_compare: section.settings.show_compare, show_drawing: section.settings.show_drawing %}
+      </div>
+
+      <div class="pdp-i">
+        <div class="bb">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when '@app' -%}
+                {% render block %}
+
+              {%- when 'title' -%}
+                <div data-dyn="{{ block.id }}" {{ block.shopify_attributes }}>
+                  <div class="bb-top">
+                    {%- if brand_name != blank -%}<a class="bb-brand" href="{{ brand_url }}">{{ brand_name | escape }}</a>{%- endif -%}
+                    {%- if current.sku != blank -%}<span class="mono bb-pn">{{ current.sku | escape }}</span>{%- endif -%}
+                  </div>
+                  <h1 class="bb-t">{{ product.title | escape }}</h1>
+                </div>
+
+              {%- when 'price' -%}
+                <div class="bb-price" data-dyn="{{ block.id }}" {{ block.shopify_attributes }}>
+                  {% render 'price', product: product, variant: current %}
+                  {%- if current.compare_at_price > current.price -%}
+                    <span class="bb-save">{{ 'hpz.product.save' | t }} {{ current.compare_at_price | minus: current.price | money }}</span>
+                  {%- endif -%}
+                  <p class="bb-sub">{% if shop.taxes_included %}{{ 'hpz.product.tax_included' | t }}{% else %}{{ 'hpz.product.tax_excluded' | t }}{% endif %}</p>
+                </div>
+
+              {%- when 'chips' -%}
+                {%- capture chips -%}
+                  {%- if f_dia != blank -%}<span>&Oslash; {{ f_dia | times: 1.0 | round: 1 | replace: '.0', '' }} mm</span>{%- endif -%}
+                  {%- if product.metafields.hpz.width.value != blank -%}<span>{{ product.metafields.hpz.width.value | round: 1 }} mm</span>{%- endif -%}
+                  {%- if f_bearing -%}<span>{{ 'hpz.product.chip_bearing' | t }}</span>{%- endif -%}
+                  {%- if f_disc -%}<span>{{ 'hpz.product.chip_disc' | t }}</span>{%- endif -%}
+                  {%- if f_face != blank -%}<span>{{ f_face | replace: '-', ' ' | capitalize | escape }}</span>{%- endif -%}
+                  {%- if f_sheet != blank -%}<span>{{ f_sheet | replace: '-', ' ' | capitalize | escape }}</span>{%- endif -%}
+                  {%- if f_precoated -%}<span>{{ 'hpz.product.precoated' | t }}</span>{%- endif -%}
+                {%- endcapture -%}
+                {%- if chips contains '<span>' -%}
+                  <div class="bb-spec" {{ block.shopify_attributes }}>{{ chips }}</div>
+                {%- endif -%}
+
+              {%- when 'variant_picker' -%}
+                <div data-dyn="{{ block.id }}" {{ block.shopify_attributes }}>
+                  {% render 'product-variant-picker', product: product, variant: current %}
+                </div>
+
+              {%- when 'fitment' -%}
+                <div {{ block.shopify_attributes }}>{% render 'product-fitment', product: product, kind: kind, facts_json: facts_json %}</div>
+
+              {%- when 'stock' -%}
+                {%- liquid
+                  assign threshold = block.settings.low_stock_threshold
+                  if threshold == 0 or threshold == blank
+                    assign threshold = settings.low_stock_threshold | default: 4
+                  endif
+                  assign qty_left = current.inventory_quantity
+                  assign is_low = false
+                  if current.available and current.inventory_management == 'shopify' and qty_left > 0 and qty_left <= threshold
+                    assign is_low = true
+                  endif
+                -%}
+                <div class="bb-stock" data-dyn="{{ block.id }}" {{ block.shopify_attributes }}>
+                  {%- if current.available -%}
+                    {%- if is_low -%}
+                      <i class="dot low"></i>{{ 'hpz.product.stock_low' | t: count: qty_left }}
+                    {%- else -%}
+                      <i class="dot pulse"></i>{{ 'hpz.product.stock_in' | t }}{% if settings.workshop_city != blank %} &middot; {{ 'hpz.product.ships_from' | t: city: settings.workshop_city }}{% endif %}
+                    {%- endif -%}
+                  {%- else -%}
+                    <i class="dot out"></i>{{ 'hpz.product.stock_out' | t }}
+                  {%- endif -%}
+                </div>
+
+              {%- when 'buy_buttons' -%}
+                <div class="bb-buy" data-buy-anchor data-dyn="{{ block.id }}" {{ block.shopify_attributes }}>
+                  {%- assign form_id = 'pdp-form-' | append: section.id -%}
+                  {%- form 'product', product, id: form_id, class: 'bb-form', novalidate: 'novalidate', data-pdp-form: 'true' -%}
+                    <input type="hidden" name="id" value="{{ current.id }}">
+                    {%- if current.available -%}
+                      <div class="bb-row">
+                        <div class="qty">
+                          <button type="button" data-qs="-1" aria-label="{{ 'hpz.product.qty_decrease' | t }}">{% render 'icon', name: 'minus' %}</button>
+                          <input name="quantity" value="1" inputmode="numeric" aria-label="{{ 'hpz.product.qty' | t }}" data-qty data-qty-for="{{ current.id }}">
+                          <button type="button" data-qs="1" aria-label="{{ 'hpz.product.qty_increase' | t }}">{% render 'icon', name: 'plus' %}</button>
+                        </div>
+                        <button type="submit" name="add" class="btn btn-signal btn-lg bb-add" data-add-to-cart data-variant-id="{{ current.id }}" data-fly-from="[data-gal-main]" data-unit-price="{{ current.price }}">
+                          <span class="bb-add-t">{% render 'icon', name: 'cart' %}<span data-add-label>{{ 'hpz.product.add_to_cart' | t }}</span> &middot; <span class="mono" data-add-price>{{ current.price | money }}</span></span><span class="spin"></span>
+                        </button>
+                        <button type="button" class="btn btn-ghost btn-icon btn-lg pc-wish-in" data-wish="{{ product.handle }}" aria-label="{{ 'hpz.product.wishlist' | t }}">{% render 'icon', name: 'heart' %}</button>
+                      </div>
+                      {%- if block.settings.show_dynamic_checkout -%}
+                        {{ form | payment_button }}
+                      {%- endif -%}
+                    {%- else -%}
+                      <div class="bb-row">
+                        <button type="button" class="btn btn-ink btn-lg bb-add" data-notify="{{ notify_body | escape }}" data-notify-title="{{ notify_title | escape }}">{% render 'icon', name: 'bell' %}{{ 'hpz.product.notify_me' | t }}</button>
+                        <button type="button" class="btn btn-ghost btn-icon btn-lg pc-wish-in" data-wish="{{ product.handle }}" aria-label="{{ 'hpz.product.wishlist' | t }}">{% render 'icon', name: 'heart' %}</button>
+                      </div>
+                    {%- endif -%}
+                  {%- endform -%}
+                </div>
+
+              {%- when 'delivery' -%}
+                <div {{ block.shopify_attributes }}>{% render 'product-delivery', block: block %}</div>
+
+              {%- when 'trust' -%}
+                <ul class="bb-trust" {{ block.shopify_attributes }}>
+                  {%- for i in (1..3) -%}
+                    {%- assign t_key = 'title_' | append: i -%}
+                    {%- assign d_key = 'text_' | append: i -%}
+                    {%- assign i_key = 'icon_' | append: i -%}
+                    {%- if block.settings[t_key] != blank -%}
+                      <li>{% render 'icon', name: block.settings[i_key] %}<span><b>{{ block.settings[t_key] | escape }}</b>{{ block.settings[d_key] | escape }}</span></li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+
+              {%- when 'whatsapp' -%}
+                {%- if settings.whatsapp != blank -%}
+                  {%- assign wa_num = settings.whatsapp | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')' -%}
+                  {%- capture wa_text -%}{{ 'hpz.product.wa_prefill' | t }} {{ product.title }} {{ shop.url }}{{ product.url }}{%- endcapture -%}
+                  <a class="bb-ask" href="https://wa.me/{{ wa_num }}?text={{ wa_text | url_encode }}" target="_blank" rel="noopener" {{ block.shopify_attributes }}>{% render 'icon', name: 'wa' %}<span>{% if block.settings.label != blank %}{{ block.settings.label | escape }}{% else %}{{ 'hpz.product.ask_whatsapp' | t }}{% endif %}</span>{% render 'icon', name: 'arrowUR' %}</a>
+                {%- endif -%}
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Sticky add-to-cart bar (shown by CSS on screens up to 1000px) {%- endcomment -%}
+  <div class="sbar" data-dyn="sbar">
+    <div class="wrap sb-in">
+      {%- assign sb_img = current.featured_image | default: product.featured_image -%}
+      {%- if sb_img -%}{{ sb_img | image_url: width: 120 | image_tag: width: 48, height: 48, alt: '', loading: 'lazy' }}{%- endif -%}
+      <div class="sb-t"><b>{{ product.title | escape }}</b><span>{% unless product.has_only_default_variant %}{{ current.title | escape }} &middot; {% endunless %}{% render 'price', product: product, variant: current %}</span></div>
+      {%- if current.available -%}
+        <button type="button" class="btn btn-signal" data-add-to-cart data-variant-id="{{ current.id }}" data-fly-from="[data-gal-main]">{% render 'icon', name: 'cart' %}{{ 'hpz.product.add_short' | t }}</button>
+      {%- else -%}
+        <button type="button" class="btn btn-ink" data-notify="{{ notify_body | escape }}" data-notify-title="{{ notify_title | escape }}">{{ 'hpz.product.notify_short' | t }}</button>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="lb" id="lb" aria-hidden="true"></div>
+
+  <script type="application/json" data-pdp-json>{{ product.variants | json }}</script>
+</section>
+
+<script src="{{ 'product.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Product page",
+  "tag": "div",
+  "class": "pdp-section",
+  "settings": [
+    { "type": "checkbox", "id": "show_drawing", "label": "Show technical drawing (Wheels with a diameter metafield)", "default": true },
+    { "type": "checkbox", "id": "show_compare", "label": "Show before/after compare slider (uses first two images)", "default": false, "info": "The decal product template turns this on." }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    { "type": "title", "name": "Title block", "limit": 1 },
+    { "type": "price", "name": "Price", "limit": 1 },
+    { "type": "chips", "name": "Spec chips", "limit": 1 },
+    { "type": "variant_picker", "name": "Variant picker", "limit": 1 },
+    { "type": "fitment", "name": "Fitment check", "limit": 1 },
+    {
+      "type": "stock", "name": "Stock line", "limit": 1,
+      "settings": [
+        { "type": "range", "id": "low_stock_threshold", "label": "Show 'only N left' at or below", "min": 0, "max": 20, "step": 1, "default": 0, "info": "0 uses the theme setting. Only shown for variants where Shopify tracks inventory." }
+      ]
+    },
+    {
+      "type": "buy_buttons", "name": "Quantity and buy buttons", "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons", "default": true }
+      ]
+    },
+    {
+      "type": "delivery", "name": "Delivery estimate", "limit": 1,
+      "settings": [
+        { "type": "range", "id": "min_days", "label": "Minimum business days", "min": 1, "max": 30, "step": 1, "default": 7 },
+        { "type": "range", "id": "max_days", "label": "Maximum business days", "min": 1, "max": 45, "step": 1, "default": 14 },
+        { "type": "textarea", "id": "rows", "label": "Shipping method rows", "info": "One per line: Name | Arrives | Cost. Example: Standard | 7-14 days | $12" },
+        { "type": "checkbox", "id": "show_duty_note", "label": "Show duties and import taxes note", "default": true }
+      ]
+    },
+    {
+      "type": "trust", "name": "Trust row", "limit": 1,
+      "settings": [
+        { "type": "text", "id": "icon_1", "label": "Icon 1 (icon snippet name)", "default": "ruler" },
+        { "type": "text", "id": "title_1", "label": "Title 1", "default": "Check the fit" },
+        { "type": "text", "id": "text_1", "label": "Text 1", "default": "Use the fitment check above" },
+        { "type": "text", "id": "icon_2", "label": "Icon 2", "default": "box" },
+        { "type": "text", "id": "title_2", "label": "Title 2", "default": "Bagged and boxed" },
+        { "type": "text", "id": "text_2", "label": "Text 2" },
+        { "type": "text", "id": "icon_3", "label": "Icon 3", "default": "shield" },
+        { "type": "text", "id": "title_3", "label": "Title 3", "default": "Secure checkout" },
+        { "type": "text", "id": "text_3", "label": "Text 3" }
+      ]
+    },
+    {
+      "type": "whatsapp", "name": "WhatsApp link", "limit": 1,
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label (blank = default)" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,172 @@
+{{ 'p-account.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign points = nil
+  if section.settings.points_enabled
+    assign points = customer.metafields.hpz.points.value
+  endif
+-%}
+
+<div id="acct" data-account>
+  {% render 'account-header', crumb: '' %}
+
+  <section class="ac-wrap">
+    <div class="wrap ac-grid">
+      {% render 'account-nav', current: 'overview', points: points %}
+
+      <div class="ac-main">
+        {%- comment -%} Overview {%- endcomment -%}
+        <section class="ac-panel" data-panel="overview" id="p-overview">
+          <div class="ov-top">
+            <div class="ov-hi">
+              <span class="eyebrow"><b>01</b> {{ 'hpz.account.nav_overview' | t }}</span>
+              <h2 class="h1 ov-greet">{{ 'hpz.account.hello' | t }}{% if customer.first_name != blank %}, {{ customer.first_name }}{% endif %}.</h2>
+              <dl class="ov-stats">
+                <div><dt>{{ 'hpz.account.nav_orders' | t }}</dt><dd class="mono">{{ customer.orders_count }}</dd></div>
+                <div><dt>{{ 'hpz.account.total_spent' | t }}</dt><dd class="mono">{{ customer.total_spent | money }}</dd></div>
+                <div><dt>{{ 'hpz.account.nav_garage' | t }}</dt><dd class="mono" data-n="garage">0</dd></div>
+                <div><dt>{{ 'hpz.account.nav_wishlist' | t }}</dt><dd class="mono" data-n="wish">0</dd></div>
+              </dl>
+            </div>
+            {%- if points != blank -%}
+              <div class="pts dark-0">
+                <div class="pts-h"><span class="eyebrow"><b>Pit Points</b></span></div>
+                <div class="pts-n"><span class="mono">{{ points }}</span><small>pts</small></div>
+                {%- if section.settings.points_note != blank -%}<p class="pts-next small">{{ section.settings.points_note }}</p>{%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- assign last = customer.orders.first -%}
+          {%- if last -%}
+            <div class="ov-last">
+              <div class="ov-last-h"><div><span class="eyebrow"><b>{{ 'hpz.account.latest_order' | t }}</b></span><h3 class="h3"><span class="mono">{{ last.name }}</span> &middot; {{ last.created_at | date: '%d %b %Y' }}</h3></div>
+                <div class="ov-last-a"><span class="mono ov-tot">{{ last.total_price | money }}</span><a class="btn btn-ghost btn-sm" href="{{ last.customer_url }}">{{ 'hpz.account.order_details' | t }} {% render 'icon', name: 'arrow' %}</a></div></div>
+              {% render 'account-tracker', order: last %}
+            </div>
+          {%- endif -%}
+
+          <div class="ov-cast">
+            <div class="ov-sub"><h3 class="h4">{{ 'hpz.account.nav_garage' | t }}</h3><a class="arrow-link small" href="#garage">{{ 'hpz.account.manage' | t }} {% render 'icon', name: 'arrow' %}</a></div>
+            <div class="ov-cast-l" data-garage-mini></div>
+          </div>
+        </section>
+
+        {%- comment -%} Orders {%- endcomment -%}
+        <section class="ac-panel" data-panel="orders" id="p-orders" hidden>
+          <header class="ac-ph"><div><span class="eyebrow"><b>02</b></span><h2 class="h2">{{ 'hpz.account.nav_orders' | t }}</h2></div></header>
+          {%- paginate customer.orders by 10 -%}
+            {%- if customer.orders.size > 0 -%}
+              <div class="od-list">
+                {%- for order in customer.orders -%}
+                  {%- liquid
+                    assign cnt = 0
+                    for l in order.line_items
+                      assign cnt = cnt | plus: l.quantity
+                    endfor
+                    assign st_key = 'hpz.account.status_preparing'
+                    if order.cancelled
+                      assign st_key = 'hpz.account.cancelled'
+                    elsif order.fulfillment_status == 'fulfilled'
+                      assign st_key = 'hpz.account.step_shipped'
+                    elsif order.fulfillment_status == 'partial'
+                      assign st_key = 'hpz.account.status_partial'
+                    elsif order.financial_status == 'pending'
+                      assign st_key = 'hpz.account.status_pending'
+                    endif
+                    assign st_class = 'prep'
+                    if order.fulfillment_status == 'fulfilled'
+                      assign st_class = 'transit'
+                    endif
+                  -%}
+                  <article class="od {% if forloop.first %}is-open{% endif %}" data-no="{{ order.name | escape }}">
+                    <button class="od-h" type="button" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}">
+                      <span class="od-no"><b class="mono">{{ order.name }}</b><em>{{ order.created_at | date: '%d %b %Y' }} &middot; {{ cnt }} {{ 'hpz.account.items' | t }}</em></span>
+                      <span class="od-th">
+                        {%- for l in order.line_items limit: 3 -%}{%- if l.image -%}{{ l.image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}{%- endfor -%}
+                        {%- if order.line_items.size > 3 -%}<i class="mono">+{{ order.line_items.size | minus: 3 }}</i>{%- endif -%}
+                      </span>
+                      <span class="od-st is-{{ st_class }}"><i></i>{{ st_key | t }}</span>
+                      <span class="od-tot mono">{{ order.total_price | money }}</span>
+                      <span class="od-chev">{% render 'icon', name: 'down' %}</span>
+                    </button>
+                    <div class="od-b" {% if forloop.first %}style="height:auto"{% endif %}><div class="od-c">
+                      {% render 'account-tracker', order: order %}
+                      {% render 'account-order-items', order: order %}
+                    </div></div>
+                  </article>
+                {%- endfor -%}
+              </div>
+              {%- if paginate.pages > 1 -%}{%- assign shown_n = paginate.current_page | times: paginate.page_size | at_most: paginate.items -%}{% render 'pagination', paginate: paginate, shown: shown_n %}{%- endif -%}
+            {%- else -%}
+              <div class="ac-empty"><h3 class="h3">{{ 'hpz.account.no_orders' | t }}</h3><p>{{ 'hpz.account.no_orders_sub' | t }}</p><a class="btn btn-ink" href="{{ routes.all_products_collection_url }}">{{ 'hpz.account.browse' | t }}</a></div>
+            {%- endif -%}
+          {%- endpaginate -%}
+        </section>
+
+        {%- comment -%} Garage (localStorage, drawn by account.js) {%- endcomment -%}
+        <section class="ac-panel" data-panel="garage" id="p-garage" hidden>
+          <header class="ac-ph"><div><span class="eyebrow"><b>03</b></span><h2 class="h2">{{ 'hpz.account.nav_garage' | t }}</h2><p>{{ 'hpz.account.garage_sub' | t }}</p></div><button class="btn btn-ink" type="button" data-open="garage">{% render 'icon', name: 'plus' %}{{ 'hpz.account.add_casting' | t }}</button></header>
+          <div class="gc-grid" data-garage-list></div>
+          <p class="xs muted" style="margin-top:16px">{{ 'hpz.account.garage_note' | t }}</p>
+        </section>
+
+        {%- comment -%} Saved builds (localStorage hpz.builds) {%- endcomment -%}
+        <section class="ac-panel" data-panel="builds" id="p-builds" hidden>
+          <header class="ac-ph"><div><span class="eyebrow"><b>04</b></span><h2 class="h2">{{ 'hpz.account.nav_builds' | t }}</h2><p>{{ 'hpz.account.builds_sub' | t }}</p></div><a class="btn btn-ink" href="{{ routes.root_url }}pages/planner">{% render 'icon', name: 'plus' %}{{ 'hpz.account.new_sheet' | t }}</a></header>
+          <div class="bs-list" data-builds-list></div>
+        </section>
+
+        {%- comment -%} Wishlist {%- endcomment -%}
+        <section class="ac-panel" data-panel="wishlist" id="p-wishlist" hidden>
+          <header class="ac-ph"><div><span class="eyebrow"><b>05</b></span><h2 class="h2">{{ 'hpz.account.nav_wishlist' | t }}</h2><p>{{ 'hpz.account.wishlist_sub' | t }}</p></div></header>
+          <div class="grid" style="--cols:3" data-wishlist-grid></div>
+        </section>
+
+        {%- if points != blank -%}
+          <section class="ac-panel" data-panel="points" id="p-points" hidden>
+            <header class="ac-ph"><div><span class="eyebrow"><b>06</b></span><h2 class="h2">Pit Points</h2></div></header>
+            <div class="pp-top">
+              <div class="pts dark-0"><div class="pts-h"><span class="eyebrow"><b>Pit Points</b></span></div><div class="pts-n"><span class="mono">{{ points }}</span><small>pts</small></div>{%- if section.settings.points_note != blank -%}<p class="pts-next small">{{ section.settings.points_note }}</p>{%- endif -%}</div>
+              {%- if section.settings.points_text != blank -%}<div class="pp-earn"><div class="rte">{{ section.settings.points_text }}</div></div>{%- endif -%}
+            </div>
+          </section>
+        {%- endif -%}
+
+        {%- comment -%} Settings {%- endcomment -%}
+        <section class="ac-panel" data-panel="settings" id="p-settings" hidden>
+          <header class="ac-ph"><div><span class="eyebrow"><b>08</b></span><h2 class="h2">{{ 'hpz.account.nav_settings' | t }}</h2></div></header>
+          <div class="st-grid">
+            <div class="st"><h3 class="h4">{{ 'hpz.account.profile' | t }}</h3>
+              <p><b>{{ customer.name }}</b></p><p class="mono small">{{ customer.email }}</p>
+              {%- if customer.default_address -%}<address class="small">{{ customer.default_address | format_address }}</address>{%- endif -%}
+              <a class="btn btn-ghost btn-sm" href="{{ routes.account_addresses_url }}">{{ 'hpz.account.nav_addresses' | t }}</a>
+            </div>
+            <div class="st"><h3 class="h4">{{ 'hpz.account.region' | t }}</h3>
+              <p class="small muted">{{ 'hpz.account.region_sub' | t }}</p>
+              <button class="btn btn-ghost btn-sm" type="button" data-open="market">{{ 'hpz.account.change_region' | t }}</button>
+              <p class="xs muted">{{ 'hpz.account.marketing' | t }}: <b>{% if customer.accepts_marketing %}{{ 'hpz.account.yes' | t }}{% else %}{{ 'hpz.account.no' | t }}{% endif %}</b></p>
+            </div>
+            <div class="st st-wide st-out"><div><h3 class="h4">{{ 'hpz.account.sign_out' | t }}</h3><p class="xs muted">{{ 'hpz.account.sign_out_sub' | t }}</p></div>
+              <div class="st-out-a"><a class="btn btn-line" href="{{ routes.account_logout_url }}">{{ 'hpz.account.sign_out' | t }}</a></div></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="{{ 'account.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Account overview",
+  "settings": [
+    { "type": "header", "content": "Pit Points (optional)" },
+    { "type": "paragraph", "content": "Shows a read-only balance from the customer metafield hpz.points (number). Nothing is shown unless this is ticked AND the customer has a value." },
+    { "type": "checkbox", "id": "points_enabled", "label": "Show Pit Points", "default": false },
+    { "type": "text", "id": "points_note", "label": "Note under the balance" },
+    { "type": "richtext", "id": "points_text", "label": "How points work (optional text)" }
+  ]
+}
+{% endschema %}

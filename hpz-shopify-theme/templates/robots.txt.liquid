@@ -1,0 +1,20 @@
+{%- comment -%}
+  Shopify's default rules plus two extra Disallow lines for the "*" group so filtered and sorted collection URLs
+  (duplicates of the plain collection) are not crawled. The sitemap line comes from Shopify's default group.
+{%- endcomment -%}
+{% for group in robots.default_groups %}
+  {{- group.user_agent }}
+
+  {%- for rule in group.rules -%}
+    {{ rule }}
+  {%- endfor -%}
+
+  {%- if group.user_agent.value == '*' -%}
+{{ 'Disallow: /*?*sort_by=' }}
+{{ 'Disallow: /*?*filter.' }}
+  {%- endif -%}
+
+  {%- if group.sitemap != blank -%}
+    {{ group.sitemap }}
+  {%- endif %}
+{% endfor %}

@@ -1,0 +1,16 @@
+{%- comment -%} Fields for a customer_address form. Params: form, uid {%- endcomment -%}
+<div class="ad-f">
+  <div class="fl"><input class="input" id="af-fn-{{ uid }}" name="address[first_name]" value="{{ form.first_name }}" placeholder=" " autocomplete="given-name" required><label for="af-fn-{{ uid }}">{{ 'hpz.account.first_name' | t }}</label></div>
+  <div class="fl"><input class="input" id="af-ln-{{ uid }}" name="address[last_name]" value="{{ form.last_name }}" placeholder=" " autocomplete="family-name"><label for="af-ln-{{ uid }}">{{ 'hpz.account.last_name' | t }}</label></div>
+  <div class="fl"><input class="input" id="af-co-{{ uid }}" name="address[company]" value="{{ form.company }}" placeholder=" " autocomplete="organization"><label for="af-co-{{ uid }}">{{ 'hpz.account.company' | t }}</label></div>
+  <div class="fl ad-wide"><input class="input" id="af-a1-{{ uid }}" name="address[address1]" value="{{ form.address1 }}" placeholder=" " autocomplete="address-line1" required><label for="af-a1-{{ uid }}">{{ 'hpz.account.address1' | t }}</label></div>
+  <div class="fl ad-wide"><input class="input" id="af-a2-{{ uid }}" name="address[address2]" value="{{ form.address2 }}" placeholder=" " autocomplete="address-line2"><label for="af-a2-{{ uid }}">{{ 'hpz.account.address2' | t }}</label></div>
+  <div class="fl"><input class="input" id="af-ci-{{ uid }}" name="address[city]" value="{{ form.city }}" placeholder=" " autocomplete="address-level2" required><label for="af-ci-{{ uid }}">{{ 'hpz.account.city' | t }}</label></div>
+  <div class="fl"><select class="select" id="AddressCountry_{{ uid }}" name="address[country]" data-default="{{ form.country }}" data-province-id="AddressProvince_{{ uid }}" data-address-country autocomplete="country">{{ all_country_option_tags }}</select><label for="AddressCountry_{{ uid }}">{{ 'hpz.account.country' | t }}</label></div>
+  <div class="fl" id="AddressProvinceContainer_{{ uid }}" style="display:none"><select class="select" id="AddressProvince_{{ uid }}" name="address[province]" data-default="{{ form.province }}"></select><label for="AddressProvince_{{ uid }}">{{ 'hpz.account.province' | t }}</label></div>
+  <div class="fl"><input class="input" id="af-zip-{{ uid }}" name="address[zip]" value="{{ form.zip }}" placeholder=" " autocomplete="postal-code"><label for="af-zip-{{ uid }}">{{ 'hpz.account.zip' | t }}</label></div>
+  <div class="fl"><input class="input" id="af-ph-{{ uid }}" name="address[phone]" type="tel" value="{{ form.phone }}" placeholder=" " autocomplete="tel"><label for="af-ph-{{ uid }}">{{ 'hpz.account.phone' | t }}</label></div>
+</div>
+<label class="check"><input type="checkbox" name="address[default]" value="1" {% if form.default %}checked{% endif %}><span class="box">{% render 'icon', name: 'check' %}</span><span class="small">{{ 'hpz.account.set_default' | t }}</span></label>
+{%- if form.errors -%}<p class="err-msg" role="alert" style="display:block">{{ form.errors | default_errors }}</p>{%- endif -%}
+<div class="ad-fa"><button class="btn btn-ink" type="submit">{{ 'hpz.account.save' | t }}</button><button type="button" class="btn btn-ghost" data-ad-cancel>{{ 'hpz.account.cancel' | t }}</button></div>

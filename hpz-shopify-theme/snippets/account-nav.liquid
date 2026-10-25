@@ -1,0 +1,26 @@
+{%- comment -%} Account side navigation. Params: current (overview|addresses|...), points (balance or blank: shows the Pit Points tab) {%- endcomment -%}
+{%- liquid
+  assign base = routes.account_url
+  assign pts_on = false
+  if points != blank
+    assign pts_on = true
+  endif
+-%}
+<aside class="ac-side">
+  <nav class="ac-nav" id="ac-nav" aria-label="{{ 'hpz.account.account' | t }}">
+    <a href="{{ base }}#overview" data-tab="overview" class="{% if current == 'overview' %}is-on{% endif %}"><i class="mono">01</i><span>{{ 'hpz.account.nav_overview' | t }}</span></a>
+    <a href="{{ base }}#orders" data-tab="orders" class="{% if current == 'orders' %}is-on{% endif %}"><i class="mono">02</i><span>{{ 'hpz.account.nav_orders' | t }}</span><em class="mono">{{ customer.orders_count }}</em></a>
+    <a href="{{ base }}#garage" data-tab="garage"><i class="mono">03</i><span>{{ 'hpz.account.nav_garage' | t }}</span><em class="mono" data-n="garage"></em></a>
+    <a href="{{ base }}#builds" data-tab="builds"><i class="mono">04</i><span>{{ 'hpz.account.nav_builds' | t }}</span><em class="mono" data-n="builds"></em></a>
+    <a href="{{ base }}#wishlist" data-tab="wishlist"><i class="mono">05</i><span>{{ 'hpz.account.nav_wishlist' | t }}</span><em class="mono" data-n="wish"></em></a>
+    {%- if pts_on -%}<a href="{{ base }}#points" data-tab="points"><i class="mono">06</i><span>Pit Points</span><em class="mono is-y">{{ points }}</em></a>{%- endif -%}
+    <a href="{{ routes.account_addresses_url }}" class="{% if current == 'addresses' %}is-on{% endif %}"><i class="mono">07</i><span>{{ 'hpz.account.nav_addresses' | t }}</span></a>
+    <a href="{{ base }}#settings" data-tab="settings"><i class="mono">08</i><span>{{ 'hpz.account.nav_settings' | t }}</span></a>
+    <i class="ac-nav-ink" aria-hidden="true"></i>
+  </nav>
+  <div class="ac-help">
+    <span class="eyebrow"><b>{{ 'hpz.account.help_title' | t }}</b></span>
+    {%- if settings.workshop_hours != blank -%}<p class="small">{{ settings.workshop_hours }}</p>{%- endif -%}
+    <a class="arrow-link" href="{{ routes.root_url }}pages/contact"><span>{{ 'hpz.account.contact' | t }}</span> {% render 'icon', name: 'arrow' %}</a>
+  </div>
+</aside>

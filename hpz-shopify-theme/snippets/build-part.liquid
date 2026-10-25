@@ -1,0 +1,28 @@
+{%- comment -%}
+  Prints ONE JSON object (no trailing comma) describing a part used in a build.
+  Params: product (product object), variant_title (string, optional), x, y (hotspot % position, optional)
+{%- endcomment -%}
+{%- liquid
+  assign p = product
+  assign pick = nil
+  if variant_title != blank
+    assign want = variant_title | downcase
+    for vv in p.variants
+      assign vt = vv.title | downcase
+      if vt == want
+        assign pick = vv
+        break
+      endif
+    endfor
+  endif
+  unless pick
+    assign pick = p.selected_or_first_available_variant
+  endunless
+  assign pimg = pick.featured_image | default: p.featured_image
+  assign brand = p.metafields.hpz.brand.value.name
+  assign vlabel = ''
+  if pick.title != 'Default Title'
+    assign vlabel = pick.title
+  endif
+-%}
+{"pid":{{ p.id }},"handle":{{ p.handle | json }},"title":{{ p.title | json }},"brand":{{ brand | json }},"kind":{{ p.type | json }},"variantId":{{ pick.id }},"variantTitle":{{ vlabel | json }},"sku":{{ pick.sku | json }},"price":{{ pick.price }},"available":{{ pick.available | json }},"image":{{ pimg | image_url: width: 160 | json }},"url":{{ p.url | json }},"x":{% if x != blank %}{{ x | plus: 0 }}{% else %}null{% endif %},"y":{% if y != blank %}{{ y | plus: 0 }}{% else %}null{% endif %}}

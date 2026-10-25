@@ -1,0 +1,56 @@
+{{ 'p-account.css' | asset_url | stylesheet_tag }}
+
+<div id="acct" data-account>
+  {%- assign crumb_t = 'hpz.account.nav_addresses' | t -%}{% render 'account-header', crumb: crumb_t %}
+  <section class="ac-wrap">
+    <div class="wrap ac-grid">
+      {% render 'account-nav', current: 'addresses' %}
+      <div class="ac-main">
+        <section class="ac-panel">
+          <header class="ac-ph"><div><span class="eyebrow"><b>07</b></span><h2 class="h2">{{ 'hpz.account.nav_addresses' | t }}</h2><p>{{ 'hpz.account.addresses_sub' | t }}</p></div></header>
+
+          {%- paginate customer.addresses by 12 -%}
+            <div class="ad-grid">
+              {%- for address in customer.addresses -%}
+                <article class="ad {% if address == customer.default_address %}is-def{% endif %}" data-ad="{{ address.id }}">
+                  <div class="ad-h"><b>{{ address.first_name }} {{ address.last_name }}</b>{% if address == customer.default_address %}<span class="badge">{{ 'hpz.account.default' | t }}</span>{% endif %}</div>
+                  <address>{{ address | format_address }}</address>
+                  <div class="ad-a">
+                    <button class="link xs" type="button" data-ad-edit="{{ address.id }}">{{ 'hpz.account.edit' | t }}</button>
+                    <button class="link xs" type="button" data-ad-delete="{{ address.id }}" data-confirm="{{ 'hpz.account.delete_confirm' | t | escape }}">{{ 'hpz.account.delete' | t }}</button>
+                  </div>
+                </article>
+              {%- endfor -%}
+              <button class="ad ad-add" type="button" data-ad-new>{% render 'icon', name: 'plus' %}<b>{{ 'hpz.account.add_address' | t }}</b></button>
+            </div>
+
+            {%- comment -%} New address form {%- endcomment -%}
+            {%- form 'customer_address', customer.new_address, class: 'ad-form', id: 'ad-form-new', hidden: true -%}
+              <h3 class="h4">{{ 'hpz.account.add_address' | t }}</h3>
+              {% render 'account-address-fields', form: form, uid: 'new' %}
+            {%- endform -%}
+
+            {%- for address in customer.addresses -%}
+              {%- form 'customer_address', address, class: 'ad-form', id: address.id, hidden: true -%}
+                <h3 class="h4">{{ 'hpz.account.edit' | t }}</h3>
+                {% render 'account-address-fields', form: form, uid: address.id %}
+              {%- endform -%}
+            {%- endfor -%}
+
+            {%- if paginate.pages > 1 -%}{%- assign shown_n = paginate.current_page | times: paginate.page_size | at_most: paginate.items -%}{% render 'pagination', paginate: paginate, shown: shown_n %}{%- endif -%}
+          {%- endpaginate -%}
+        </section>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
+<script src="{{ 'account.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Addresses",
+  "settings": []
+}
+{% endschema %}

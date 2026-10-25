@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-contact",
+      "settings": {
+        "hours_days": "1,2,3,4,5,6",
+        "hours_open": 9,
+        "hours_close": 17,
+        "hours_tz": 7,
+        "hours_tz_label": "WIB"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

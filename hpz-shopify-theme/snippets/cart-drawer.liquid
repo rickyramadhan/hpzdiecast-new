@@ -1,0 +1,85 @@
+{%- comment -%}
+  Inner content of aside#d-cart. Also rendered by sections/cart-drawer-content.liquid so assets/cart.js can
+  re-render it through the Section Rendering API after every cart change.
+  When requested via /recommendations/products?section_id=cart-drawer-content, only the upsell block is output.
+{%- endcomment -%}
+{%- liquid
+  assign pids = ','
+  assign count = 0
+  assign sub_items = 0
+  assign save = cart.total_discount
+  assign addon_total = 0
+  for item in cart.items
+    assign ph = item.product.handle
+    if ph == settings.addon_box_handle or ph == settings.addon_protect_handle
+      assign addon_total = addon_total | plus: item.final_line_price
+    else
+      assign count = count | plus: item.quantity
+      assign sub_items = sub_items | plus: item.final_line_price
+      assign pids = pids | append: item.product_id | append: ','
+      if item.variant.compare_at_price > item.variant.price and item.original_line_price <= item.final_line_price
+        assign cmp = item.variant.compare_at_price | times: item.quantity | minus: item.final_line_price
+        assign save = save | plus: cmp
+      endif
+    endif
+  endfor
+  assign ups_list = null
+  if recommendations.performed
+    assign ups_list = recommendations.products
+  else
+    assign uc = settings.cart_upsell_collection
+    assign uc_n = uc.products_count | plus: 0
+    assign dec_n = collections['decals'].products_count | plus: 0
+    if uc != blank and uc_n > 0
+      assign ups_list = uc.products
+    elsif dec_n > 0
+      assign ups_list = collections['decals'].products
+    else
+      assign ups_list = collections.all.products | sort: 'created_at' | reverse
+    endif
+  endif
+-%}
+{%- capture upsell -%}
+  {%- if ups_list != blank -%}{%- render 'cart-upsell', list: ups_list, pids: pids -%}{%- endif -%}
+{%- endcapture -%}
+{%- assign upsell = upsell | strip -%}
+
+{%- if recommendations.performed -%}
+  <div class="ups" data-ups-result>{{ upsell }}</div>
+{%- else -%}
+  <div class="dr-h"><h3>{{ 'hpz.cart.title' | t }} <span class="mono" data-cart-count-paren>({{ count }})</span></h3><button type="button" class="dr-x" data-close aria-label="{{ 'hpz.cart.close' | t }}">{% render 'icon', name: 'close' %}</button></div>
+  {%- if count > 0 -%}
+    {% render 'cart-tach', sub: sub_items %}
+    <div class="dr-body">
+      <ul class="cl-list">
+        {%- for item in cart.items -%}
+          {%- assign ph = item.product.handle -%}
+          {%- unless ph == settings.addon_box_handle or ph == settings.addon_protect_handle -%}
+            {% render 'cart-line', item: item, style: 'drawer' %}
+          {%- endunless -%}
+        {%- endfor -%}
+      </ul>
+      {% render 'cart-addons' %}
+      <div class="ups" data-ups>{{ upsell }}</div>
+    </div>
+    <div class="dr-f">
+      {%- if save > 0 -%}<div class="dr-row is-save"><span>{{ 'hpz.cart.you_save' | t }}</span><span>-{{ save | money }}</span></div>{%- endif -%}
+      <div class="dr-row is-sub"><span>{{ 'hpz.cart.subtotal' | t }}</span><b class="mono">{{ cart.total_price | money }}</b></div>
+      {% render 'local-payment-note' %}
+      <p class="dr-note">{{ 'hpz.cart.shipping_note' | t }}</p>
+      <form action="{{ routes.cart_url }}" method="post">
+        <button type="submit" name="checkout" class="btn btn-signal btn-lg btn-block">{% render 'icon', name: 'lock' %}<span>{{ 'hpz.cart.checkout' | t }} · {{ cart.total_price | money }}</span></button>
+      </form>
+      <div class="dr-f2"><a class="link small" href="{{ routes.cart_url }}">{{ 'hpz.cart.view_cart' | t }}</a>
+        <span class="pays">{%- for type in shop.enabled_payment_types limit: 5 -%}{{ type | payment_type_svg_tag: class: 'pay-svg' }}{%- endfor -%}</span>
+      </div>
+    </div>
+  {%- else -%}
+    <div class="dr-empty">
+      <svg class="wsvg" data-wheel viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#1b1d21"/><circle cx="50" cy="50" r="38" fill="#8c929a"/><circle cx="50" cy="50" r="30" fill="#1b1d21"/>{%- for i in (0..4) -%}{%- assign a = i | times: 72 -%}<path d="M47 50 L48 22 L52 22 L53 50 Z" fill="#c9ccd1" transform="rotate({{ a }} 50 50)"/>{%- endfor -%}<circle cx="50" cy="50" r="7" fill="#e5306b"/></svg>
+      <h4>{{ 'hpz.cart.empty_title' | t }}</h4>
+      <p>{{ 'hpz.cart.empty_text' | t }}</p>
+      <div class="dr-empty-l"><a class="btn btn-ink" href="{{ routes.collections_url }}/wheels">{{ 'hpz.cart.shop_wheels' | t }}</a><a class="btn btn-ghost" href="{{ routes.collections_url }}/decals">{{ 'hpz.cart.browse_decals' | t }}</a></div>
+    </div>
+  {%- endif -%}
+{%- endif -%}

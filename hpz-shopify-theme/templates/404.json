@@ -1,0 +1,55 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-404",
+      "blocks": {
+        "link_1": {
+          "type": "link",
+          "settings": {
+            "title": "Wheels",
+            "desc": "",
+            "icon": "wheel"
+          }
+        },
+        "link_2": {
+          "type": "link",
+          "settings": {
+            "title": "Decals",
+            "desc": "",
+            "icon": "layers"
+          }
+        },
+        "link_3": {
+          "type": "link",
+          "settings": {
+            "title": "Build Planner",
+            "desc": "Plan a full build",
+            "icon": "ruler"
+          }
+        },
+        "link_4": {
+          "type": "link",
+          "settings": {
+            "title": "Contact",
+            "desc": "Talk to the workshop",
+            "icon": "truck"
+          }
+        }
+      },
+      "block_order": [
+        "link_1",
+        "link_2",
+        "link_3",
+        "link_4"
+      ],
+      "settings": {
+        "product_count": 4,
+        "rail_title": "Meanwhile, fresh off the bench",
+        "collection": "hpz-wheels"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

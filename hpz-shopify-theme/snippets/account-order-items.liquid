@@ -1,0 +1,31 @@
+{%- comment -%} Items list + totals for one order. Param: order {%- endcomment -%}
+<div class="od-g">
+  <ul class="od-items">
+    {%- for line in order.line_items -%}
+      <li>
+        <a href="{{ line.url }}">{% if line.image %}{{ line.image | image_url: width: 120 | image_tag: loading: 'lazy', alt: line.title }}{% endif %}</a>
+        <div>
+          {%- if line.vendor != blank or line.sku != blank -%}<span class="cl-brand">{{ line.vendor }}{% if line.vendor != blank and line.sku != blank %} &middot; {% endif %}{% if line.sku != blank %}<span class="mono">{{ line.sku }}</span>{% endif %}</span>{%- endif -%}
+          <a class="cl-t" href="{{ line.url }}">{{ line.product.title | default: line.title }}</a>
+          {%- unless line.variant.title == 'Default Title' or line.variant == nil -%}<span class="cl-v">{{ line.variant.title }}</span>{%- endunless -%}
+        </div>
+        <span class="mono od-q">&times;{{ line.quantity }}</span>
+        <span class="mono od-lp">{{ line.final_line_price | money }}</span>
+      </li>
+    {%- endfor -%}
+  </ul>
+  <div class="od-sum">
+    <dl>
+      <div><dt>{{ 'hpz.account.subtotal' | t }}</dt><dd class="mono">{{ order.line_items_subtotal_price | money }}</dd></div>
+      {%- if order.total_discounts > 0 -%}<div><dt>{{ 'hpz.account.discounts' | t }}</dt><dd class="mono">-{{ order.total_discounts | money }}</dd></div>{%- endif -%}
+      {%- for method in order.shipping_methods -%}<div><dt>{{ method.title }}</dt><dd class="mono">{% if method.price > 0 %}{{ method.price | money }}{% else %}{{ 'hpz.account.free' | t }}{% endif %}</dd></div>{%- endfor -%}
+      {%- if order.tax_price > 0 -%}<div><dt>{{ 'hpz.account.taxes' | t }}</dt><dd class="mono">{{ order.tax_price | money }}</dd></div>{%- endif -%}
+      <div class="is-tot"><dt>{{ 'hpz.account.total' | t }}</dt><dd class="mono">{{ order.total_price | money_with_currency }}</dd></div>
+    </dl>
+    <div class="od-act">
+      <a class="btn btn-ink btn-sm" href="{{ order.customer_url }}">{{ 'hpz.account.order_details' | t }} {% render 'icon', name: 'arrow' %}</a>
+      <button class="btn btn-ghost btn-sm" type="button" data-reorder='[{%- for line in order.line_items -%}{%- if line.variant.available -%}{"id":{{ line.variant_id }},"quantity":{{ line.quantity }}},{%- endif -%}{%- endfor -%}{}]'>{% render 'icon', name: 'repeat' %}{{ 'hpz.account.reorder' | t }}</button>
+    </div>
+    {%- if order.shipping_address -%}<p class="xs muted od-addr">{% render 'icon', name: 'pin' %}<span>{{ order.shipping_address | format_address | strip_html | strip_newlines | replace: '  ', ' ' }}</span></p>{%- endif -%}
+  </div>
+</div>

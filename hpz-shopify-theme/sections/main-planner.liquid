@@ -1,0 +1,55 @@
+{{ 'p-planner.css' | asset_url | stylesheet_tag }}
+
+<div class="pl" data-planner
+  data-root="{{ routes.root_url }}"
+  data-wheels="{{ section.settings.wheels_collection.handle | default: settings.wheels_collection.handle }}"
+  data-decals="{{ section.settings.decals_collection.handle }}"
+  data-bodykits="{{ section.settings.bodykits_collection.handle }}"
+  data-exterior="{{ section.settings.exterior_collection.handle }}"
+  data-engines="{{ section.settings.engines_collection.handle }}"
+  data-interior="{{ section.settings.interior_collection.handle }}"
+  data-max-pages="{{ section.settings.max_pages }}"
+  data-bundle="{{ settings.bundle_discount_enabled | default: false }}"
+  data-bundle-pct="{{ settings.bundle_discount_percent | default: 10 }}"
+  data-studio-url="{{ section.settings.studio_url }}"
+  data-studio-text="{{ section.settings.studio_text | escape }}">
+  <section class="pl-top">
+    <div class="wrap pl-top-in">
+      <div><span class="eyebrow"><b>BP-01</b> <span>{{ 'hpz.planner.eyebrow' | t }}</span></span><h1 class="h1">{{ 'hpz.planner.title' | t }}</h1></div>
+      <ol class="pl-steps" id="pl-steps"></ol>
+    </div>
+  </section>
+  <section class="pl-body">
+    <div class="wrap pl-in">
+      <div class="pl-stage-col">
+        <div class="pl-stage mat" id="stage"></div>
+        <div class="pl-sheet" id="sheet"></div>
+      </div>
+      <div class="pl-panel" id="panel"></div>
+    </div>
+  </section>
+</div>
+<style>.pl .st-body path:first-child{fill:var(--paint,#f2f2ef)}</style>
+<noscript><div class="wrap"><p>{{ 'hpz.planner.noscript' | t }}</p></div></noscript>
+
+<script src="{{ 'planner.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Build Planner",
+  "settings": [
+    { "type": "header", "content": "Collections used by each step" },
+    { "type": "collection", "id": "wheels_collection", "label": "Wheels" },
+    { "type": "collection", "id": "decals_collection", "label": "Livery / decals" },
+    { "type": "collection", "id": "bodykits_collection", "label": "Body kits" },
+    { "type": "collection", "id": "exterior_collection", "label": "Wings, mirrors and exterior" },
+    { "type": "collection", "id": "engines_collection", "label": "Engines" },
+    { "type": "collection", "id": "interior_collection", "label": "Interior" },
+    { "type": "range", "id": "max_pages", "label": "Max pages fetched per collection", "min": 1, "max": 10, "default": 5, "info": "Each page holds the number set in the 'Planner results (data)' section (default 24)." },
+    { "type": "header", "content": "Custom decal link (optional)" },
+    { "type": "url", "id": "studio_url", "label": "Link" },
+    { "type": "text", "id": "studio_text", "label": "Text" }
+  ],
+  "presets": [{ "name": "Build Planner" }]
+}
+{% endschema %}

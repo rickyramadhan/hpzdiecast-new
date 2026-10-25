@@ -1,0 +1,160 @@
+{{ 'p-cart.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign pids = ','
+  assign count = 0
+  assign sub_items = 0
+  assign orig_items = 0
+  assign save = cart.total_discount
+  assign addon_total = 0
+  for item in cart.items
+    assign ph = item.product.handle
+    if ph == settings.addon_box_handle or ph == settings.addon_protect_handle
+      assign addon_total = addon_total | plus: item.final_line_price
+    else
+      assign count = count | plus: item.quantity
+      assign sub_items = sub_items | plus: item.final_line_price
+      assign orig_items = orig_items | plus: item.original_line_price
+      assign pids = pids | append: item.product_id | append: ','
+      if item.variant.compare_at_price > item.variant.price and item.original_line_price <= item.final_line_price
+        assign cmp = item.variant.compare_at_price | times: item.quantity | minus: item.final_line_price
+        assign save = save | plus: cmp
+      endif
+    endif
+  endfor
+  assign rail_src = section.settings.rail_collection
+  if rail_src == blank
+    assign rail_src = settings.cart_upsell_collection
+  endif
+  assign rail_n = rail_src.products_count | plus: 0
+  assign dec_n = collections['decals'].products_count | plus: 0
+  if recommendations.performed
+    assign rail_list = recommendations.products
+  elsif rail_src != blank and rail_n > 0
+    assign rail_list = rail_src.products
+  elsif dec_n > 0
+    assign rail_list = collections['decals'].products
+  else
+    assign rail_list = collections.all.products | sort: 'created_at' | reverse
+  endif
+-%}
+
+{%- capture rail_cards -%}
+  {%- assign shown = 0 -%}
+  {%- for rp in rail_list -%}
+    {%- assign pk = ',' | append: rp.id | append: ',' -%}
+    {%- assign in_cart = false -%}
+    {%- if pids contains pk -%}{%- assign in_cart = true -%}{%- endif -%}
+    {%- if shown < section.settings.rail_limit and in_cart == false and rp.handle != settings.addon_box_handle and rp.handle != settings.addon_protect_handle -%}
+      {%- assign shown = shown | plus: 1 -%}
+      {% render 'product-card', product: rp, index: forloop.index0, lazy: true %}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign rail_cards = rail_cards | strip -%}
+
+{%- if recommendations.performed -%}
+  <div data-xs-result>{{ rail_cards }}</div>
+{%- else -%}
+<div data-cart-page data-section-id="{{ section.id }}">
+  <section class="cart-s">
+    <div class="wrap">
+      <div class="cart-h">
+        <div>
+          <nav class="crumbs"><a href="{{ routes.root_url }}">{{ 'hpz.cart.home' | t }}</a><span>{{ 'hpz.cart.title' | t }}</span></nav>
+          <h1 class="h1">{{ 'hpz.cart.your_cart' | t }} <sup class="mono" data-cart-count-paren>{% if count > 0 %}({{ count }}){% endif %}</sup></h1>
+        </div>
+        <ol class="steps-top"><li class="is-on"><span class="mono">01</span><span>{{ 'hpz.cart.step_cart' | t }}</span></li><li><span class="mono">02</span><span>{{ 'hpz.cart.step_shipping' | t }}</span></li><li><span class="mono">03</span><span>{{ 'hpz.cart.step_payment' | t }}</span></li></ol>
+      </div>
+
+      <div class="cart-in" id="cart" data-cart-root>
+        {%- if count > 0 -%}
+          <div class="cart-l">
+            <div class="cr-head"><span>{{ 'hpz.cart.part' | t }}</span><span>{{ 'hpz.cart.qty' | t }}</span><span>{{ 'hpz.cart.total' | t }}</span></div>
+            <div class="cr-list">
+              {%- for item in cart.items -%}
+                {%- assign ph = item.product.handle -%}
+                {%- unless ph == settings.addon_box_handle or ph == settings.addon_protect_handle -%}
+                  {% render 'cart-line', item: item, style: 'page' %}
+                {%- endunless -%}
+              {%- endfor -%}
+            </div>
+            <div class="cart-note">
+              <label class="lbl" for="note">{{ 'hpz.cart.note_label' | t }}</label>
+              <textarea class="textarea" id="note" name="note" form="cart-form" data-cart-note placeholder="{{ 'hpz.cart.note_placeholder' | t }}">{{ cart.note }}</textarea>
+            </div>
+            <div class="later" data-later-box hidden></div>
+          </div>
+
+          <aside class="sum">
+            <div class="sum-free">{% render 'cart-tach', sub: sub_items %}</div>
+            <div class="sum-b">
+              <h3 class="sum-h">{{ 'hpz.cart.summary' | t }}</h3>
+              {% render 'cart-addons' %}
+              <div class="sum-ship">
+                <div class="sum-row"><span class="lbl">{{ 'hpz.cart.ship_to' | t }}</span><button type="button" class="link small" data-open="market">{% render 'flag', code: localization.country.iso_code %} {{ localization.country.name }} · {{ cart.currency.iso_code }}</button></div>
+                <p class="xs muted">{{ 'hpz.cart.shipping_note' | t }}</p>
+                {% render 'shipping-calc' %}
+              </div>
+              <p class="xs muted">{{ 'hpz.cart.discount_hint' | t }}</p>
+              <dl class="tot">
+                <div><dt>{{ 'hpz.cart.subtotal' | t }}</dt><dd class="mono">{{ orig_items | money }}</dd></div>
+                {%- if cart.total_discount > 0 -%}
+                  <div class="is-g"><dt>{{ 'hpz.cart.discounts' | t }}{% for da in cart.cart_level_discount_applications %} ({{ da.title }}){% endfor %}</dt><dd class="mono">-{{ cart.total_discount | money }}</dd></div>
+                {%- endif -%}
+                {%- if addon_total > 0 -%}
+                  <div><dt>{{ 'hpz.cart.addons' | t }}</dt><dd class="mono">{{ addon_total | money }}</dd></div>
+                {%- endif -%}
+                <div><dt>{{ 'hpz.cart.shipping' | t }}</dt><dd class="mono">{{ 'hpz.cart.shipping_calc' | t }}</dd></div>
+                <div class="is-tot"><dt>{{ 'hpz.cart.est_total' | t }}</dt><dd><small class="mono">{{ cart.currency.iso_code }}</small> <b class="mono" id="tot">{{ cart.total_price | money }}</b></dd></div>
+              </dl>
+              {%- if save > 0 -%}
+                <p class="sum-save">{% render 'icon', name: 'tag' %}{{ 'hpz.cart.saving' | t }} <b class="mono">{{ save | money }}</b> {{ 'hpz.cart.on_order' | t }}</p>
+              {%- endif -%}
+              {% render 'local-payment-note' %}
+              <form action="{{ routes.cart_url }}" method="post" id="cart-form">
+                <button type="submit" name="checkout" class="btn btn-signal btn-lg btn-block">{% render 'icon', name: 'lock' %}{{ 'hpz.cart.secure_checkout' | t }}</button>
+                {%- if additional_checkout_buttons -%}
+                  <div class="xpay"><span class="xs muted">{{ 'hpz.cart.express' | t }}</span><div class="additional-checkout-buttons">{{ content_for_additional_checkout_buttons }}</div></div>
+                {%- endif -%}
+              </form>
+              <ul class="sum-trust">
+                <li>{% render 'icon', name: 'shield' %}{{ 'hpz.cart.trust_encrypted' | t }}</li>
+                <li>{% render 'icon', name: 'ruler' %}{{ 'hpz.cart.trust_fit' | t }}</li>
+                <li>{% render 'icon', name: 'box' %}{{ 'hpz.cart.trust_returns' | t }}</li>
+              </ul>
+            </div>
+          </aside>
+        {%- else -%}
+          <div class="cart-empty">
+            <div class="ce-w"><svg class="wsvg" data-wheel viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#1b1d21"/><circle cx="50" cy="50" r="38" fill="#8c929a"/><circle cx="50" cy="50" r="30" fill="#1b1d21"/>{%- for i in (0..5) -%}{%- assign a = i | times: 60 -%}<path d="M47 50 L48 22 L52 22 L53 50 Z" fill="#c9ccd1" transform="rotate({{ a }} 50 50)"/>{%- endfor -%}<circle cx="50" cy="50" r="7" fill="#e5306b"/></svg></div>
+            <h2 class="h2">{{ 'hpz.cart.empty_title' | t }}</h2>
+            <p class="lead">{{ 'hpz.cart.empty_page_text' | t }}</p>
+            <div class="ce-a"><a class="btn btn-signal btn-lg" href="{{ routes.collections_url }}/wheels">{{ 'hpz.cart.shop_wheels' | t }}</a><a class="btn btn-line btn-lg" href="{{ routes.root_url | append: 'pages/planner' }}">{{ 'hpz.cart.open_planner' | t }}</a></div>
+            <div class="later" data-later-box hidden></div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-s" id="xs-s"{% if count == 0 or rail_cards == blank %} hidden{% endif %}>
+    <div class="wrap">
+      <div class="shead"><span class="idx">+</span><div><h2 class="h2">{{ section.settings.rail_title | default: 'Often added together' }}</h2></div>
+        <div class="rail-nav"><button type="button" id="x-prev" aria-label="{{ 'hpz.cart.prev' | t }}">{% render 'icon', name: 'left' %}</button><button type="button" id="x-next" aria-label="{{ 'hpz.cart.next' | t }}">{% render 'icon', name: 'right' %}</button></div>
+      </div>
+      <div class="rail" id="xs" data-xs-limit="{{ section.settings.rail_limit }}">{{ rail_cards }}</div>
+    </div>
+  </section>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Cart page",
+  "settings": [
+    { "type": "text", "id": "rail_title", "label": "Rail heading", "default": "Often added together" },
+    { "type": "collection", "id": "rail_collection", "label": "Fallback collection for the rail", "info": "Used when recommendations are empty. Falls back to Theme settings > Cart upsell collection." },
+    { "type": "range", "id": "rail_limit", "min": 4, "max": 12, "step": 1, "default": 8, "label": "Products in rail" }
+  ]
+}
+{% endschema %}

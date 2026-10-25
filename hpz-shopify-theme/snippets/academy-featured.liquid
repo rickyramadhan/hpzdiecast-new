@@ -1,0 +1,13 @@
+{%- comment -%} Featured article. Params: article, total {%- endcomment -%}
+{%- assign level = article.metafields.hpz.level.value -%}
+{%- assign minutes = article.metafields.hpz.minutes.value -%}
+{%- assign cat = article.tags.first -%}
+{%- assign img_alt = article.image.alt | default: article.title -%}
+<a class="af" href="{{ article.url }}" data-guide="{{ article.handle }}">
+  <span class="af-img">{%- if article.image -%}{{ article.image | image_url: width: 1000 | image_tag: alt: img_alt, widths: '500, 800, 1000', sizes: '(min-width: 900px) 55vw, 100vw' }}{%- endif -%}<span class="af-tag mono">{{ 'hpz.ac.featured' | t }}{% if cat != blank %} &middot; {{ cat }}{% endif %}</span></span>
+  <span class="af-b">
+    <h2 class="h1">{{ article.title }}</h2>
+    {%- if article.excerpt_or_content != blank -%}<p class="lead">{{ article.excerpt_or_content | strip_html | truncate: 200 }}</p>{%- endif -%}
+    <span class="af-meta">{% if level != blank %}<span>{% render 'academy-level', level: level %}</span>{% endif %}{% if minutes != blank %}<span class="mono">{{ minutes }} {{ 'hpz.ac.min' | t }}</span>{% endif %}<span class="mono" data-steps></span></span>
+    <span class="af-f"><span class="af-pg" data-pg></span><span class="btn btn-signal">{{ 'hpz.ac.read' | t }} {% render 'icon', name: 'arrow' %}</span></span>
+  </span></a>

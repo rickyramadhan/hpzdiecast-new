@@ -1,0 +1,493 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-workbench",
+      "settings": {
+        "eyebrow_code": "HPZ-W/26",
+        "show_finish": true,
+        "dim_d": "10.00",
+        "dim_w": "6.00",
+        "bench_note": "HPZ · 1:64"
+      },
+      "blocks": {
+        "stat_1": {
+          "type": "stat",
+          "settings": {
+            "decimals": "0",
+            "label": "Parts",
+            "auto": "parts_count"
+          }
+        },
+        "stat_2": {
+          "type": "stat",
+          "settings": {
+            "decimals": "0",
+            "label": "HPZ wheel designs",
+            "auto": "collection_count",
+            "collection": "hpz-wheels"
+          }
+        },
+        "stat_3": {
+          "type": "stat",
+          "settings": {
+            "decimals": "0",
+            "label": "Decal sets",
+            "auto": "collection_count",
+            "collection": "decals"
+          }
+        },
+        "stat_4": {
+          "type": "stat",
+          "settings": {
+            "decimals": "0",
+            "label": "Countries shipped",
+            "auto": "countries_count"
+          }
+        },
+        "print_1": {
+          "type": "print",
+          "settings": {
+            "product": "decal-set-hotwheels-honda-s2000-hks-super-gt"
+          }
+        },
+        "print_2": {
+          "type": "print",
+          "settings": {
+            "product": "hpz-add-on-body-kit-for-hot-wheels-r34-v-spec"
+          }
+        },
+        "print_3": {
+          "type": "print",
+          "settings": {
+            "product": "hpz-wheels-model-te37-sl-bearing-series"
+          }
+        },
+        "print_4": {
+          "type": "print",
+          "settings": {
+            "product": "parvus-models-nissan-rb26-engine"
+          }
+        }
+      },
+      "block_order": [
+        "stat_1",
+        "stat_2",
+        "stat_3",
+        "stat_4",
+        "print_1",
+        "print_2",
+        "print_3",
+        "print_4"
+      ]
+    },
+    "ticker": {
+      "type": "ticker",
+      "settings": {
+        "collection": "all",
+        "limit": 14,
+        "new_days": 30
+      }
+    },
+    "bento": {
+      "type": "category-bento",
+      "settings": {
+        "idx": "01",
+        "blurb": ""
+      },
+      "blocks": {
+        "category_1": {
+          "type": "category",
+          "settings": {
+            "collection": "wheels",
+            "code": "WHL",
+            "blurb": "Alloy, resin and bearing wheels for 1:64 builds."
+          }
+        },
+        "category_2": {
+          "type": "category",
+          "settings": {
+            "collection": "decals",
+            "code": "DEC",
+            "blurb": "Waterslide decal sets for specific castings."
+          }
+        },
+        "category_3": {
+          "type": "category",
+          "settings": {
+            "collection": "body-kit",
+            "code": "BDK",
+            "blurb": "Add-on body kits and wide-body kits."
+          }
+        },
+        "category_4": {
+          "type": "category",
+          "settings": {
+            "collection": "engines",
+            "code": "ENG"
+          }
+        },
+        "category_5": {
+          "type": "category",
+          "settings": {
+            "collection": "exterior-detail",
+            "code": "EXT"
+          }
+        },
+        "category_6": {
+          "type": "category",
+          "settings": {
+            "collection": "interior-detail",
+            "code": "INT"
+          }
+        },
+        "category_7": {
+          "type": "category",
+          "settings": {
+            "collection": "dioramas",
+            "code": "DIO"
+          }
+        }
+      },
+      "block_order": [
+        "category_1",
+        "category_2",
+        "category_3",
+        "category_4",
+        "category_5",
+        "category_6",
+        "category_7"
+      ]
+    },
+    "fitment": {
+      "type": "fitment-finder",
+      "settings": {
+        "idx": "02",
+        "wheels_collection": "wheels",
+        "show_made_for": true
+      }
+    },
+    "originals": {
+      "type": "collection-rail",
+      "settings": {
+        "idx": "03",
+        "heading": "HPZ Originals",
+        "subheading": "Wheels designed by HPZ, from the hpz-wheels collection.",
+        "collection": "hpz-wheels",
+        "limit": 10
+      },
+      "blocks": {
+        "tab_1": {
+          "type": "tab",
+          "settings": {
+            "label": "Newest",
+            "collection": "hpz-wheels",
+            "sort": "created-descending"
+          }
+        },
+        "tab_2": {
+          "type": "tab",
+          "settings": {
+            "label": "Best selling",
+            "collection": "hpz-wheels",
+            "sort": "best-selling"
+          }
+        },
+        "tab_3": {
+          "type": "tab",
+          "settings": {
+            "label": "All HPZ wheels",
+            "collection": "hpz-wheels",
+            "sort": ""
+          }
+        }
+      },
+      "block_order": [
+        "tab_1",
+        "tab_2",
+        "tab_3"
+      ]
+    },
+    "anatomy": {
+      "type": "wheel-anatomy",
+      "settings": {
+        "idx": "04",
+        "spec": "1:64"
+      },
+      "blocks": {
+        "part_1": {
+          "type": "part",
+          "settings": {
+            "part": "tyre"
+          }
+        },
+        "part_2": {
+          "type": "part",
+          "settings": {
+            "part": "lip"
+          }
+        },
+        "part_3": {
+          "type": "part",
+          "settings": {
+            "part": "face"
+          }
+        },
+        "part_4": {
+          "type": "part",
+          "settings": {
+            "part": "disc"
+          }
+        },
+        "part_5": {
+          "type": "part",
+          "settings": {
+            "part": "hub"
+          }
+        }
+      },
+      "block_order": [
+        "part_1",
+        "part_2",
+        "part_3",
+        "part_4",
+        "part_5"
+      ]
+    },
+    "bench": {
+      "type": "product-tabs",
+      "settings": {
+        "idx": "05",
+        "limit": 8,
+        "columns": 4
+      },
+      "blocks": {
+        "tab_1": {
+          "type": "tab",
+          "settings": {
+            "label": "New in",
+            "collection": "all",
+            "sort": "created-descending"
+          }
+        },
+        "tab_2": {
+          "type": "tab",
+          "settings": {
+            "label": "Best sellers",
+            "collection": "all",
+            "sort": "best-selling"
+          }
+        },
+        "tab_3": {
+          "type": "tab",
+          "settings": {
+            "label": "Decals",
+            "collection": "decals",
+            "sort": ""
+          }
+        },
+        "tab_4": {
+          "type": "tab",
+          "settings": {
+            "label": "Wheels",
+            "collection": "wheels",
+            "sort": ""
+          }
+        }
+      },
+      "block_order": [
+        "tab_1",
+        "tab_2",
+        "tab_3",
+        "tab_4"
+      ]
+    },
+    "builds": {
+      "type": "ugc-builds",
+      "settings": {
+        "idx": "06",
+        "limit": 4
+      },
+      "blocks": {
+        "build_1": {
+          "type": "build",
+          "settings": {
+            "photo": "shopify://shop_images/627859247_17903468040358636_9215028376513405304_n.jpg",
+            "title": "Customer build 1",
+            "builder": "",
+            "p1": "hpz-wheels-model-te37-sl-bearing-series",
+            "x1": 35,
+            "y1": 62,
+            "p2": "hpz-wheels-model-six-bearing-series",
+            "x2": 62,
+            "y2": 58
+          }
+        },
+        "build_2": {
+          "type": "build",
+          "settings": {
+            "photo": "shopify://shop_images/631316196_18006175139836329_2723227655320315377_n.jpg",
+            "title": "Customer build 2",
+            "builder": "",
+            "p1": "hpz-wheels-model-six-bearing-series",
+            "x1": 35,
+            "y1": 62,
+            "p2": "decal-set-hotwheels-honda-s2000-hks-super-gt",
+            "x2": 62,
+            "y2": 58
+          }
+        },
+        "build_3": {
+          "type": "build",
+          "settings": {
+            "photo": "shopify://shop_images/625947038_17917284378256467_2530175199263028026_n.jpg",
+            "title": "Customer build 3",
+            "builder": "",
+            "p1": "decal-set-hotwheels-honda-s2000-hks-super-gt",
+            "x1": 35,
+            "y1": 62,
+            "p2": "hpz-add-on-body-kit-for-hot-wheels-r34-v-spec",
+            "x2": 62,
+            "y2": 58
+          }
+        },
+        "build_4": {
+          "type": "build",
+          "settings": {
+            "photo": "shopify://shop_images/626183649_17878289820469569_3561695745277330278_n.jpg",
+            "title": "Customer build 4",
+            "builder": "",
+            "p1": "hpz-add-on-body-kit-for-hot-wheels-r34-v-spec",
+            "x1": 35,
+            "y1": 62,
+            "p2": "jv-accessories-voltex-wing",
+            "x2": 62,
+            "y2": 58
+          }
+        },
+        "build_5": {
+          "type": "build",
+          "settings": {
+            "photo": "shopify://shop_images/627967251_17960306688023139_3741770519470168888_n.jpg",
+            "title": "Customer build 5",
+            "builder": "",
+            "p1": "jv-accessories-voltex-wing",
+            "x1": 35,
+            "y1": 62,
+            "p2": "hpz-wheels-model-te37-sl-bearing-series",
+            "x2": 62,
+            "y2": 58
+          }
+        }
+      },
+      "block_order": [
+        "build_1",
+        "build_2",
+        "build_3",
+        "build_4",
+        "build_5"
+      ]
+    },
+    "services": {
+      "type": "services-teaser",
+      "settings": {
+        "idx": "07"
+      },
+      "blocks": {
+        "service_1": {
+          "type": "service",
+          "settings": {
+            "icon": "layers",
+            "title": "Custom decals",
+            "text": "Send us a reference and we draw a decal sheet to fit your casting."
+          }
+        },
+        "service_2": {
+          "type": "service",
+          "settings": {
+            "icon": "wheel",
+            "dark": true,
+            "title": "Commission build",
+            "text": "We build the car for you: wheel swap, stance, paint and decals."
+          }
+        },
+        "service_3": {
+          "type": "service",
+          "settings": {
+            "icon": "box",
+            "title": "Wholesale and stockists",
+            "text": "Pricing for hobby shops and resellers. Get in touch for details."
+          }
+        }
+      },
+      "block_order": [
+        "service_1",
+        "service_2",
+        "service_3"
+      ]
+    },
+    "reviews": {
+      "type": "reviews-strip",
+      "settings": {
+        "idx": "08"
+      }
+    },
+    "academy": {
+      "type": "academy-teaser",
+      "settings": {
+        "idx": "09",
+        "heading": "HPZ Academy",
+        "limit": 4
+      }
+    },
+    "promise": {
+      "type": "promise-bar",
+      "settings": {},
+      "blocks": {
+        "promise_1": {
+          "type": "promise",
+          "settings": {
+            "icon": "truck"
+          }
+        },
+        "promise_2": {
+          "type": "promise",
+          "settings": {
+            "icon": "shield"
+          }
+        },
+        "promise_3": {
+          "type": "promise",
+          "settings": {
+            "icon": "box"
+          }
+        },
+        "promise_4": {
+          "type": "promise",
+          "settings": {
+            "icon": "ruler"
+          }
+        }
+      },
+      "block_order": [
+        "promise_1",
+        "promise_2",
+        "promise_3",
+        "promise_4"
+      ]
+    }
+  },
+  "order": [
+    "hero",
+    "ticker",
+    "bento",
+    "fitment",
+    "originals",
+    "anatomy",
+    "bench",
+    "builds",
+    "services",
+    "reviews",
+    "academy",
+    "promise"
+  ]
+}

@@ -1,0 +1,59 @@
+{%- comment -%}
+  Delivery box. Shopify does not expose shipping rates to Liquid, so method rows are merchant-written text
+  (block setting "rows", one per line: Name | Arrives | Cost) and the ETA range is computed from min/max business days
+  (weekends approximated as 2 days per 5 business days). assets/product.js re-formats the dates in the visitor's locale.
+  Params: block
+{%- endcomment -%}
+{%- liquid
+  assign dl_min = block.settings.min_days | default: 7
+  assign dl_max = block.settings.max_days | default: 14
+  assign now_s = 'now' | date: '%s'
+  assign min_w = dl_min | divided_by: 5 | times: 2
+  assign max_w = dl_max | divided_by: 5 | times: 2
+  assign min_cal = dl_min | plus: min_w
+  assign max_cal = dl_max | plus: max_w
+  assign min_ts = min_cal | times: 86400 | plus: now_s
+  assign max_ts = max_cal | times: 86400 | plus: now_s
+-%}
+<div class="dlv" data-dlv>
+  <div class="dlv-h">
+    {% render 'icon', name: 'truck' %}
+    <span class="dlv-to">{{ 'hpz.product.delivery_to' | t }}
+      {%- if localization.available_countries.size > 1 -%}
+        <select class="dlv-sel" data-dlv-country aria-label="{{ 'hpz.product.delivery_to' | t }}">
+          {%- for c in localization.available_countries -%}
+            <option value="{{ c.iso_code }}"{% if c.iso_code == localization.country.iso_code %} selected{% endif %}>{{ c.name | escape }}</option>
+          {%- endfor -%}
+        </select>
+      {%- else -%}
+        <b>{% render 'flag', code: localization.country.iso_code %} {{ localization.country.name | escape }}</b>
+      {%- endif -%}
+    </span>
+  </div>
+  <ul>
+    <li>
+      <span class="dlv-n">{{ 'hpz.product.estimated_delivery' | t }}</span>
+      <span class="mono dlv-d" data-eta-min="{{ min_ts }}" data-eta-max="{{ max_ts }}">{{ min_ts | date: '%b %-d' }} &ndash; {{ max_ts | date: '%b %-d' }}</span>
+      <span class="mono dlv-p">{{ dl_min }}&ndash;{{ dl_max }} {{ 'hpz.product.business_days' | t }}</span>
+    </li>
+    {%- if block.settings.rows == blank -%}
+      {%- if settings.workshop_city != blank -%}
+        <li><span class="dlv-n">{{ 'hpz.product.ships_from_label' | t }}</span><span class="mono dlv-d">{{ settings.workshop_city | escape }}</span><span class="mono dlv-p"></span></li>
+      {%- endif -%}
+      <li class="dlv-cost"><span class="dlv-n">{{ 'hpz.product.ship_cost' | t }}</span><span class="dlv-opts" data-dlv-cost>{{ 'hpz.product.ship_at_checkout' | t }}</span></li>
+    {%- endif -%}
+    {%- assign rows = block.settings.rows | newline_to_br | split: '<br />' -%}
+    {%- for row in rows -%}
+      {%- assign cols = row | strip | split: '|' -%}
+      {%- if cols.size > 0 and cols[0] != blank -%}
+        <li><span class="dlv-n">{{ cols[0] | strip | escape }}</span><span class="mono dlv-d">{{ cols[1] | strip | escape }}</span><span class="mono dlv-p">{{ cols[2] | strip | escape }}</span></li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+  {%- if block.settings.show_duty_note -%}
+    <p class="dlv-note">{% render 'icon', name: 'shield' %}{{ 'hpz.product.duty_note' | t }}</p>
+  {%- endif -%}
+  <script type="application/json" data-dlv-rates>{% render 'shipping-rates-data' %}</script>
+  <script type="application/json" data-dlv-weights>{ {%- for v in product.variants -%}"{{ v.id }}":{{ v.weight | default: 0 }}{% unless forloop.last %},{% endunless %}{%- endfor -%} }</script>
+</div>
+<script src="{{ 'delivery-estimate.js' | asset_url }}" defer></script>

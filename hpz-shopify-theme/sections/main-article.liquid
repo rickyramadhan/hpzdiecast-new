@@ -1,0 +1,77 @@
+{{ 'p-academy.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+{%- assign level = article.metafields.hpz.level.value -%}
+{%- assign minutes = article.metafields.hpz.minutes.value -%}
+{%- assign cat = article.tags.first -%}
+{%- assign related = article.metafields.hpz.products.value -%}
+{%- assign img_alt = article.image.alt | default: article.title -%}
+<div class="readbar" id="readbar" aria-hidden="true"><i></i></div>
+<article data-academy-article data-handle="{{ article.handle }}" data-lbl-tip="{{ 'hpz.ac.tip' | t }}" data-lbl-warn="{{ 'hpz.ac.warn' | t }}">
+  <header class="arh"><div class="wrap arh-in">
+    <div class="arh-copy">
+      <nav class="crumbs" aria-label="{{ 'hpz.ac.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'hpz.ac.home' | t }}</a><span><a href="{{ blog.url }}">{{ blog.title }}</a></span>{% if cat != blank %}<span><a href="{{ blog.url }}/tagged/{{ cat | handleize }}">{{ cat }}</a></span>{% endif %}<span>{{ article.title }}</span></nav>
+      <span class="eyebrow">{% if cat != blank %}<b>{{ cat }}</b> {% endif %}{{ 'hpz.ac.guide' | t }}</span>
+      <h1 class="h1 arh-h">{{ article.title }}</h1>
+      {%- if article.excerpt != blank -%}<p class="lead">{{ article.excerpt | strip_html }}</p>{%- endif -%}
+      <dl class="arh-meta">
+        {%- if level != blank -%}<div><dt>{{ 'hpz.ac.level' | t }}</dt><dd>{% render 'academy-level', level: level %}</dd></div>{%- endif -%}
+        {%- if minutes != blank -%}<div><dt>{{ 'hpz.ac.time' | t }}</dt><dd class="mono">{{ minutes }} {{ 'hpz.ac.min' | t }}</dd></div>{%- endif -%}
+        <div data-meta-steps hidden><dt>{{ 'hpz.ac.steps' | t }}</dt><dd class="mono" data-steps-n></dd></div>
+        <div data-meta-progress hidden><dt>{{ 'hpz.ac.progress' | t }}</dt><dd class="arh-pr"><svg class="ring ring-s" viewBox="0 0 50 50"><circle cx="25" cy="25" r="21" class="ring-bg"/><circle cx="25" cy="25" r="21" class="ring-fg" id="ar-ring"/></svg><span class="mono" id="ar-pt"></span></dd></div>
+        <div><dt>{{ 'hpz.ac.published' | t }}</dt><dd class="mono"><time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | time_tag: format: 'date' }}</time></dd></div>
+        {%- if s.show_author and article.author != blank -%}<div><dt>{{ 'hpz.ac.by' | t }}</dt><dd>{{ article.author }}</dd></div>{%- endif -%}
+      </dl>
+    </div>
+    {%- if article.image -%}
+    <div class="arh-side">
+      <figure class="arh-img">{{ article.image | image_url: width: 900 | image_tag: alt: img_alt, widths: '450, 700, 900', sizes: '(min-width: 900px) 440px, 100vw', fetchpriority: 'high' }}{% if cat != blank %}<figcaption class="mono">{{ cat | upcase }}</figcaption>{% endif %}</figure>
+    </div>
+    {%- endif -%}
+  </div></header>
+
+  <section class="arb"><div class="wrap arb-in" data-arb>
+    <nav class="rail-s" id="rail-s" aria-label="{{ 'hpz.ac.steps' | t }}" hidden>
+      <span class="rs-h mono">{{ 'hpz.ac.steps' | t }}</span>
+      <ol></ol>
+      <div class="rs-f"><span class="pg"><i id="rs-bar"></i></span><span class="mono" id="rs-n"></span></div>
+    </nav>
+    <div class="steps" id="ar-body">
+      <div class="rte" id="ar-content">{{ article.content }}</div>
+      <div class="fin" id="fin" hidden></div>
+    </div>
+  </div></section>
+
+  {%- if related != blank and related.size > 0 -%}
+  <section class="section-s on-white arp"><div class="wrap">
+    <div class="shead"><span class="idx">P</span><div><h2 class="h2">{{ 'hpz.ac.parts_used' | t }}</h2></div></div>
+    <div class="grid" style="--cols:4">
+      {%- for p in related -%}{%- render 'product-card', product: p, index: forloop.index0, lazy: true -%}{%- endfor -%}
+    </div>
+  </div></section>
+  {%- endif -%}
+
+  {%- assign nxt = blog.next_article -%}
+  {%- assign prv = blog.previous_article -%}
+  <section class="section-s arn"><div class="wrap">
+    <span class="eyebrow"><b>{{ 'hpz.ac.next_on_bench' | t }}</b></span>
+    <div class="arn-g">
+      {% if prv %}
+        <a class="arn-c" href="{{ prv.url }}">{% if prv.image %}{{ prv.image | image_url: width: 300 | image_tag: loading: 'lazy', alt: '' }}{% endif %}<span><span class="mono">{{ 'hpz.ac.newer' | t }}</span><b>{{ prv.title }}</b></span>{% render 'icon', name: 'arrow' %}</a>
+      {% endif %}
+      {% if nxt %}
+        <a class="arn-c" href="{{ nxt.url }}">{% if nxt.image %}{{ nxt.image | image_url: width: 300 | image_tag: loading: 'lazy', alt: '' }}{% endif %}<span><span class="mono">{{ 'hpz.ac.older' | t }}</span><b>{{ nxt.title }}</b></span>{% render 'icon', name: 'arrow' %}</a>
+      {% endif %}
+      <a class="arn-c arn-all" href="{{ blog.url }}"><span><span class="mono">{{ blog.articles_count }} {{ 'hpz.ac.guides' | t }}</span><b>{{ 'hpz.ac.all_guides' | t }}</b></span>{% render 'icon', name: 'arrow' %}</a>
+    </div>
+  </div></section>
+</article>
+<script src="{{ 'academy.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": [
+    { "type": "checkbox", "id": "show_author", "label": "Show author", "default": false }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,161 @@
+{{ 'p-404.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<section class="nf" data-nf>
+  <div class="wrap nf-in">
+    <div class="nf-meta mono">
+      <span><b>ERR 404</b> &middot; <span>{{ 'hpz.nf.not_found' | t }}</span></span>
+      <span class="nf-count" id="nf-count" aria-live="polite"></span>
+    </div>
+
+    <div class="nf-stage" id="nf-stage">
+      <div class="nf-num" aria-label="404">
+        <span class="nf-4" aria-hidden="true">4</span>
+        <button class="nf-wheel" id="nf-wheel" type="button" aria-label="{{ 'hpz.nf.roll' | t }}"><span class="nf-spin" id="nf-spin"></span></button>
+        <span class="nf-4" aria-hidden="true">4</span>
+      </div>
+      <i class="nf-shadow" id="nf-shadow" aria-hidden="true"></i>
+      <div class="nf-ground" aria-hidden="true"><span class="mono">0</span><span class="mono">50</span><span class="mono">100 mm</span></div>
+      <span class="nf-hint mono" id="nf-hint">{{ 'hpz.nf.hint' | t }}</span>
+    </div>
+
+    <div class="nf-copy">
+      <div>
+        <h1 class="h1">{% if s.heading != blank %}{{ s.heading | escape | newline_to_br }}{% else %}{{ 'hpz.nf.h_html' | t }}{% endif %}</h1>
+        <p class="lead">{% if s.lead != blank %}{{ s.lead | escape }}{% else %}{{ 'hpz.nf.lead' | t }}{% endif %}</p>
+      </div>
+      <form class="nf-search" action="{{ routes.search_url }}" method="get" role="search">
+        {% render 'icon', name: 'search' %}
+        <input class="input" name="q" id="nf-q" placeholder="{{ 'hpz.nf.search_ph' | t }}" aria-label="{{ 'hpz.nf.search' | t }}" autocomplete="off">
+        <input type="hidden" name="options[prefix]" value="last">
+        <button class="btn btn-ink" type="submit">{{ 'hpz.nf.search' | t }}</button>
+      </form>
+    </div>
+
+    {%- assign links = section.blocks | where: 'type', 'link' -%}
+    {%- if links.size > 0 -%}
+      <nav class="nf-links" id="nf-links" aria-label="{{ 'hpz.nf.quick_links' | t }}">
+        {%- for b in links -%}
+          <a href="{{ b.settings.url | default: routes.root_url }}" data-reveal style="--i:{{ forloop.index0 }}" {{ b.shopify_attributes }}><span class="nf-ic">{% render 'icon', name: b.settings.icon %}</span><span><b>{{ b.settings.title }}</b>{% if b.settings.desc != blank %}<em>{{ b.settings.desc }}</em>{% endif %}</span><span class="mono nf-code">{{ b.settings.icon | slice: 0, 1 | upcase }}-0{{ forloop.index }}</span>{% render 'icon', name: 'arrow' %}</a>
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- if s.collection != blank and s.collection.products_count > 0 -%}
+<section class="section-s nf-recs">
+  <div class="wrap">
+    <div class="shead"><span class="idx">&rarr;</span><div><h2 class="h2">{{ s.rail_title | default: 'Meanwhile, fresh off the bench' }}</h2></div><a class="arrow-link" href="{{ s.collection.url }}"><span>{{ 'hpz.nf.view_all' | t }}</span> {% render 'icon', name: 'arrow' %}</a></div>
+    <div class="grid" style="--cols:4">
+      {%- for p in s.collection.products limit: s.product_count -%}
+        {%- render 'product-card', product: p, index: forloop.index0, lazy: true -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+<script>
+(function () {
+  function boot() {
+    const H = window.HPZ, $ = H.$;
+    if (!H || !document.querySelector('[data-nf]')) return;
+    const root = document.querySelector('[data-nf]'); if (!root) return;
+    const wheel = $('#nf-wheel'), spin = $('#nf-spin'), shadow = $('#nf-shadow'), stage = $('#nf-stage');
+    spin.innerHTML = H.wheelSVG({ spokes: 6, finish: 'gold', disc: 1 });
+    wheel.appendChild(shadow); // contact shadow travels with the wheel
+
+    /* ---------- rolling physics ----------
+       rotation is derived from travel (θ = x / circumference · 360°) so the tyre never "skates" */
+    const isStatic =  matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const easeOutBack = (k, s = 1.35) => 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2);
+    const easeInCubic = k => k * k * k;
+    let x = 0, busy = false, rolls = 0;
+    const deg = v => v / (Math.PI * wheel.offsetWidth) * 360;
+    function place(px, hop = 0, tilt = 0) {
+      x = px;
+      spin.style.transform = `translate(${px}px, ${-hop}px) rotate(${deg(px) + tilt}deg)`;
+      // contact shadow tightens as the wheel lands
+      shadow.style.transform = `translateX(${px}px) scaleX(${1 - Math.min(hop, 60) / 120})`;
+      shadow.style.opacity = String(1 - Math.min(hop, 60) / 90);
+    }
+    const tween = (dur, fn) => new Promise(res => {
+      const t0 = performance.now();
+      const step = now => { const k = Math.min(1, (now - t0) / dur); fn(k); if (k < 1) requestAnimationFrame(step); else res(); };
+      requestAnimationFrame(step);
+    });
+    const leftGap = () => wheel.getBoundingClientRect().left + wheel.offsetWidth + 40;
+    const rightGap = () => innerWidth - wheel.getBoundingClientRect().left + 40;
+
+    async function rollIn(drop) {
+      const d = leftGap(), D = 1500;
+      await tween(D, k => {
+        const e = easeOutBack(k);
+        // optional drop: falls in from above, bounces twice on the ground line, then rolls on
+        let hop = 0;
+        if (drop) { const b = Math.max(0, 1 - k / .55); hop = b > 0 ? Math.abs(Math.cos(k / .55 * Math.PI * 2.5)) * 120 * b * b : 0; }
+        place(-d + d * e, hop);
+      });
+      // settle: tiny back-and-forth like a wheel finding its flat spot
+      await tween(520, k => place(0, 0, Math.sin(k * Math.PI * 3) * 4 * (1 - k)));
+      place(0);
+    }
+    async function rollOff() {
+      const d = rightGap();
+      stage.classList.add('is-off');
+      await tween(760, k => place(d * easeInCubic(k)));
+      stage.classList.remove('is-off');
+    }
+    async function cycle() {
+      if (busy) return; busy = true; rolls++;
+      $('#nf-hint').classList.add('is-gone');
+      await rollOff();
+      await new Promise(r => setTimeout(r, 260));
+      place(-leftGap());
+      await rollIn(rolls % 3 === 0);
+      $('#nf-count').innerHTML = `${H.t('Wheels recovered', 'Velg ditemukan', '回収したホイール')} <b>${String(rolls).padStart(2, '0')}</b>`;
+      busy = false;
+    }
+    wheel.addEventListener('click', cycle);
+
+    if (isStatic) place(0);
+    else { place(-leftGap()); setTimeout(() => rollIn(true).then(() => stage.classList.add('is-ready')), 250); }
+    const onResize = H.debounce(() => { if (!busy) place(0); }, 120);
+    window.addEventListener('resize', onResize);
+
+
+  }
+  if (window.HPZ && HPZ.ready) HPZ.ready(boot); else document.addEventListener('DOMContentLoaded', () => window.HPZ && HPZ.ready(boot));
+  document.addEventListener('shopify:section:load', () => { if (window.HPZ) boot(); });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "404 page",
+  "settings": [
+    { "type": "textarea", "id": "heading", "label": "Heading", "info": "Optional, one line per row. Blank uses the translated default." },
+    { "type": "textarea", "id": "lead", "label": "Intro", "info": "Optional. Blank uses the translated default." },
+    { "type": "header", "content": "Product rail" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Use a collection sorted by newest, e.g. your originals." },
+    { "type": "text", "id": "rail_title", "label": "Rail title", "default": "Meanwhile, fresh off the bench" },
+    { "type": "range", "id": "product_count", "min": 4, "max": 8, "step": 2, "label": "Products", "default": 4 }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Quick link",
+      "limit": 6,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Wheels" },
+        { "type": "text", "id": "desc", "label": "Description" },
+        { "type": "url", "id": "url", "label": "Link" },
+        { "type": "select", "id": "icon", "label": "Icon", "default": "wheel", "options": [
+          { "value": "wheel", "label": "Wheel" }, { "value": "layers", "label": "Layers" }, { "value": "ruler", "label": "Ruler" },
+          { "value": "truck", "label": "Truck" }, { "value": "search", "label": "Search" }, { "value": "box", "label": "Box" },
+          { "value": "tag", "label": "Tag" }, { "value": "car", "label": "Car" } ] }
+      ]
+    }
+  ]
+}
+{% endschema %}

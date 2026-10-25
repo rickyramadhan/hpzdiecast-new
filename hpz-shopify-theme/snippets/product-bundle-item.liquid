@@ -1,0 +1,9 @@
+{%- comment -%}One extra product in the bundle row. Params: x (product){%- endcomment -%}
+{%- assign xv = x.selected_or_first_available_variant -%}
+<span class="bnd-plus">{% render 'icon', name: 'plus' %}</span>
+<label class="bnd-i">
+  <input type="checkbox" checked data-bnd data-variant-id="{{ xv.id }}" data-price="{{ xv.price }}">
+  <span class="bnd-c">{% render 'icon', name: 'check' %}</span>
+  {%- if x.featured_image -%}{{ x.featured_image | image_url: width: 300 | image_tag: alt: '', loading: 'lazy' }}{%- endif -%}
+  <span class="bnd-t"><em>{{ x.type | default: x.vendor | escape }}</em><b>{{ x.title | escape }}{% unless x.has_only_default_variant %} &middot; {{ xv.title | escape }}{% endunless %}</b><span class="mono">{{ xv.price | money }}</span></span>
+</label>

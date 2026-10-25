@@ -1,0 +1,27 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "blocks": {
+        "chip-wheels": { "type": "chip", "settings": { "collection": "wheels", "label": "Wheels" } },
+        "chip-decals": { "type": "chip", "settings": { "collection": "decals", "label": "Decals" } },
+        "chip-body-kit": { "type": "chip", "settings": { "collection": "body-kit", "label": "Body kits" } },
+        "chip-engines": { "type": "chip", "settings": { "collection": "engines", "label": "Engines" } },
+        "chip-exterior": { "type": "chip", "settings": { "collection": "exterior-detail", "label": "Exterior" } },
+        "chip-interior": { "type": "chip", "settings": { "collection": "interior-detail", "label": "Interior" } },
+        "chip-dioramas": { "type": "chip", "settings": { "collection": "dioramas", "label": "Dioramas" } },
+        "promo-fit": { "type": "promo_fit", "settings": {} },
+        "promo-decal": { "type": "promo_decal", "settings": {} }
+      },
+      "block_order": ["chip-wheels", "chip-decals", "chip-body-kit", "chip-engines", "chip-exterior", "chip-interior", "chip-dioramas", "promo-fit", "promo-decal"],
+      "settings": {
+        "per_page": 24,
+        "columns": "4",
+        "show_casting_box": true,
+        "show_promos": true,
+        "show_recent": true
+      }
+    }
+  },
+  "order": ["main"]
+}

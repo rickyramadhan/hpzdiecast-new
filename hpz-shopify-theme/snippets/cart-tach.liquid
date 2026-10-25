@@ -1,0 +1,49 @@
+{%- comment -%}
+  Free-shipping block: tachometer + text. Used by the drawer and the cart page.
+  Params: sub (cents, subtotal of non-add-on lines), class (extra class on wrapper, optional).
+  Threshold is settings.free_ship_usd * 100 (assumes presentment currency == USD for first paint);
+  assets/cart.js re-applies it with Shopify.currency.rate and keeps [data-free-*] nodes in sync.
+{%- endcomment -%}
+{%- liquid
+  assign thr = settings.free_ship_usd | times: 100
+  if thr > 0
+    assign ratio = sub | times: 1.0 | divided_by: thr
+  else
+    assign ratio = 1.0
+  endif
+  assign done = false
+  if ratio >= 1
+    assign done = true
+  endif
+  assign clamped = ratio | at_most: 1
+  assign angle = clamped | times: 240 | minus: 120
+  assign left = thr | minus: sub | at_least: 0
+-%}
+<div class="free{% if done %} is-done{% endif %}{% if class != blank %} {{ class }}{% endif %}" data-free data-sub="{{ sub }}">
+  <svg class="tach{% if done %} is-red{% endif %}" viewBox="0 0 100 66" aria-hidden="true">
+    {%- for i in (0..40) -%}
+      {%- assign a = i | times: 6 | minus: 120 -%}
+      {%- assign big = i | modulo: 5 -%}
+      {%- assign pos = i | divided_by: 40.0 -%}
+      {%- if i >= 34 -%}{%- assign stroke = '#e5306b' -%}{%- elsif pos <= clamped -%}{%- assign stroke = '#0e0f11' -%}{%- else -%}{%- assign stroke = '#c9c6bf' -%}{%- endif -%}
+      <line data-i="{{ i }}" x1="50" y1="{% if big == 0 %}20{% else %}17{% endif %}" x2="50" y2="13" transform="rotate({{ a }} 50 50)" stroke="{{ stroke }}" stroke-width="{% if big == 0 %}1.6{% else %}0.8{% endif %}"/>
+    {%- endfor -%}
+    {%- assign tx = '30.08,27,30.08,38.5,50,61.5,69.92,73,69.92' | split: ',' -%}
+    {%- assign ty = '64,52.5,41,32.58,29.5,32.58,41,52.5,64' | split: ',' -%}
+    {%- for n in (0..8) -%}
+      <text x="{{ tx[n] }}" y="{{ ty[n] }}" font-size="6.5" text-anchor="middle" fill="{% if n >= 7 %}#e5306b{% else %}#7a7f87{% endif %}" font-family="JetBrains Mono, monospace">{{ n }}</text>
+    {%- endfor -%}
+    <g class="tach-needle" style="--a:{{ angle }}deg" data-angle="{{ angle }}"><path d="M50 50 L49 20 L50 15 L51 20 Z" fill="#e5306b"/><circle cx="50" cy="50" r="4.2" fill="#0e0f11"/><circle cx="50" cy="50" r="1.5" fill="#e5306b"/></g>
+    <text x="50" y="63" font-size="5" text-anchor="middle" fill="#7a7f87" font-family="JetBrains Mono, monospace" letter-spacing=".6">x1000 r/min</text>
+  </svg>
+  <div class="free-t">
+    <div data-free-off{% if done %} hidden{% endif %}>
+      <b><span class="mono" data-free-left>{{ left | money_without_trailing_zeros }}</span> {{ 'hpz.cart.free_left' | t }}</b>
+      <span>{{ 'hpz.cart.free_left_sub' | t }}</span>
+    </div>
+    <div data-free-on{% unless done %} hidden{% endunless %}>
+      <b>{{ 'hpz.cart.free_done' | t }}</b>
+      <span>{{ 'hpz.cart.free_done_sub' | t }}</span>
+    </div>
+  </div>
+</div>

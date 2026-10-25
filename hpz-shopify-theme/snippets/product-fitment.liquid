@@ -1,0 +1,51 @@
+{%- comment -%}
+  Fitment check. Renders nothing unless the product states a diameter or is made for specific castings (see product-facts).
+  The <select> is filled from HPZ.cfg.castings and the result box is rendered by assets/product.js.
+  Castings that the workshop has not measured (verified:false) get an "estimated" result instead of a fit / no-fit verdict.
+  Params: product, kind (data-kind slug), facts_json (product-facts string, optional)
+{%- endcomment -%}
+{%- liquid
+  assign ft_j = facts_json
+  if ft_j == blank
+    capture ft_j
+      render 'product-facts', product: product
+    endcapture
+  endif
+  assign ft_raw = ft_j | strip | split: '~'
+  assign ft_brand = ft_raw[0]
+  assign ft_kind = ft_raw[2]
+  assign ft_dia = ft_raw[3]
+  assign ft_face = ft_raw[6]
+  assign ft_lip = ft_raw[7]
+  assign ft_sheet = ft_raw[8]
+  assign ft_own = false
+  if ft_raw[1] == 'true'
+    assign ft_own = true
+  endif
+  assign ft_bearing = false
+  if ft_raw[4] == 'true'
+    assign ft_bearing = true
+  endif
+  assign ft_disc = false
+  if ft_raw[5] == 'true'
+    assign ft_disc = true
+  endif
+  assign ft_precoated = false
+  if ft_raw[9] == 'true'
+    assign ft_precoated = true
+  endif
+  assign ft_made = ft_raw[10] | split: ',' | join: ','
+  assign fit_dia = ft_dia
+  assign fit_handles = ft_made
+-%}
+{%- if fit_dia != blank or fit_handles != blank -%}
+  <div class="fitc" data-fitc data-dia="{{ fit_dia }}" data-made-for="{{ fit_handles }}" data-kind="{{ kind | default: ft_kind }}" hidden>
+    <div class="fitc-h">
+      <span class="eyebrow"><b>{{ 'hpz.product.fit_title' | t }}</b></span>
+      <select class="select" data-fitc-sel aria-label="{{ 'hpz.product.fit_title' | t }}">
+        <option value="">{{ 'hpz.product.fit_select' | t }}</option>
+      </select>
+    </div>
+    <div id="fitc-out" aria-live="polite"><p class="fitc-hint">{{ 'hpz.product.fit_hint' | t }}</p></div>
+  </div>
+{%- endif -%}

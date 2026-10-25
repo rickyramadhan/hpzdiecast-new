@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-payment",
+      "blocks": {
+        "q1": { "type": "faq", "settings": { "question": "Berapa lama pembayaran dikonfirmasi?", "answer": "<p>Admin mengonfirmasi secara manual setelah kamu mengirim bukti bayar lewat WhatsApp, pada jam kerja toko. Pesanan diproses dan dikirim setelah pembayaran dikonfirmasi.</p>" } },
+        "q2": { "type": "faq", "settings": { "question": "Bisa bayar pakai e-wallet atau m-banking?", "answer": "<p>Bisa. QRIS dapat dibayar lewat aplikasi bank atau e-wallet apa pun yang mendukung QRIS. Pastikan nominal yang dimasukkan sama persis dengan total pesanan.</p>" } },
+        "q3": { "type": "faq", "settings": { "question": "Nominal yang saya bayar tidak pas, bagaimana?", "answer": "<p>Hubungi admin lewat WhatsApp dengan bukti bayar dan nomor pesanan. Admin akan membantu mengecek dan menyesuaikan.</p>" } },
+        "q4": { "type": "faq", "settings": { "question": "Rekening mana yang resmi?", "answer": "<p>Hanya rekening dan QRIS yang tampil di halaman ini. Jika ada pihak lain yang meminta pembayaran ke rekening berbeda, jangan transfer dan hubungi admin lewat WhatsApp resmi toko.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4"],
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

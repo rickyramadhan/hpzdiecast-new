@@ -1,0 +1,5 @@
+{%- comment -%} On/off facet (boolean, availability). Params: value (filter value), label {%- endcomment -%}
+<label class="ft{% if value.count == 0 and value.active == false %} is-dis{% endif %}">
+  <span><b>{{ label | escape }}</b><em>{{ value.count }} {{ 'hpz.catalog.parts' | t }}</em></span>
+  <span class="switch"><input type="checkbox" name="{{ value.param_name }}" value="{{ value.value | escape }}"{% if value.active %} checked{% endif %}{% if value.count == 0 and value.active == false %} disabled{% endif %}><span></span></span>
+</label>

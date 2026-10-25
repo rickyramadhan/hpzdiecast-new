@@ -1,0 +1,105 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-builds",
+      "blocks": {
+        "b1": {
+          "type": "build",
+          "settings": {
+            "photo": "shopify://shop_images/625947038_17917284378256467_2530175199263028026_n.jpg",
+            "title": "Purple S2000 in the pit",
+            "casting": "s2000",
+            "story": "Customer build photographed in a garage diorama.",
+            "hs1_x": 72,
+            "hs1_y": 62,
+            "hs1_product": "hpz-wheels-model-te37-sl-bearing-series",
+            "hs2_x": 25,
+            "hs2_y": 58,
+            "hs2_product": "hpz-wheels-model-six-bearing-series",
+            "hs3_x": 45,
+            "hs3_y": 55,
+            "hs3_product": "decal-set-hotwheels-honda-s2000-hks-super-gt"
+          }
+        },
+        "b2": {
+          "type": "build",
+          "settings": {
+            "photo": "shopify://shop_images/626183649_17878289820469569_3561695745277330278_n.jpg",
+            "title": "Red BMW M4 on wide wheels",
+            "casting": "m4",
+            "story": "Customer build.",
+            "hs1_x": 53,
+            "hs1_y": 73,
+            "hs1_product": "hpz-wheels-model-bbs-lm-bearing-series",
+            "hs2_x": 91,
+            "hs2_y": 67,
+            "hs2_product": "hpz-wheels-model-super-advan-bearing-series"
+          }
+        },
+        "b3": {
+          "type": "build",
+          "settings": {
+            "photo": "shopify://shop_images/627859247_17903468040358636_9215028376513405304_n.jpg",
+            "title": "Skyline row",
+            "casting": "r34",
+            "story": "Customer builds lined up in the pit.",
+            "hs1_x": 58,
+            "hs1_y": 64,
+            "hs1_product": "hpz-wheels-model-super-advan-bearing-series",
+            "hs2_x": 20,
+            "hs2_y": 75,
+            "hs2_product": "decal-set-hotwheels-skyline-r34-nismo-z-tune",
+            "hs3_x": 45,
+            "hs3_y": 52,
+            "hs3_product": "hpz-add-on-body-kit-for-hot-wheels-r34-v-spec"
+          }
+        },
+        "b4": {
+          "type": "build",
+          "settings": {
+            "photo": "shopify://shop_images/627967251_17960306688023139_3741770519470168888_n.jpg",
+            "title": "Red racer with open hood",
+            "casting": "",
+            "story": "Customer build with race livery.",
+            "hs1_x": 68,
+            "hs1_y": 50,
+            "hs1_product": "hpz-wheels-model-six-bearing-series",
+            "hs2_x": 85,
+            "hs2_y": 36,
+            "hs2_product": "jv-accessories-voltex-wing"
+          }
+        },
+        "b5": {
+          "type": "build",
+          "settings": {
+            "photo": "shopify://shop_images/631316196_18006175139836329_2723227655320315377_n.jpg",
+            "title": "Blue Chaser at the shop",
+            "casting": "",
+            "story": "Customer build with checkered livery.",
+            "hs1_x": 50,
+            "hs1_y": 61,
+            "hs1_product": "hpz-wheels-model-te37-sl-bearing-series"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ],
+      "settings": {
+        "limit": 24,
+        "default_sort": "new"
+      }
+    },
+    "modal": {
+      "type": "build-modal"
+    }
+  },
+  "order": [
+    "main",
+    "modal"
+  ]
+}

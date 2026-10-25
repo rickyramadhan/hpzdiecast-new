@@ -1,0 +1,26 @@
+{%- comment -%}
+  Language / currency switch in the header, footer and mobile menu.
+  - Indonesia store (store_role = indonesia): only the fixed "ID · IDR" state, no link to the international store (foreign IPs are
+    redirected out automatically by snippets/geo-guard.liquid, Indonesian visitors are never offered the other store here).
+  - International store: the old button that opens the region modal (which lists both stores).
+  Usage: {% render 'store-switch', cls: 'on-dark', chevron: true %}
+{%- endcomment -%}
+{%- if settings.store_role == 'indonesia' -%}
+  <button class="mkt-btn {{ cls }}" data-open="market" aria-label="{{ 'hpz.region.title' | t }}">
+    {% render 'flag', code: 'ID' %}
+    <span>ID · IDR</span>
+    {%- if chevron -%}{% render 'icon', name: 'down' %}{%- endif -%}
+  </button>
+{%- elsif localization.country.iso_code == 'ID' -%}
+  <button class="mkt-btn {{ cls }}" data-open="market" aria-label="{{ 'hpz.region.title' | t }}">
+    {% render 'flag', code: 'US' %}
+    <span>EN · USD</span>
+    {%- if chevron -%}{% render 'icon', name: 'down' %}{%- endif -%}
+  </button>
+{%- else -%}
+  <button class="mkt-btn {{ cls }}" data-open="market" aria-label="{{ 'hpz.region.title' | t }}">
+    {% render 'flag', code: 'US' %}
+    <span>EN · USD</span>
+    {%- if chevron -%}{% render 'icon', name: 'down' %}{%- endif -%}
+  </button>
+{%- endif -%}

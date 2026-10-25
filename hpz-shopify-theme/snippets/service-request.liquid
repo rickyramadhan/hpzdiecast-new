@@ -1,0 +1,43 @@
+{%- comment -%} S-04 Part / casting request. Params: section {%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- assign nl = '
+' -%}
+{%- assign log = s.rq_log | split: nl -%}
+<section class="section rq" id="request">
+  <div class="wrap rq-in">
+    <div class="rq-copy">
+      <span class="eyebrow"><b>S-04</b> <span>{{ 'hpz.svc.rq_eyebrow' | t }}</span></span>
+      <h2 class="h1">{{ 'hpz.svc.rq_h_html' | t }}</h2>
+      <p class="lead">{{ 'hpz.svc.rq_lead' | t }}</p>
+      {%- if s.rq_log != blank -%}
+        <div class="rq-log">
+          <div class="rq-log-h mono"><span>{{ 'hpz.svc.recently' | t }}</span><span>{{ 'hpz.svc.days' | t }}</span></div>
+          <ul id="rq-log">
+            {%- for line in log -%}
+              {%- assign f = line | split: '|' -%}
+              {%- assign d = f[1] | strip -%}
+              {%- if f[0] != blank -%}<li><span class="dot{% if d == blank %} low{% endif %}"></span><span>{{ f[0] | strip }}</span><b class="mono">{% if d != blank %}{{ d }}{% else %}{{ 'hpz.svc.hunting' | t }}{% endif %}</b></li>{%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
+    {%- form 'contact', id: 'rq-form', class: 'rq-form', novalidate: 'novalidate' -%}
+      <input type="hidden" name="contact[tags]" value="service-part-request">
+      <input type="hidden" name="contact[Request type]" value="Part / casting request">
+      {%- if form.errors -%}<div class="sv-err" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+      {%- if form.posted_successfully? -%}
+        <div class="sv-ok" data-sent="rq-form"><span class="q-stamp mono">{{ 'hpz.svc.received' | t }}</span><h3 class="h3">{{ 'hpz.svc.rq_ok_h' | t }}</h3><p>{{ 'hpz.svc.rq_ok_p' | t }}{% if s.rq_lead_time != blank %} {{ 'hpz.svc.rq_ok_time' | t: time: s.rq_lead_time }}{% endif %}</p></div>
+      {%- endif -%}
+      <div data-form-body{% if form.posted_successfully? %} hidden{% endif %}>
+        <div class="field"><label for="rq-what">{{ 'hpz.svc.rq_what' | t }}</label><input class="input" id="rq-what" name="contact[body]" required placeholder="{{ 'hpz.svc.rq_what_ph' | t }}"><span class="err-msg">{{ 'hpz.svc.rq_what_err' | t }}</span></div>
+        <div class="field"><label for="rq-cast">{{ 'hpz.svc.rq_cast' | t }}</label><select class="select" id="rq-cast" name="contact[Casting]" data-any="{{ 'hpz.svc.any_cast' | t }}" data-other="{{ 'hpz.svc.not_in_list' | t }}"><option value="{{ 'hpz.svc.any_cast' | t | escape }}">{{ 'hpz.svc.any_cast' | t }}</option>{% for c in metaobjects.casting.values %}<option value="{{ c.name.value | escape }}">{{ c.name.value | escape }}</option>{% endfor %}<option value="{{ 'hpz.svc.not_in_list' | t | escape }}">{{ 'hpz.svc.not_in_list' | t }}</option></select></div>
+        <div class="field"><label for="rq-link">{{ 'hpz.svc.ref_link_photo' | t }}</label><input class="input" id="rq-link" name="contact[Reference link]" type="url" inputmode="url" placeholder="https://"><span class="xs muted">{{ 'hpz.svc.ref_note_short' | t }}</span></div>
+        <div class="field"><label for="rq-name">{{ 'hpz.svc.name' | t }}</label><input class="input" id="rq-name" name="contact[name]" autocomplete="name"></div>
+        <div class="field"><label for="rq-mail">{{ 'hpz.svc.email' | t }}</label><input class="input" id="rq-mail" name="contact[email]" type="email" required><span class="err-msg">{{ 'hpz.svc.email_err' | t }}</span></div>
+        <button class="btn btn-signal btn-lg btn-block" type="submit" id="rq-go"><span class="spin"></span><span>{{ 'hpz.svc.send_req' | t }}</span></button>
+        <p class="xs muted">{{ 'hpz.svc.rq_free' | t }}</p>
+      </div>
+    {%- endform -%}
+  </div>
+</section>

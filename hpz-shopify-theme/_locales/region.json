@@ -1,0 +1,14 @@
+{
+  "en": { "hpz": { "region": {
+    "eyebrow": "Region", "title": "Choose your store",
+    "lead": "We pick the store from your location. Indonesia shops in Rupiah with Bahasa Indonesia, every other country shops in US dollars in English.",
+    "intl": "International",
+    "note": "You can switch at any time. Orders, stock and payment methods are handled separately in each store."
+  } } },
+  "id": { "hpz": { "region": {
+    "eyebrow": "Wilayah", "title": "Pilih toko kamu",
+    "lead": "Toko dipilih otomatis dari lokasi kamu. Indonesia berbelanja dengan Rupiah dan Bahasa Indonesia, negara lain memakai dolar AS dan English.",
+    "intl": "Internasional",
+    "note": "Kamu bisa pindah kapan saja. Pesanan, stok, dan metode pembayaran diatur terpisah di tiap toko."
+  } } }
+}

@@ -1,0 +1,25 @@
+{%- comment -%}
+  Redirect for the LIVE international theme (Trade). Indonesian visitors go to the Indonesia store, everyone else stays.
+  Paste right after <meta charset> / at the top of <head> in layout/theme.liquid of the live theme, or add as snippets/hpz-geo-redirect.liquid
+  and render it from there. To change the target later (for example id.hpzdiecast.com), edit TARGET only.
+  A visitor who chose this store on purpose is never redirected again (?hpz_stay=1, remembered in localStorage).
+  Rollback: delete this block (or restore the theme backup).
+{%- endcomment -%}
+<script>
+  (function () {
+    var TARGET = 'https://my0ywb-0x.myshopify.com';
+    var host = location.hostname;
+    if ({{ request.design_mode | json }}) return;
+    if (/bot|crawl|spider|lighthouse|headless|preview/i.test(navigator.userAgent)) return;
+    var sp = new URLSearchParams(location.search);
+    if (sp.get('hpz_stay') === '1') { try { localStorage.setItem('hpzGeoManual', '1'); } catch (e) {} return; }
+    try { if (localStorage.getItem('hpzGeoManual') === '1') return; } catch (e) {}
+    if ({{ localization.country.iso_code | json }} !== 'ID') return;
+    if (TARGET.replace(/^https?:\/\//, '') === host) return;
+    if (/^\/(cart|checkout|account|admin)/.test(location.pathname)) return;
+    document.documentElement.style.visibility = 'hidden';
+    setTimeout(function () { document.documentElement.style.visibility = ''; }, 3500);
+    window.addEventListener('pageshow', function () { document.documentElement.style.visibility = ''; });
+    location.replace(TARGET + location.pathname + location.search + location.hash);
+  })();
+</script>

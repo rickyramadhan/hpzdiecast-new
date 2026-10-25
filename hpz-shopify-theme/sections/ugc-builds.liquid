@@ -1,0 +1,165 @@
+{{ 'p-home.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign heading = s.heading
+  if heading == blank
+    assign heading = 'hpz.home.ugc.heading' | t
+  endif
+  assign sub = s.subheading
+  if sub == blank
+    assign sub = 'hpz.home.ugc.sub' | t
+  endif
+  assign build_type = metaobjects['build']
+  assign builds = build_type.values
+  assign ordered = ''
+  for b in builds
+    if b.featured.value == true
+      assign ordered = ordered | append: b.system.handle | append: ','
+    endif
+  endfor
+  for b in builds
+    unless b.featured.value == true
+      assign ordered = ordered | append: b.system.handle | append: ','
+    endunless
+  endfor
+  assign handles = ordered | split: ','
+  assign from_blocks = false
+  assign total = handles.size
+  if total == 0
+    assign from_blocks = true
+    assign total = 0
+    for block in section.blocks
+      if block.type == 'build' and block.settings.photo != blank
+        assign total = total | plus: 1
+      endif
+    endfor
+  endif
+  if total > s.limit
+    assign total = s.limit
+  endif
+  assign gallery_url = s.gallery_url
+  if gallery_url == blank
+    assign gallery_url = routes.root_url | append: 'pages/builds'
+  endif
+  assign cta_url = s.cta_url
+  if cta_url == blank
+    assign cta_url = gallery_url | append: '#submit'
+  endif
+  assign shown = 0
+-%}
+{%- if total > 0 or request.design_mode -%}
+<section class="section builds-s on-white" data-home="ugc" {{ section.shopify_attributes }}>
+  <div class="wrap">
+    <div class="shead">
+      {%- if s.idx != blank -%}<span class="idx">{{ s.idx }}</span>{%- endif -%}
+      <div><h2 class="h2">{{ heading }}</h2><p>{{ sub }}</p></div>
+      <a class="arrow-link" href="{{ gallery_url }}"><span>{{ 'hpz.home.ugc.gallery' | t }}</span> {% render 'icon', name: 'arrow' %}</a>
+    </div>
+    <div class="ugc">
+      {%- if from_blocks -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type != 'build' or block.settings.photo == blank or shown >= total -%}{%- continue -%}{%- endif -%}
+          {%- assign bs = block.settings -%}
+          {%- assign tagged = 0 -%}
+          {%- if bs.p1 != blank -%}{%- assign tagged = tagged | plus: 1 -%}{%- endif -%}
+          {%- if bs.p2 != blank -%}{%- assign tagged = tagged | plus: 1 -%}{%- endif -%}
+          {%- if bs.p3 != blank -%}{%- assign tagged = tagged | plus: 1 -%}{%- endif -%}
+          {%- assign w = 600 -%}
+          {%- if shown == 0 -%}{%- assign w = 900 -%}{%- endif -%}
+          <figure class="ug ug-{{ shown }}" data-reveal style="--i:{{ shown }}" {{ block.shopify_attributes }}>
+            <a class="ug-img" href="{{ gallery_url }}">
+              {{ bs.photo | image_url: width: w | image_tag: width: w, alt: bs.title, loading: 'lazy' }}
+            </a>
+            {%- if bs.p1 != blank -%}{% render 'home-hotspot', hp: bs.p1, x: bs.x1, y: bs.y1 %}{%- endif -%}
+            {%- if bs.p2 != blank -%}{% render 'home-hotspot', hp: bs.p2, x: bs.x2, y: bs.y2 %}{%- endif -%}
+            {%- if bs.p3 != blank -%}{% render 'home-hotspot', hp: bs.p3, x: bs.x3, y: bs.y3 %}{%- endif -%}
+            <figcaption>
+              {%- if bs.builder != blank -%}<span class="mono">@{{ bs.builder | remove: '@' | escape }}</span>{%- endif -%}
+              {%- if bs.title != blank -%}<b>{{ bs.title | escape }}</b>{%- endif -%}
+              {%- if tagged > 0 -%}<em>{{ 'hpz.home.ugc.tagged' | t: count: tagged }}</em>{%- endif -%}
+            </figcaption>
+          </figure>
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for h in handles limit: s.limit -%}
+          {%- assign b = build_type[h] -%}
+          {%- assign photo = b.photo.value -%}
+          {%- assign hotspots = b.hotspots.value -%}
+          {%- assign builder = b.builder.value -%}
+          {%- assign tagged = b.products.value.size | default: 0 -%}
+          {%- if tagged == 0 -%}{%- assign tagged = hotspots.size | default: 0 -%}{%- endif -%}
+          <figure class="ug ug-{{ forloop.index0 }}" data-reveal style="--i:{{ forloop.index0 }}">
+            <a class="ug-img" href="{{ gallery_url }}?b={{ h }}">
+              {%- if photo -%}
+                {%- assign w = 600 -%}
+                {%- if forloop.first -%}{%- assign w = 900 -%}{%- endif -%}
+                {{ photo | image_url: width: w | image_tag: width: w, alt: b.title.value, loading: 'lazy' }}
+              {%- endif -%}
+            </a>
+            {%- for hs in hotspots -%}
+              {%- assign hp = all_products[hs.product] -%}
+              {%- if hp == blank -%}{%- continue -%}{%- endif -%}
+              {% render 'home-hotspot', hp: hp, x: hs.x, y: hs.y, variant_title: hs.variant %}
+            {%- endfor -%}
+            <figcaption>
+              {%- if builder != blank -%}<span class="mono">@{{ builder | escape }}</span>{%- endif -%}
+              <b>{{ b.title.value | escape }}</b>
+              {%- if tagged > 0 -%}<em>{{ 'hpz.home.ugc.tagged' | t: count: tagged }}</em>{%- endif -%}
+            </figcaption>
+          </figure>
+        {%- endfor -%}
+      {%- endif -%}
+      {%- if total == 0 -%}
+        <p class="muted">Add "Build" blocks with a photo, or create build metaobjects.</p>
+      {%- endif -%}
+      <a class="ug ug-cta" href="{{ cta_url }}" data-reveal style="--i:5">
+        <span class="eyebrow"><b>{{ 'hpz.home.ugc.cta_eyebrow' | t }}</b></span>
+        <h3 class="h3">{% if s.cta_text != blank %}{{ s.cta_text }}{% else %}{{ 'hpz.home.ugc.cta_title' | t }}{% endif %}</h3>
+        <span class="arrow-link">{{ 'hpz.home.ugc.cta_link' | t }} {% render 'icon', name: 'arrow' %}</span>
+      </a>
+    </div>
+  </div>
+</section>
+{%- endif -%}
+<script src="{{ 'home.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Built by you (UGC)",
+  "settings": [
+    { "type": "text", "id": "idx", "label": "Index number", "default": "06" },
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Blank = translated default." },
+    { "type": "text", "id": "subheading", "label": "Subheading", "info": "Blank = translated default." },
+    { "type": "range", "id": "limit", "label": "Builds to show", "min": 2, "max": 5, "step": 1, "default": 4, "info": "Reads the 'build' metaobjects (featured first). When none exist, the Build blocks below are used." },
+    { "type": "url", "id": "gallery_url", "label": "Gallery link", "info": "Blank = /pages/builds" },
+    { "type": "textarea", "id": "cta_text", "label": "Submit tile text", "info": "Blank = translated default. Do not promise rewards unless the programme exists." },
+    { "type": "url", "id": "cta_url", "label": "Submit tile link", "info": "Blank = gallery link + #submit" }
+  ],
+  "blocks": [
+    {
+      "type": "build",
+      "name": "Build (fallback)",
+      "limit": 5,
+      "settings": [
+        { "type": "image_picker", "id": "photo", "label": "Photo" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "text", "id": "builder", "label": "Builder handle", "info": "Without the @." },
+        { "type": "header", "content": "Hotspot 1" },
+        { "type": "product", "id": "p1", "label": "Product" },
+        { "type": "range", "id": "x1", "label": "X %", "min": 5, "max": 95, "step": 1, "default": 30 },
+        { "type": "range", "id": "y1", "label": "Y %", "min": 5, "max": 95, "step": 1, "default": 60 },
+        { "type": "header", "content": "Hotspot 2" },
+        { "type": "product", "id": "p2", "label": "Product" },
+        { "type": "range", "id": "x2", "label": "X %", "min": 5, "max": 95, "step": 1, "default": 60 },
+        { "type": "range", "id": "y2", "label": "Y %", "min": 5, "max": 95, "step": 1, "default": 60 },
+        { "type": "header", "content": "Hotspot 3" },
+        { "type": "product", "id": "p3", "label": "Product" },
+        { "type": "range", "id": "x3", "label": "X %", "min": 5, "max": 95, "step": 1, "default": 50 },
+        { "type": "range", "id": "y3", "label": "Y %", "min": 5, "max": 95, "step": 1, "default": 40 }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Built by you (UGC)" } ]
+}
+{% endschema %}

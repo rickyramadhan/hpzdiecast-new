@@ -1,0 +1,12 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "settings": {
+        "rail_title": "Often added together",
+        "rail_limit": 8
+      }
+    }
+  },
+  "order": ["main"]
+}

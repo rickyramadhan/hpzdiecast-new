@@ -1,0 +1,165 @@
+{
+  "blog": {
+    "title": "Academy",
+    "handle": "academy",
+    "template_suffix": "academy"
+  },
+  "articles": [
+    {
+      "blog": "academy",
+      "title": "Wheel swap without drilling the rivet",
+      "handle": "wheel-swap-without-drilling-the-rivet",
+      "author": "HPZ Diecast",
+      "tags": [
+        "Wheels"
+      ],
+      "published": true,
+      "summary_html": "<p>The cleanest way to open a Hot Wheels casting, fit new wheels and close it with a screw.</p>",
+      "body_html": "<p>Most mainline castings are held together by two rivets. Instead of drilling them out, you shave the heads, keep the posts, and close the car again with a small screw, so you can reopen it any time.</p>\n<h3>Tools needed</h3>\n<ul>\n<li>Rotary tool with a 120-grit sanding drum, or a flat needle file</li>\n<li>Kapton or masking tape</li>\n<li>Flat 3 mm screwdriver</li>\n<li>Flush cutters</li>\n<li>1.2 mm drill bit in a pin vise</li>\n<li>M1.7 x 5 mm self-tapping screws</li>\n<li>Phillips #00 driver</li>\n<li>Safety glasses</li>\n</ul>\n<h2>Read the base before you touch it</h2>\n<p>Flip the car and find the posts that hold it together. Most Hot Wheels mainlines have two rivets, one under the front axle and one at the rear. Mini GT, Tomica Premium and most Matchbox Collectors use screws, so stop here and unscrew.</p>\n<p>Take a photo of the base and interior. On some castings the window piece and interior only go back one way.</p>\n<h2>Mask around the rivets</h2>\n<p>Put a square of Kapton or masking tape around each rivet head, leaving just the head exposed. The base printing (model name, year, copyright) scratches the moment the drum skips.</p>\n<p class=\"callout tip\">Mark the front rivet with a dot of marker. They are often different heights and you want to put the right screw back in the right hole.</p>\n<h2>Shave the head, keep the post</h2>\n<p>This is the whole trick. Instead of drilling down through the rivet, grind only the mushroom head off until it is flush with the base. The post underneath stays full length, and that is what your screw will bite into later.</p>\n<p>Use a sanding drum at low speed with light pressure, or a flat needle file if you have patience. Zinc gets hot fast: work in 10-second bursts.</p>\n<p class=\"callout warn\">Stop the moment you see a thin bright ring appear around the post. Go further and you sand into the base and the screw has nothing to hold.</p>\n<h2>Lift the base off</h2>\n<p>Slide a flat 3 mm screwdriver between body and base at the rear and twist gently. The base should pop off the shaved posts. Lay out the parts in the order they came out: base, interior, window, body.</p>\n<h2>Remove the stock wheels</h2>\n<p>Stock axles sit in crimped tabs moulded into the base. Lever them out with the screwdriver, or cut the axle next to one wheel with flush cutters if the tabs are tight. Keep the stock wheels in a bag.</p>\n<h2>Fit the new wheels and axles</h2>\n<p>Check the axle length that suits your casting: short axles tuck the wheels in, long axles bring them out towards the fender. Rest the axle in the tabs and check that the tyre sits flush with the arch.</p>\n<p>Press one wheel fully onto the axle, slide it through the tabs, then press the second wheel on until there is a small amount of side play (about 0.2 mm). No play means no roll.</p>\n<p class=\"callout tip\">If a wheel is loose on the axle, put a pin-head of thin CA on the axle tip, away from the hub. Glue near the bearing ends the free roll for good.</p>\n<h2>Check stance and roll before closing</h2>\n<p>Drop the body loosely on the base and roll the car across a sheet of glass. A wobble is a bent axle: replace it, never bend it back. If a tyre touches the inside of the arch, trim the inner arch lip with a hobby knife or move to a shorter axle.</p>\n<h2>Pilot the posts and close with screws</h2>\n<p>Drill a 1.2 mm pilot hole about 4 mm deep into the centre of each shaved post. Drive an M1.7 x 5 mm self-tapping screw in until it is snug, then a quarter-turn more.</p>\n<p class=\"callout warn\">Do not overtighten. The post is cast zinc and splits. A split rear post is the most common way these builds fail.</p>\n<h2>Final check</h2>\n<p>Check the window sits flush and the interior is not twisted, then roll the car again. You can now reopen it any time, which is perfect for trying a different finish later.</p>\n",
+      "metafields": [
+        {
+          "namespace": "hpz",
+          "key": "level",
+          "type": "single_line_text_field",
+          "value": "Beginner"
+        },
+        {
+          "namespace": "hpz",
+          "key": "minutes",
+          "type": "number_integer",
+          "value": "12"
+        }
+      ]
+    },
+    {
+      "blog": "academy",
+      "title": "Waterslide decals: the 7-step method",
+      "handle": "waterslide-decals-7-step-method",
+      "author": "HPZ Diecast",
+      "tags": [
+        "Decals"
+      ],
+      "published": true,
+      "summary_html": "<p>Clear coat, cut, soak, slide, blot, set, seal, with timings that work in humid weather.</p>",
+      "body_html": "<p>Waterslide decals look fiddly at 1:64 but the method is simple. Most failures come from a rough surface, soaking too long, or rushing the seal.</p>\n<h3>Tools needed</h3>\n<ul>\n<li>Gloss clear (spray or airbrush)</li>\n<li>Fresh #11 hobby blade and cutting mat</li>\n<li>Shallow dish of lukewarm water (30 to 35 C)</li>\n<li>Soft flat brush</li>\n<li>Fine tweezers</li>\n<li>Cotton buds and tissue</li>\n<li>Decal softener</li>\n<li>Semi-gloss or gloss clear for sealing</li>\n</ul>\n<h2>Clear coat: start on gloss</h2>\n<p>Decals silver (tiny trapped air shows as a milky edge) on matte or satin paint. Spray two light coats of gloss clear on the body and let it cure for 24 hours, longer in humid weather.</p>\n<p>If your decal sheet is precoated you do not need to seal the sheet itself. The body still has to be gloss.</p>\n<h2>Cut</h2>\n<p>Cut as close to the printed edge as you can; 0.3 to 0.5 mm of clear film is ideal. Use a fresh blade and cut one decal at a time, only when you are ready to apply it. Pre-cut decals left lying around pick up dust and curl.</p>\n<h2>Soak, briefly</h2>\n<p>Dip the decal in lukewarm water for 10 to 20 seconds, then lift it out and lay it on a paper towel for 30 to 60 seconds. The glue releases on the towel, not in the dish.</p>\n<p>Test it: nudge the decal with the brush. When it slides on the backing paper, it is ready.</p>\n<p class=\"callout warn\">Do not leave decals floating in the dish. The film separates, curls onto itself and almost never comes flat again.</p>\n<h2>Slide, do not lift</h2>\n<p>Wet the area of the body with a drop of water first. Hold the backing paper right next to the spot with tweezers and push the decal off the paper with a soft brush. Never pick the film up with tweezers: it stretches and tears.</p>\n<h2>Position and blot</h2>\n<p>Float it into place on the water film. Once it is right, roll a cotton bud from the centre outward to push the water and air out, then touch the edges with the corner of a tissue to wick the rest away.</p>\n<h2>Set it over the curves</h2>\n<p>Brush decal softener over the decal. It will wrinkle; that is the film softening. Do not touch it. It pulls flat over door lines and arches in 10 to 15 minutes.</p>\n<p>After an hour, slice through panel lines and door shuts with a fresh blade tip and add one more coat of softener.</p>\n<p class=\"callout tip\">For the arch lip on a 1:64 body, two thin coats of softener ten minutes apart work better than one heavy one.</p>\n<h2>Seal</h2>\n<p>Wait 24 hours (48 in humid weather), then mist on clear: a first coat almost dry from 25 to 30 cm so the solvent cannot attack the ink, then two wetter coats 15 minutes apart. Gloss for a race-car look, semi-gloss for period-correct.</p>\n",
+      "metafields": [
+        {
+          "namespace": "hpz",
+          "key": "level",
+          "type": "single_line_text_field",
+          "value": "Beginner"
+        },
+        {
+          "namespace": "hpz",
+          "key": "minutes",
+          "type": "number_integer",
+          "value": "8"
+        }
+      ]
+    },
+    {
+      "blog": "academy",
+      "title": "Picking a wheel diameter: how to measure your casting",
+      "handle": "picking-a-wheel-diameter",
+      "author": "HPZ Diecast",
+      "tags": [
+        "Fitment"
+      ],
+      "published": true,
+      "summary_html": "<p>How arch size, ride height and tyre profile change what fits, and how to measure your casting.</p>",
+      "body_html": "<p>There is no single right wheel size for 1:64. What fits depends on the casting, the ride height you want and the look you are after. Measure first, then choose.</p>\n<h3>Tools needed</h3>\n<ul>\n<li>Digital calipers (0.01 mm)</li>\n<li>Steel ruler</li>\n<li>Sheet of glass or a flat tile</li>\n<li>Your casting with the stock wheels on</li>\n</ul>\n<h2>Know the three numbers</h2>\n<p>Every fitment comes down to three measurements: the wheel diameter (outside of the tyre), the arch opening, and the track width, which is the distance across the outside faces of both wheels on one axle.</p>\n<p>On product pages, diameter means the tyre outside diameter, not the rim.</p>\n<h2>Measure the arch</h2>\n<p>Put the car on a sheet of glass with the stock wheels on. With calipers, measure the arch opening horizontally at its widest, then the height from the glass to the top of the arch lip.</p>\n<p>Arch height minus the gap you want above the tyre is the largest wheel you can run.</p>\n<h2>Decide how much gap you want</h2>\n<p>A gap of around 0.5 mm above the tyre reads as flush. About 1 mm looks clean and tucked. More than that starts to look lifted, which suits off-road builds and little else. A wheel taller than the arch will rub unless you trim the arch or raise the body.</p>\n<p class=\"callout tip\">Low-profile tyres look bigger than they are. A thin-sidewall wheel fills the arch visually like a larger one.</p>\n<h2>Ride height changes everything</h2>\n<p>Dropping a car by relocating the axle upward eats the same amount of gap. If you plan to lower the car, size the wheel down: a wheel that is flush at stock height will rub once lowered.</p>\n<h2>Check axle length and track</h2>\n<p>Measure across the chassis tabs, add the width of two wheels and compare with the body width at the arches. Short axles tuck the wheels in; long axles bring them out flush with wide arches.</p>\n<p>Poke (tyres outside the fender) looks right on a stanced build and wrong on everything else.</p>\n<h2>Use measured data where you have it</h2>\n<p>If the shop has measured your casting, the garage picker at the top of the page will tag parts that fit it. Until a casting is verified, treat any recommendation as a starting point and test-fit before you glue or screw anything.</p>\n",
+      "metafields": [
+        {
+          "namespace": "hpz",
+          "key": "level",
+          "type": "single_line_text_field",
+          "value": "All levels"
+        },
+        {
+          "namespace": "hpz",
+          "key": "minutes",
+          "type": "number_integer",
+          "value": "6"
+        }
+      ]
+    },
+    {
+      "blog": "academy",
+      "title": "Fitting a resin widebody kit",
+      "handle": "fitting-a-resin-widebody-kit",
+      "author": "HPZ Diecast",
+      "tags": [
+        "Body kits"
+      ],
+      "published": true,
+      "summary_html": "<p>Cleaning flash, test-fitting, gluing with CA, filling seams and priming before paint.</p>",
+      "body_html": "<p>Resin kits reward patience. Nearly all of the quality is decided before paint, in the cleaning, test-fitting and seam work.</p>\n<h3>Tools needed</h3>\n<ul>\n<li>Warm soapy water and an old toothbrush</li>\n<li>Flush cutters</li>\n<li>Fresh #11 blade</li>\n<li>Sanding sticks 400 / 600 / 1000</li>\n<li>Sheet of glass</li>\n<li>Blu-Tack</li>\n<li>Medium CA glue and CA gel</li>\n<li>Toothpicks</li>\n<li>Grey surfacer</li>\n<li>Dust mask</li>\n</ul>\n<h2>Wash off the mould release</h2>\n<p>Resin parts come out of silicone moulds coated in release agent. Paint and glue will not stick to it. Scrub every part in warm soapy water with an old toothbrush, rinse, and let them dry for an hour.</p>\n<h2>Remove pour stubs and flash</h2>\n<p>Clip pour stubs off with flush cutters, leaving about 0.5 mm, then sand the rest flat. Flash (the thin film along mould seams) comes off best by scraping with the blade held upright, not by cutting.</p>\n<p class=\"callout warn\">Sand resin wet and wear a dust mask. The dust is fine enough to stay in the air and you do not want it in your lungs.</p>\n<h2>Test-fit dry</h2>\n<p>Hold every piece in place with a small ball of Blu-Tack and look at the car from all four sides and from above. Check that the arch flares line up with the body lines.</p>\n<p>Where a part rocks or leaves a gap, sand its contact face in a figure-eight on 600-grit laid flat on glass. Check again. This step decides how the finished car looks.</p>\n<h2>Prep the body</h2>\n<p>Strip the paint where the kit meets the body, or at least scuff it with 400-grit. CA holds on bare zinc and scuffed paint; on glossy factory paint it lets go with the first knock.</p>\n<h2>Glue with CA: dots, not beads</h2>\n<p>Put three small dots of medium CA on the part with a toothpick, never a continuous bead. Press it on and hold for 30 seconds. Use gel where there is a gap to bridge.</p>\n<p class=\"callout tip\">Skip the accelerator unless you have to. It makes CA brittle and leaves a white bloom on the resin that shows through primer.</p>\n<h2>Fill the seams</h2>\n<p>Run thin CA along the seam and dust it with talc, or use a fine putty. Let it cure fully (CA filler needs about 20 minutes, putty a few hours), then sand 600 then 1000 until you cannot feel the join with a fingernail.</p>\n<h2>Prime and look again</h2>\n<p>Spray a light coat of grey surfacer. It shows every scratch and seam you missed. Fix, sand, re-prime. Two rounds is normal.</p>\n<h2>Paint and clear</h2>\n<p>Three light colour coats beat one heavy coat on a 1:64 body, because detail disappears fast. Finish with gloss clear before decals, as in the waterslide guide.</p>\n",
+      "metafields": [
+        {
+          "namespace": "hpz",
+          "key": "level",
+          "type": "single_line_text_field",
+          "value": "Intermediate"
+        },
+        {
+          "namespace": "hpz",
+          "key": "minutes",
+          "type": "number_integer",
+          "value": "20"
+        }
+      ]
+    },
+    {
+      "blog": "academy",
+      "title": "White toner decals on dark paint",
+      "handle": "white-toner-decals-on-dark-paint",
+      "author": "HPZ Diecast",
+      "tags": [
+        "Decals"
+      ],
+      "published": true,
+      "summary_html": "<p>Why white toner sheets are printed mirrored, and how to flip them onto the body.</p>",
+      "body_html": "<p>White toner decals solve the problem of ordinary decals disappearing on dark paint. They apply a little differently, so read this before your first one.</p>\n<h3>Tools needed</h3>\n<ul>\n<li>Gloss-coated dark body</li>\n<li>Fresh #11 blade</li>\n<li>Lukewarm water</li>\n<li>A small piece of clear acetate or a blister-pack window</li>\n<li>Soft flat brush</li>\n<li>Decal softener</li>\n<li>Acrylic gloss clear</li>\n</ul>\n<h2>Why the sheet looks backwards</h2>\n<p>White toner sheets are printed mirrored on purpose. The decal goes onto the body face-down, so the white sits between paint and film. That protects the toner from scratches and gives a cleaner, glossier edge.</p>\n<p>If the lettering reads backwards on the sheet, it is correct.</p>\n<h2>Dark, glossy base</h2>\n<p>White toner is not fully opaque. On black and deep blue it looks solid; on mid colours you may see the base through it. Gloss the body exactly as for a normal waterslide.</p>\n<h2>Cut tight</h2>\n<p>There is no clear border to hide behind on a dark body, so any film edge shows as a shiny outline. Cut right on the printed edge with a fresh blade.</p>\n<h2>Soak and release onto acetate</h2>\n<p>Soak 15 to 20 seconds, rest on a towel until it slides, then push the decal off its paper onto a wet piece of clear acetate, print side up.</p>\n<h2>Flip and slide face-down</h2>\n<p>Turn the acetate over above the wet body so the printed side faces the paint, and slide the decal off the acetate with the brush. Position it on the water film, then blot from the centre outward.</p>\n<p class=\"callout warn\">The film is now on top and slightly thicker than a normal decal. Use two thin coats of softener rather than one heavy coat, or the white can crack over sharp curves.</p>\n<h2>Seal with acrylic first</h2>\n<p>Toner can lift under hot lacquer clear. Seal with a light acrylic gloss coat first, wait an hour, then use whatever clear you prefer on top.</p>\n",
+      "metafields": [
+        {
+          "namespace": "hpz",
+          "key": "level",
+          "type": "single_line_text_field",
+          "value": "Intermediate"
+        },
+        {
+          "namespace": "hpz",
+          "key": "minutes",
+          "type": "number_integer",
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "blog": "academy",
+      "title": "Painting a raw resin engine",
+      "handle": "painting-a-raw-resin-engine",
+      "author": "HPZ Diecast",
+      "tags": [
+        "Engines"
+      ],
+      "published": true,
+      "summary_html": "<p>Primer, metallic base, black wash and dry-brush to bring out the detail.</p>",
+      "body_html": "<p>A resin engine is tiny, but with a few layers of paint and a wash it can read as real metal at 1:64.</p>\n<h3>Tools needed</h3>\n<ul>\n<li>Toothpicks and Blu-Tack, or an alligator-clip handle</li>\n<li>Gloss black primer</li>\n<li>Chrome and aluminium metallic paint</li>\n<li>Paint for the cam covers</li>\n<li>Tamiya masking tape 2 mm</li>\n<li>Black panel-line wash (enamel)</li>\n<li>Enamel thinner and cotton buds</li>\n<li>Old flat brush for dry-brushing</li>\n<li>0.3 mm wire for plug leads</li>\n</ul>\n<h2>Clean up and wash</h2>\n<p>Remove any pour stubs and flash, then wash the engine as you would a resin body kit. Check that the lettering on the cam covers survived the mould, because that is the detail everyone looks at.</p>\n<h2>Mount it on a handle</h2>\n<p>Push a toothpick into the mount hole with a dab of Blu-Tack, or clip the engine in an alligator clip on a stick. You should be able to paint every face without touching the part.</p>\n<h2>Prime gloss black</h2>\n<p>Metallics are only as smooth as what is under them. A gloss black primer makes aluminium look like cast alloy instead of grey paint.</p>\n<h2>Metallic base coat</h2>\n<p>Spray or brush the block and intake in aluminium; use chrome only on pipes and pulleys. Two very thin coats, ten minutes apart.</p>\n<h2>Mask and paint the cam covers</h2>\n<p>Cut 2 mm masking tape and frame the cam covers. Pick a colour that matches the real engine you are modelling. Pull the tape back on itself at a low angle once the paint is touch-dry.</p>\n<h2>Black wash into the recesses</h2>\n<p>Flow black panel-line wash into the gaps between cylinders, around the intake and into the fin detail. After five minutes, wipe the raised surfaces with a cotton bud barely damp with enamel thinner. The wash stays only where shadows would be.</p>\n<p class=\"callout tip\">Wipe in one direction across the cam covers. Circular wiping drags the wash back out of the lettering.</p>\n<h2>Dry-brush the edges</h2>\n<p>Load an old flat brush with aluminium, wipe almost all of it off on a tissue, then flick it lightly across edges and raised lettering. The light catches them and the engine suddenly reads as metal.</p>\n<h2>Details and seal</h2>\n<p>Add plug leads from 0.3 mm wire and pick out hose clamps with a fine brush. Seal with flat clear everywhere except the metallic parts, because clear dulls metallics.</p>\n",
+      "metafields": [
+        {
+          "namespace": "hpz",
+          "key": "level",
+          "type": "single_line_text_field",
+          "value": "Advanced"
+        },
+        {
+          "namespace": "hpz",
+          "key": "minutes",
+          "type": "number_integer",
+          "value": "15"
+        }
+      ]
+    }
+  ]
+}

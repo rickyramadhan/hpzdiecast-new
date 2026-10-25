@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-planner",
+      "settings": {
+        "wheels_collection": "wheels",
+        "decals_collection": "decals",
+        "bodykits_collection": "body-kit",
+        "exterior_collection": "exterior-detail",
+        "engines_collection": "engines",
+        "interior_collection": "interior-detail",
+        "max_pages": 6
+      }
+    }
+  },
+  "order": ["main"]
+}

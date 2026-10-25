@@ -1,0 +1,9 @@
+{%- comment -%}
+  Breadcrumbs. Usage: {% render 'breadcrumbs', items: items %} where items is an array of {title, url}; the last item is the current page.
+{%- endcomment -%}
+<nav class="crumbs" aria-label="Breadcrumb">
+  <a href="{{ routes.root_url }}">Home</a>
+  {%- for item in items -%}
+    <span>{% if forloop.last %}{{ item.title }}{% else %}<a href="{{ item.url }}">{{ item.title }}</a>{% endif %}</span>
+  {%- endfor -%}
+</nav>

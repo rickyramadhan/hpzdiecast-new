@@ -1,0 +1,204 @@
+{{ 'p-home.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign city = settings.workshop_city | default: 'Jakarta Selatan'
+  unless city contains 'Indonesia'
+    assign city = city | append: ', Indonesia'
+  endunless
+  assign eyebrow_text = s.eyebrow
+  if eyebrow_text == blank
+    assign eyebrow_text = 'hpz.home.hero.eyebrow' | t: city: city
+  endif
+  assign lead = s.lead
+  if lead == blank
+    assign lead = 'hpz.home.hero.lead' | t
+  endif
+  assign cta1_label = s.cta1_label
+  if cta1_label == blank
+    assign cta1_label = 'hpz.home.hero.cta_shop' | t
+  endif
+  assign cta2_label = s.cta2_label
+  if cta2_label == blank
+    assign cta2_label = 'hpz.home.hero.cta_find' | t
+  endif
+  assign cta1_url = s.cta1_url
+  if cta1_url == blank
+    assign cta1_url = routes.collections_url | append: '/wheels'
+  endif
+  assign cta2_url = s.cta2_url
+  if cta2_url == blank
+    assign cta2_url = routes.root_url | append: 'pages/planner'
+  endif
+  assign has_stats = false
+  assign has_prints = false
+  for block in section.blocks
+    if block.type == 'stat'
+      assign has_stats = true
+    endif
+    if block.type == 'print' and block.settings.product != blank
+      assign has_prints = true
+    endif
+  endfor
+  assign finishes = 'Gold:gold|Silver:silver|Gunmetal:gunmet|Bronze:bronze|White:white|Tosca:tosca' | split: '|'
+-%}
+{%- liquid
+  assign stat_vals = ''
+  for block in section.blocks
+    if block.type == 'stat'
+      assign bv = block.settings.value
+      case block.settings.auto
+        when 'parts_count'
+          assign bv = collections['all'].products_count
+        when 'countries_count'
+          assign bv = localization.available_countries.size
+        when 'collection_count'
+          assign bv = block.settings.collection.products_count
+      endcase
+      assign bv = bv | append: ''
+      if bv == '0'
+        assign bv = ''
+      endif
+      assign stat_vals = stat_vals | append: bv | append: '~'
+    endif
+  endfor
+  assign stat_vals = stat_vals | split: '~'
+-%}
+<section class="hero mat" id="hero-{{ section.id }}" data-home="hero" {{ section.shopify_attributes }}>
+  <div class="ruler-x" aria-hidden="true"></div>
+  <div class="ruler-y" aria-hidden="true"></div>
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <span class="eyebrow"><b>{{ s.eyebrow_code }}</b> <span>{{ eyebrow_text }}</span></span>
+      <h1 class="display" data-hero-h>
+        {%- if s.headline != blank -%}
+          {{ s.headline | escape | newline_to_br }}
+        {%- else -%}
+          {{ 'hpz.home.hero.headline_html' | t }}
+        {%- endif -%}
+      </h1>
+      <p class="lead">{{ lead }}</p>
+      <div class="hero-cta">
+        <a class="btn btn-signal btn-lg" href="{{ cta1_url }}"><span>{{ cta1_label }}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15"/><path d="m13 6 6 6-6 6"/></svg></a>
+      </div>
+      {%- if has_stats -%}
+        <dl class="hero-stats">
+          {%- assign si = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'stat' -%}
+              {%- assign sv = stat_vals[si] -%}
+              {%- assign si = si | plus: 1 -%}
+              {%- if sv == blank -%}{%- continue -%}{%- endif -%}
+              {%- assign num = sv | times: 1.0 -%}
+              <div {{ block.shopify_attributes }}>
+                <dt>{{ block.settings.label }}</dt>
+                <dd class="mono">
+                  {%- if num > 0 -%}
+                    <span data-count="{{ sv }}" data-dp="{{ block.settings.decimals }}">{{ sv }}</span>
+                  {%- else -%}
+                    <span>{{ sv }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.suffix != blank -%}<small>{{ block.settings.suffix }}</small>{%- endif -%}
+                </dd>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </dl>
+      {%- endif -%}
+    </div>
+
+    <div class="bench" data-bench aria-label="{{ 'hpz.home.hero.bench_label' | t }}">
+      <div class="bench-wheel">
+        <div class="bw-spin" data-bw-spin></div>
+        <svg class="dim" viewBox="0 0 400 400" aria-hidden="true">
+          <path class="dim-l" d="M30 360 H370"/><path class="dim-l" d="M30 350 V370 M370 350 V370"/>
+          <path class="dim-l" d="M380 30 V370"/><path class="dim-l" d="M370 30 H390 M370 370 H390"/>
+        </svg>
+        {%- if s.dim_d != blank -%}<span class="dim-t dim-b mono">Ø <b>{{ s.dim_d }}</b> mm</span>{%- endif -%}
+        {%- if s.dim_w != blank -%}<span class="dim-t dim-r mono">W {{ s.dim_w }} mm</span>{%- endif -%}
+      </div>
+      {%- if s.show_finish -%}
+        <div class="bw-fin" data-bw-fin role="group" aria-label="{{ 'hpz.home.hero.finish' | t }}">
+          <span class="mono">{{ 'hpz.home.hero.finish' | t }}</span>
+          {%- for f in finishes -%}
+            {%- assign parts = f | split: ':' -%}
+            {%- capture bg -%}{% render 'color-swatch', name: parts[0] %}{%- endcapture -%}
+            {%- assign bg = bg | strip -%}
+            <button type="button" class="{% if forloop.first %}is-on{% endif %}" data-fin="{{ parts[1] }}" style="--c:{{ bg | default: '#ccc' }}" aria-label="{{ parts[0] }}" title="{{ parts[0] }}"></button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      {%- if has_prints -%}
+        {%- assign n = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'print' and block.settings.product != blank and n < 4 -%}
+            {%- assign p = block.settings.product -%}
+            {%- assign n = n | plus: 1 -%}
+            <a class="bc c{{ n }}" href="{{ p.url }}" style="--d:{{ n | minus: 1 }}" {{ block.shopify_attributes }}>
+              <span class="tape"></span>
+              {%- if p.featured_image -%}
+                {{ p.featured_image | image_url: width: 420 | image_tag: width: 420, alt: p.title, loading: 'lazy', widths: '210, 420' }}
+              {%- else -%}
+                <span class="ph" style="display:block;aspect-ratio:1;background:var(--paper-2,#ddd)"></span>
+              {%- endif -%}
+              <span class="bc-l"><b>{{ p.title | escape }}</b><em class="mono">{{ p.price | money }}</em></span>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {%- if s.bench_note != blank -%}<span class="bench-note mono">{{ s.bench_note }}</span>{%- endif -%}
+    </div>
+  </div>
+</section>
+<script src="{{ 'home.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Hero workbench",
+  "settings": [
+    { "type": "header", "content": "Copy" },
+    { "type": "text", "id": "eyebrow_code", "label": "Eyebrow code", "default": "HPZ-W/26" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow text", "info": "Leave blank to use the translated default (workshop location from theme settings)." },
+    { "type": "textarea", "id": "headline", "label": "Headline", "info": "One line per row. The last line is highlighted. Leave blank for the translated default." },
+    { "type": "textarea", "id": "lead", "label": "Lead paragraph", "info": "Leave blank for the translated default." },
+    { "type": "header", "content": "Buttons" },
+    { "type": "text", "id": "cta1_label", "label": "Primary button label" },
+    { "type": "url", "id": "cta1_url", "label": "Primary button link", "info": "Blank = /collections/wheels" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary button label" },
+    { "type": "url", "id": "cta2_url", "label": "Secondary button link", "info": "Blank = /pages/planner" },
+    { "type": "header", "content": "Workbench" },
+    { "type": "checkbox", "id": "show_finish", "label": "Show finish switcher", "default": true },
+    { "type": "text", "id": "dim_d", "label": "Dimension line: diameter (mm)", "default": "10.00" },
+    { "type": "text", "id": "dim_w", "label": "Dimension line: width (mm)", "default": "6.00" },
+    { "type": "text", "id": "bench_note", "label": "Bench caption", "default": "HPZ · 1:64" }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label" },
+        { "type": "select", "id": "auto", "label": "Auto value", "default": "custom", "options": [ { "value": "parts_count", "label": "Parts count (all products)" }, { "value": "countries_count", "label": "Countries shipped (markets)" }, { "value": "collection_count", "label": "Products in a collection" }, { "value": "custom", "label": "Custom value" } ] },
+        { "type": "collection", "id": "collection", "label": "Collection", "info": "Used by Products in a collection." },
+        { "type": "text", "id": "value", "label": "Custom value", "info": "Used by Custom value. Blank = hidden. Only real data." },
+        { "type": "text", "id": "suffix", "label": "Suffix", "info": "e.g. /5" },
+        { "type": "select", "id": "decimals", "label": "Decimals", "default": "0", "options": [ { "value": "0", "label": "0" }, { "value": "1", "label": "1" }, { "value": "2", "label": "2" } ] }
+      ]
+    },
+    {
+      "type": "print",
+      "name": "Reference print",
+      "limit": 4,
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero workbench",
+      "blocks": [ { "type": "print" }, { "type": "print" }, { "type": "print" }, { "type": "print" } ]
+    }
+  ]
+}
+{% endschema %}

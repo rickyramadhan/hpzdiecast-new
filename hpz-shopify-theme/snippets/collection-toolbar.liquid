@@ -1,0 +1,49 @@
+{%- comment -%}
+  Results toolbar: filter button (mobile), count, active chips, sort, density.
+  Params: count, filters, sort_options, sort_by, clear_url
+{%- endcomment -%}
+{%- assign n_active = 0 -%}
+{%- capture chips -%}
+  {%- for f in filters -%}
+    {%- for v in f.active_values -%}
+      {%- assign n_active = n_active | plus: 1 -%}
+      {%- assign chip_label = v.label -%}
+      {%- if f.type == 'boolean' -%}{%- assign chip_label = f.label -%}{%- endif -%}
+      <a class="rchip" href="{{ v.url_to_remove }}" data-ajax aria-label="{{ 'hpz.catalog.remove_filter' | t: label: chip_label }}">{{ chip_label | escape }}{% render 'icon', name: 'close' %}</a>
+    {%- endfor -%}
+    {%- if f.type == 'price_range' -%}
+      {%- if f.min_value.value or f.max_value.value -%}
+        {%- assign n_active = n_active | plus: 1 -%}
+        {%- assign chip_min = f.min_value.value | default: 0 -%}
+        {%- assign chip_max = f.max_value.value | default: f.range_max -%}
+        {%- capture chip_label -%}{{ chip_min | money_without_trailing_zeros }} – {{ chip_max | money_without_trailing_zeros }}{%- endcapture -%}
+        <a class="rchip" href="{{ f.url_to_remove }}" data-ajax aria-label="{{ 'hpz.catalog.remove_filter' | t: label: chip_label }}">{{ chip_label }}{% render 'icon', name: 'close' %}</a>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+<div class="toolbar">
+  <button type="button" class="btn btn-ghost btn-sm tb-filter" id="open-filters" aria-controls="filters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span>{{ 'hpz.catalog.filters' | t }}</span></button>
+  <div class="tb-count" aria-live="polite"><b class="mono" id="r-count">{{ count }}</b> <span id="r-label">{{ 'hpz.catalog.result' | t: count: count }}</span> <span class="xs muted" data-cast-note hidden></span></div>
+  <div class="tb-chips" id="r-chips">
+    {{- chips -}}
+    {%- if n_active > 1 -%}<a class="link xs" href="{{ clear_url }}" data-ajax>{{ 'hpz.catalog.clear_all' | t }}</a>{%- endif -%}
+  </div>
+  <div class="tb-r">
+    {%- if sort_options.size > 0 -%}
+      <label class="tb-sort"><span class="lbl">{{ 'hpz.catalog.sort' | t }}</span>
+        <select class="select" id="sort" name="sort_by" form="col-form">
+          {%- for option in sort_options -%}
+            <option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+          {%- endfor -%}
+        </select>
+      </label>
+      <noscript><button type="submit" form="col-form" class="btn btn-ghost btn-sm">{{ 'hpz.catalog.apply' | t }}</button></noscript>
+    {%- endif -%}
+    <div class="tb-dens" id="dens" role="group" aria-label="{{ 'hpz.catalog.grid_density' | t }}">
+      {%- for n in (3..5) -%}
+        <button type="button" data-cols="{{ n }}" aria-label="{{ 'hpz.catalog.columns' | t: n: n }}">{% for i in (1..n) %}<i></i>{% endfor %}</button>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>

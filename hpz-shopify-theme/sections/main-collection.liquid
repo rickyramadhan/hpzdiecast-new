@@ -1,0 +1,190 @@
+{{ 'p-shop.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign per_page = section.settings.per_page
+  assign default_cols = section.settings.columns
+  assign has_active = false
+  for f in collection.filters
+    if f.active_values.size > 0
+      assign has_active = true
+    endif
+    if f.type == 'price_range'
+      if f.min_value.value or f.max_value.value
+        assign has_active = true
+      endif
+    endif
+  endfor
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  if collection.handle == 'all'
+    assign page_title = 'hpz.catalog.all_parts' | t
+  else
+    assign page_title = collection.title
+  endif
+  assign desc_fallback = ''
+  case collection.handle
+    when 'all'
+      assign desc_fallback = 'hpz.catalog.all_parts_desc' | t
+    when 'wheels', 'hpz-wheels'
+      assign desc_fallback = 'hpz.catalog.desc_wheels' | t
+    when 'decals'
+      assign desc_fallback = 'hpz.catalog.desc_decals' | t
+    when 'body-kit', 'wide-body-kit'
+      assign desc_fallback = 'hpz.catalog.desc_bodykit' | t
+    when 'engines'
+      assign desc_fallback = 'hpz.catalog.desc_engines' | t
+    when 'exterior-detail'
+      assign desc_fallback = 'hpz.catalog.desc_exterior' | t
+    when 'interior-detail', 'interior-set'
+      assign desc_fallback = 'hpz.catalog.desc_interior' | t
+    when 'dioramas'
+      assign desc_fallback = 'hpz.catalog.desc_dioramas' | t
+  endcase
+-%}
+
+<section class="col-head">
+  <div class="wrap">
+    <nav class="crumbs" id="crumbs" aria-label="{{ 'hpz.catalog.breadcrumb' | t }}">
+      <a href="{{ routes.root_url }}">{{ 'hpz.catalog.home' | t }}</a><span><a href="{{ routes.all_products_collection_url }}">{{ 'hpz.catalog.shop' | t }}</a></span>
+      {%- unless collection.handle == 'all' -%}<span>{{ collection.title | escape }}</span>{%- endunless -%}
+    </nav>
+    <div class="col-h">
+      <div>
+        <h1 class="h1" id="col-title">{{ page_title | escape }}</h1>
+        {%- if collection.description != blank -%}
+          <div class="lead" id="col-desc">{{ collection.description }}</div>
+        {%- elsif desc_fallback != blank -%}
+          <p class="lead" id="col-desc">{{ desc_fallback }}</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.show_casting_box -%}
+        <div class="col-side" id="col-side">
+          <div class="cast-on" data-cast-on hidden></div>
+          <button type="button" class="cast-off" data-cast-off data-open="garage">{% render 'icon', name: 'car' %}<span><b>{{ 'hpz.catalog.cast_filter_title' | t }}</b><em>{{ 'hpz.catalog.cast_filter_sub' | t }}</em></span>{% render 'icon', name: 'arrow' %}</button>
+        </div>
+      {%- endif -%}
+    </div>
+    {%- assign chip_count = 0 -%}
+    {%- for block in section.blocks -%}{%- if block.type == 'chip' -%}{%- assign chip_count = chip_count | plus: 1 -%}{%- endif -%}{%- endfor -%}
+    {%- if chip_count > 0 -%}
+      <div class="col-cats" id="col-cats">
+        <a class="chip{% if collection.handle == 'all' %} is-on{% endif %}" href="{{ routes.all_products_collection_url }}">{{ 'hpz.catalog.all' | t }} <span class="ct">{{ collections.all.all_products_count }}</span></a>
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'chip' -%}
+            {%- assign c = block.settings.collection -%}
+            {%- if c != blank -%}
+              <a class="chip{% if c.handle == collection.handle %} is-on{% endif %}{% if c.all_products_count == 0 %} is-empty{% endif %}" href="{{ c.url }}" {{ block.shopify_attributes }}>{% render 'cat-icon', handle: c.handle %}{{ block.settings.label | default: c.title | escape }} <span class="ct">{{ c.all_products_count }}</span></a>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+    {%- render 'collection-brands' -%}
+  </div>
+</section>
+
+<section class="col-body" data-col-root data-section-id="{{ section.id }}" data-cols="{{ default_cols }}">
+  <div class="wrap col-in">
+    <aside class="filters" id="filters" aria-label="{{ 'hpz.catalog.filters' | t }}">
+      {%- render 'collection-filters', filters: collection.filters, count: collection.products_count, action: collection.url, clear_url: collection.url -%}
+    </aside>
+    <div class="results" data-part="results">
+      {%- paginate collection.products by per_page -%}
+        {%- assign shown = paginate.current_offset | plus: collection.products.size -%}
+        {%- render 'collection-toolbar', count: collection.products_count, filters: collection.filters, sort_options: collection.sort_options, sort_by: sort_by, clear_url: collection.url -%}
+        {%- render 'collection-quick' -%}
+        <div class="grid" id="grid" style="--cols:{{ default_cols }}">
+          {%- if collection.products.size == 0 -%}
+            {%- render 'collection-empty', clear_url: collection.url -%}
+          {%- else -%}
+            {%- assign show_promos = false -%}
+            {%- if section.settings.show_promos and paginate.current_page == 1 and has_active == false -%}
+              {%- assign show_promos = true -%}
+            {%- endif -%}
+            {%- for product in collection.products -%}
+              {%- assign pos = forloop.index -%}
+              {%- if show_promos -%}
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'promo_fit' or block.type == 'promo_decal' -%}
+                    {%- if block.settings.position == pos -%}{%- render 'collection-promo', block: block -%}{%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+              {%- liquid
+                assign lazy = false
+                if forloop.index0 > 3
+                  assign lazy = true
+                endif
+              -%}
+              {%- render 'product-card', product: product, index: forloop.index0, lazy: lazy -%}
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+        {%- render 'pagination', paginate: paginate, shown: shown -%}
+      {%- endpaginate -%}
+    </div>
+  </div>
+</section>
+
+{%- if section.settings.show_recent -%}
+  <section class="section-s" id="recent-s" hidden data-recent>
+    <div class="wrap">
+      <div class="shead"><span class="idx">↺</span><div><h2 class="h2">{{ 'hpz.catalog.recent_title' | t }}</h2></div></div>
+      <div class="rail" id="recent"></div>
+    </div>
+  </section>
+{%- endif -%}
+
+<noscript><style>.fl-f{display:grid !important}.fl-f .btn-ghost{display:inline-flex}</style></noscript>
+<script src="{{ 'collection.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Collection page",
+  "tag": "div",
+  "class": "shopify-section--collection",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 12, "max": 48, "step": 4, "default": 24 },
+    { "type": "select", "id": "columns", "label": "Default grid columns (desktop)", "default": "4", "options": [
+      { "value": "3", "label": "3" }, { "value": "4", "label": "4" }, { "value": "5", "label": "5" }
+    ] },
+    { "type": "checkbox", "id": "show_casting_box", "label": "Show 'filter by your casting' box", "default": true },
+    { "type": "checkbox", "id": "show_promos", "label": "Show promo tiles in the grid (unfiltered page 1 only)", "default": true },
+    { "type": "checkbox", "id": "show_recent", "label": "Show recently viewed rail", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "chip",
+      "name": "Category chip",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "label", "label": "Label (optional, defaults to collection title)" }
+      ]
+    },
+    {
+      "type": "promo_fit",
+      "name": "Promo: fitment tile",
+      "limit": 1,
+      "settings": [
+        { "type": "range", "id": "position", "label": "Insert before product number", "min": 2, "max": 24, "step": 1, "default": 6 },
+        { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Fitment finder" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Not sure it fits?" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Pick your casting and we tag every part that fits it." },
+        { "type": "text", "id": "cta", "label": "Button label", "default": "Open finder" },
+        { "type": "url", "id": "url", "label": "Link (defaults to /pages/planner)" }
+      ]
+    },
+    {
+      "type": "promo_decal",
+      "name": "Promo: custom decal tile",
+      "limit": 1,
+      "settings": [
+        { "type": "range", "id": "position", "label": "Insert before product number", "min": 2, "max": 24, "step": 1, "default": 16 },
+        { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Custom decals" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Your livery, made to fit." },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Send a reference and ask about a custom waterslide decal." },
+        { "type": "text", "id": "cta", "label": "Button label", "default": "Ask about custom decals" },
+        { "type": "url", "id": "url", "label": "Link (defaults to /pages/services#decal)" }
+      ]
+    }
+  ]
+}
+{% endschema %}

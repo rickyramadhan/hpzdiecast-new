@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "header": {
+      "type": "header",
+      "blocks": {
+        "msg-1": {
+          "type": "message",
+          "settings": {
+            "text": "Ships from our workshop within 24 h"
+          }
+        },
+        "msg-2": {
+          "type": "message",
+          "settings": {
+            "text": "Every wheel set is checked and bagged by hand"
+          }
+        }
+      },
+      "block_order": [
+        "msg-1",
+        "msg-2"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "header"
+  ],
+  "name": "Header group",
+  "type": "header"
+}

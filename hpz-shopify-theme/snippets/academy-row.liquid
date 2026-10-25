@@ -1,0 +1,13 @@
+{%- comment -%} Article list row. Params: article, index (1-based), lazy {%- endcomment -%}
+{%- assign level = article.metafields.hpz.level.value -%}
+{%- assign minutes = article.metafields.hpz.minutes.value -%}
+{%- assign cat = article.tags.first -%}
+{%- assign img_alt = article.image.alt | default: article.title -%}
+<li data-reveal style="--i:{{ index | minus: 1 }}"><a class="al" href="{{ article.url }}" data-guide="{{ article.handle }}">
+  <span class="mono al-n">{{ index | prepend: '00' | slice: -2, 2 }}</span>
+  <span class="al-img">{%- if article.image -%}{{ article.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: img_alt, widths: '200, 400' }}{%- endif -%}</span>
+  <span class="al-c">{% if cat != blank %}<span class="mono al-cat">{{ cat }}</span>{% endif %}{% if level != blank %}<span class="al-lv">{% render 'academy-level', level: level %}</span>{% endif %}</span>
+  <span class="al-t"><b>{{ article.title }}</b>{% if article.excerpt_or_content != blank %}<em>{{ article.excerpt_or_content | strip_html | truncate: 140 }}</em>{% endif %}</span>
+  <span class="mono al-m">{% if minutes != blank %}{{ minutes }} {{ 'hpz.ac.min' | t }}{% endif %}<span data-steps></span></span>
+  <span class="al-pg" data-pg></span>
+  {% render 'icon', name: 'arrow' %}</a></li>

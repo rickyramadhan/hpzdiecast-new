@@ -1,0 +1,15 @@
+{{ 'p-academy.css' | asset_url | stylesheet_tag }}
+<section class="section-s pg-default">
+  <div class="wrap" style="max-width: 820px">
+    <nav class="crumbs" aria-label="{{ 'hpz.pg.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'hpz.pg.home' | t }}</a><span>{{ page.title }}</span></nav>
+    <h1 class="h1" style="margin: 18px 0 28px">{{ page.title }}</h1>
+    <div class="rte pg-body">{{ page.content }}</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page content",
+  "settings": []
+}
+{% endschema %}

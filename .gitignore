@@ -1,0 +1,11 @@
+# QA scratch: screenshots, logs, keys, cookies, test output
+.qa/
+_src/
+hpz-redesign/
+*.csv
+*.log
+/*.png
+/*.jpg
+node_modules/
+.DS_Store
+Thumbs.db

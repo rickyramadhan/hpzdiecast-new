@@ -1,0 +1,16 @@
+{%- comment -%} Standalone announcement bar, used when the header does not render the message blocks. {%- endcomment -%}
+<div class="announce">
+  <div class="wrap announce-in">
+    <span>{{ section.settings.text }}</span>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [
+    { "type": "text", "id": "text", "label": "Message", "default": "Duties and import taxes, if any, are paid by the recipient." }
+  ],
+  "presets": [{ "name": "Announcement bar" }]
+}
+{% endschema %}

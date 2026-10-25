@@ -1,0 +1,81 @@
+// Writes docs/emails/index.html: the review page for the email redesign (design spec + links to every preview).
+const fs = require('fs');
+const path = require('path');
+const out = path.resolve(__dirname, '../docs/emails/index.html');
+const sw = (c, n, d) => `<div class="sw"><i style="background:${c}"></i><b>${n}</b><span>${c}</span><em>${d}</em></div>`;
+const card = (f, t, d) => `<a class="card" href="${f}"><iframe src="${f}" loading="lazy" tabindex="-1"></iframe><b>${t}</b><span>${d}</span></a>`;
+fs.writeFileSync(out, `<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HPZ Diecast · Desain email</title>
+<style>
+body{margin:0;background:#f3f2ee;color:#0e0f11;font:15px/1.55 'Helvetica Neue',Arial,sans-serif}
+.w{max-width:1180px;margin:0 auto;padding:40px 24px 80px}
+h1{font:900 44px/1 'Arial Black',Arial,sans-serif;text-transform:uppercase;letter-spacing:-1px;margin:0 0 8px}
+h2{font:900 22px/1.1 'Arial Black',Arial,sans-serif;text-transform:uppercase;margin:44px 0 14px}
+p.l{max-width:70ch;color:#4b4f55}
+.eb{font:600 11px 'Courier New',monospace;letter-spacing:.1em;text-transform:uppercase;color:#1e4b40}
+.sws{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.sw{background:#fff;border:1px solid #e4e1d9;border-radius:10px;padding:12px;display:grid;gap:2px}.sw i{height:44px;border-radius:6px;border:1px solid #0001;margin-bottom:6px}.sw span{font:12px 'Courier New',monospace;color:#6d7177}.sw em{font-style:normal;font-size:12px;color:#4b4f55}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.card{display:block;background:#fff;border:1px solid #e4e1d9;border-radius:12px;padding:12px;text-decoration:none;color:inherit}
+.card iframe{width:100%;height:520px;border:0;border-radius:8px;background:#f3f2ee;pointer-events:none}.card b{display:block;margin-top:10px}.card span{font-size:13px;color:#6d7177}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid #e4e1d9;border-radius:10px;overflow:hidden;font-size:14px}th,td{padding:10px 12px;border-bottom:1px solid #e4e1d9;text-align:left;vertical-align:top}th{background:#0e0f11;color:#fff;font:600 11px 'Courier New',monospace;letter-spacing:.08em;text-transform:uppercase}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;background:#ffd100;font-size:12px;font-weight:700}.pill.g{background:#e4e1d9}
+ul{padding-left:20px}
+</style></head><body><div class="w">
+<div class="eb">Desain email · untuk ditinjau</div><h1>Email HPZ Diecast</h1>
+<p class="l">Satu rangka email yang sama untuk toko Internasional (English, USD) dan toko Indonesia (Bahasa Indonesia, Rupiah). Warna, huruf, dan gaya tombol mengikuti situs. Yang berbeda hanya bahasa, mata uang, dan blok pembayaran manual di toko Indonesia.</p>
+
+<h2>Contoh email</h2>
+<div class="grid">
+${card('order-confirmation-id.html', 'Konfirmasi pesanan · Indonesia', 'Dengan kartu bayar: nominal, QRIS, rekening BCA, batas 24 jam, tombol WhatsApp')}
+${card('order-confirmation-en.html', 'Order confirmation · International', 'Dibayar PayPal, ongkir internasional, catatan bea masuk')}
+${card('shipping-confirmation-id.html', 'Pesanan dikirim · Indonesia', 'Kartu resi, tombol lacak paket, isi paket')}
+${card('shipping-confirmation-en.html', 'Shipping confirmation · International', 'Versi English')}
+${card('account-invite-id.html', 'Aktivasi akun · Indonesia', 'Satu tombol, tautan cadangan')}
+${card('account-invite-en.html', 'Account activation · International', 'Versi English')}
+</div>
+
+<h2>Warna</h2>
+<div class="sws">
+${sw('#0e0f11', 'Ink', 'Header, footer, teks utama, tombol gelap')}
+${sw('#1e4b40', 'Mat green', 'Blok hero dan kartu bayar')}
+${sw('#ffd100', 'Signal yellow', 'Tombol utama, nominal, penanda')}
+${sw('#f3f2ee', 'Paper', 'Latar email dan kotak bantuan')}
+${sw('#e4e1d9', 'Line', 'Garis pemisah dan bingkai')}
+${sw('#6d7177', 'Mute', 'Teks pendukung')}
+</div>
+
+<h2>Huruf dan komponen</h2>
+<ul>
+<li><b>Judul:</b> huruf kapital tebal (Archivo Black, cadangan Arial Black). Tidak semua aplikasi email memuat font web, jadi cadangan dipilih supaya tampilan tetap tegas.</li>
+<li><b>Label kecil:</b> huruf mono kapital (Courier New), seperti tag "PESANAN #1023" di situs.</li>
+<li><b>Hero hijau:</b> label kuning, judul putih besar, satu kalimat penjelasan.</li>
+<li><b>Garis status 5 langkah:</b> Dipesan, Dibayar, Dikemas, Dikirim, Sampai. Langkah aktif ditandai hitam.</li>
+<li><b>Daftar barang:</b> foto, nama, varian, jumlah, harga. Total memakai garis tebal di atasnya.</li>
+<li><b>Tombol:</b> kuning untuk aksi utama, hitam untuk aksi kedua, garis tipis di atas latar hijau.</li>
+<li><b>Footer gelap:</b> alamat, jam, kontak, dan satu kalimat bahwa HPZ tidak berafiliasi dengan Mattel.</li>
+<li>Lebar 600 px, satu kolom, tombol cukup besar untuk HP. Logo memakai gambar PNG yang diunggah ke Shopify (SVG tidak didukung email).</li>
+</ul>
+
+<h2>Email yang akan dirapikan</h2>
+<table>
+<tr><th>Email</th><th>Internasional</th><th>Indonesia</th><th>Catatan</th></tr>
+<tr><td>Konfirmasi pesanan</td><td><span class="pill">dirancang</span></td><td><span class="pill">dirancang</span></td><td>Indonesia memuat kartu bayar QRIS/BCA dan tombol WhatsApp</td></tr>
+<tr><td>Pesanan dikirim / update pengiriman</td><td><span class="pill">dirancang</span></td><td><span class="pill">dirancang</span></td><td>Kartu resi dan tombol lacak</td></tr>
+<tr><td>Aktivasi akun, reset kata sandi</td><td><span class="pill">dirancang</span></td><td><span class="pill">dirancang</span></td><td>Satu tombol dan tautan cadangan</td></tr>
+<tr><td>Pesanan dibatalkan, refund</td><td><span class="pill g">rangka sama</span></td><td><span class="pill g">rangka sama</span></td><td>Hero dan teks berbeda, rangka sama</td></tr>
+<tr><td>Pesanan sampai (delivered)</td><td><span class="pill g">rangka sama</span></td><td><span class="pill g">rangka sama</span></td><td>Langkah "Sampai" aktif</td></tr>
+<tr><td>Invoice draft order, pengingat bayar</td><td><span class="pill g">rangka sama</span></td><td><span class="pill g">rangka sama</span></td><td>Indonesia: kartu bayar dengan batas waktu</td></tr>
+<tr><td>Keranjang ditinggalkan</td><td><span class="pill g">rangka sama</span></td><td><span class="pill g">rangka sama</span></td><td>Tombol "Lanjutkan checkout"</td></tr>
+<tr><td>Balasan formulir kontak</td><td><span class="pill g">rangka sama</span></td><td><span class="pill g">rangka sama</span></td><td>Pengirim: admin@hpzdiecast.com</td></tr>
+</table>
+
+<h2>Cara pemasangan (setelah Anda setuju)</h2>
+<ul>
+<li>Shopify tidak menyediakan cara memasang template email otomatis lewat API. Saya siapkan kode Liquid siap tempel untuk tiap email, dan Anda menempelkannya di Settings &gt; Notifications &gt; (pilih email) &gt; Edit code, untuk masing-masing toko.</li>
+<li>Logo PNG dan gambar QRIS diunggah ke Content &gt; Files di toko masing-masing.</li>
+<li>Email pengirim di Settings &gt; Notifications diset ke admin@hpzdiecast.com di toko Indonesia.</li>
+<li>Setiap email dicoba dengan fitur "Send test email" sebelum dipakai.</li>
+</ul>
+</div></body></html>
+`);
+console.log('index written ->', out);

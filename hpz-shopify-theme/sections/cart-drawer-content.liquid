@@ -1,0 +1,8 @@
+{%- comment -%}
+  Ajax-only wrapper: lets assets/cart.js fetch the drawer markup through the Section Rendering API
+  (/cart?sections=cart-drawer-content). Mounted in layout/theme.liquid inside #d-cart (required, otherwise the API returns nothing).
+{%- endcomment -%}
+<div data-cart-drawer-src>{% render 'cart-drawer' %}</div>
+{% schema %}
+{ "name": "Cart drawer (Ajax)", "settings": [] }
+{% endschema %}

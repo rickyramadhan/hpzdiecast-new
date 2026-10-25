@@ -1,0 +1,51 @@
+{{ 'p-services.css' | asset_url | stylesheet_tag }}
+{{ 'p-academy.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<section class="section hc ct-page" data-contact-page>
+  <div class="wrap">
+    <nav class="crumbs" aria-label="{{ 'hpz.contact.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'hpz.contact.home' | t }}</a><span>{{ page.title }}</span></nav>
+    <div class="shead" style="margin-top: 18px"><span class="idx">C</span><div><h1 class="h2">{{ page.title }}</h1><p>{% if s.intro != blank %}{{ s.intro | escape }}{% else %}{{ 'hpz.contact.intro' | t }}{% endif %}</p></div></div>
+    {%- if page.content != blank -%}<div class="rte" style="margin-bottom: 28px">{{ page.content }}</div>{%- endif -%}
+    <div class="hc-grid">
+      <aside class="hc-side">
+        {%- render 'service-contact-cards', email: s.email, days: s.hours_days, open: s.hours_open, close: s.hours_close, tz: s.hours_tz, tz_label: s.hours_tz_label, note: s.hours_note -%}
+      </aside>
+      <div class="hc-main">
+        {%- form 'contact', id: 'contact-form', class: 'ws-form ct-form', novalidate: 'novalidate' -%}
+          <input type="hidden" name="contact[tags]" value="contact-page">
+          {%- if form.errors -%}<div class="sv-err" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+          {%- if form.posted_successfully? -%}
+            <div class="sv-ok" role="status"><span class="q-stamp mono">{{ 'hpz.contact.sent' | t }}</span><h2 class="h3">{{ 'hpz.contact.ok_h' | t }}</h2><p>{{ 'hpz.contact.ok_p' | t }}</p></div>
+          {%- else -%}
+            <div class="ws-fields">
+              <div class="field"><label for="ct-name">{{ 'hpz.contact.name' | t }}</label><input class="input" id="ct-name" name="contact[name]" autocomplete="name" value="{{ form.name }}" required></div>
+              <div class="field"><label for="ct-mail">{{ 'hpz.contact.email' | t }}</label><input class="input" id="ct-mail" name="contact[email]" type="email" autocomplete="email" value="{{ form.email }}" required></div>
+              <div class="field"><label for="ct-phone">{{ 'hpz.contact.phone' | t }}</label><input class="input" id="ct-phone" name="contact[phone]" type="tel" autocomplete="tel" value="{{ form.phone }}"></div>
+              <div class="field"><label for="ct-order">{{ 'hpz.contact.order' | t }}</label><input class="input" id="ct-order" name="contact[Order number]"></div>
+            </div>
+            <div class="field" style="margin-top: 14px"><label for="ct-body">{{ 'hpz.contact.message' | t }}</label><textarea class="textarea" id="ct-body" name="contact[body]" rows="6" required>{{ form.body }}</textarea></div>
+            <button class="btn btn-ink btn-lg" type="submit" style="margin-top: 16px"><span>{{ 'hpz.contact.send' | t }}</span></button>
+            <p class="xs muted" style="margin-top: 12px">{{ 'hpz.contact.files_note' | t }}</p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{{ 'services.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Contact",
+  "settings": [
+    { "type": "textarea", "id": "intro", "label": "Intro", "info": "Optional. Blank uses the translated default." },
+    { "type": "text", "id": "email", "label": "Contact email", "info": "Blank uses the store email." },
+    { "type": "text", "id": "hours_days", "label": "Open days", "default": "1,2,3,4,5,6", "info": "Comma separated, 0 = Sunday ... 6 = Saturday." },
+    { "type": "number", "id": "hours_open", "label": "Opening hour (24h, workshop time)", "default": 9 },
+    { "type": "number", "id": "hours_close", "label": "Closing hour (24h, workshop time)", "default": 17 },
+    { "type": "number", "id": "hours_tz", "label": "Workshop UTC offset (hours)", "default": 7, "info": "Jakarta is 7." },
+    { "type": "text", "id": "hours_tz_label", "label": "Time zone label", "default": "WIB" },
+    { "type": "text", "id": "hours_note", "label": "Hours note" }
+  ]
+}
+{% endschema %}

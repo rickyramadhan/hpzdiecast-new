@@ -1,0 +1,42 @@
+{{ 'p-academy.css' | asset_url | stylesheet_tag }}
+<section class="section-s acl">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="{{ 'hpz.ac.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'hpz.ac.home' | t }}</a><span>{{ blog.title }}</span></nav>
+    <h1 class="h1" style="margin:16px 0 24px">{{ blog.title }}</h1>
+    {%- if blog.all_tags.size > 0 -%}
+      <div class="acl-bar"><div class="acl-chips" role="navigation">
+        <a class="chip{% unless current_tags %} is-on{% endunless %}" href="{{ blog.url }}">{{ 'hpz.ac.all' | t }}</a>
+        {%- for tag in blog.all_tags -%}<a class="chip{% if current_tags contains tag %} is-on{% endif %}" href="{{ blog.url }}/tagged/{{ tag | handleize }}">{{ tag }}</a>{%- endfor -%}
+      </div></div>
+    {%- endif -%}
+    {%- paginate blog.articles by section.settings.per_page -%}
+      <ol class="acl-list">
+        {%- for a in blog.articles -%}
+          {%- render 'academy-row', article: a, index: forloop.index -%}
+        {%- else -%}
+          <li class="al-empty">{{ 'hpz.ac.empty' | t }}</li>
+        {%- endfor -%}
+      </ol>
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" aria-label="{{ 'hpz.ac.pagination' | t }}" style="display:flex;gap:8px;justify-content:center;margin-top:32px">
+          {%- if paginate.previous -%}<a class="btn btn-ghost btn-sm" href="{{ paginate.previous.url }}">{{ 'hpz.ac.prev' | t }}</a>{%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}<a class="btn btn-ghost btn-sm" href="{{ part.url }}">{{ part.title }}</a>
+            {%- elsif part.title == paginate.current_page -%}<span class="btn btn-ink btn-sm" aria-current="page">{{ part.title }}</span>
+            {%- else -%}<span class="btn btn-sm">{{ part.title }}</span>{%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}<a class="btn btn-ghost btn-sm" href="{{ paginate.next.url }}">{{ 'hpz.ac.next' | t }}</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Blog posts",
+  "settings": [
+    { "type": "range", "id": "per_page", "min": 6, "max": 24, "step": 2, "label": "Articles per page", "default": 12 }
+  ]
+}
+{% endschema %}

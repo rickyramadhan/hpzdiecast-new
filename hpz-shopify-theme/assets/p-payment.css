@@ -1,0 +1,74 @@
+/* HPZ — manual payment page (Indonesia) + cart info box */
+.pay-page { padding: 26px 0 72px; }
+.pay-head { display: grid; gap: 14px; margin: 18px 0 30px; max-width: 760px; }
+.pay-head .lead { max-width: 62ch; }
+
+.pay-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--ink); margin-bottom: 22px; }
+.pay-steps li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; padding: 18px 16px 18px 0; border-bottom: 1px solid var(--line); }
+.pay-steps li + li { padding-left: 16px; border-left: 1px solid var(--line); }
+.pay-steps .mono { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: var(--ink); color: var(--signal); font-size: 11px; font-weight: 600; }
+.pay-steps b { font-size: 14.5px; font-weight: 650; }
+.pay-steps p { font-size: 13px; color: var(--ink-3); margin-top: 3px; }
+
+.pay-warn { display: flex; gap: 14px; padding: 16px 18px; background: #fff7dc; border: 1px solid #f1d98a; border-radius: var(--r2); margin-bottom: 26px; font-size: 13.5px; }
+.pay-warn > svg { width: 22px; flex: none; color: var(--warn); margin-top: 2px; }
+.pay-warn ul { display: grid; gap: 4px; margin-top: 6px; color: var(--ink-2); }
+.pay-warn li { position: relative; padding-left: 14px; }
+.pay-warn li::before { content: ''; position: absolute; left: 0; top: .6em; width: 5px; height: 5px; background: var(--ink); transform: rotate(45deg); }
+
+.pay-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.pay-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--r3); padding: 20px; display: grid; gap: 12px; }
+.pay-card-h { display: flex; justify-content: space-between; align-items: center; }
+.pay-amount .lbl { margin-bottom: -6px; }
+.pay-total-row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 8px; }
+.pay-due { display: grid; gap: 3px; padding: 14px; background: var(--ink); color: #fff; border-radius: var(--r2); }
+.pay-due .muted { color: var(--g-mute); }
+.pay-due b { font-size: 26px; letter-spacing: -.02em; color: var(--signal); }
+.err-msg[data-pay-order-err] { margin-top: -6px; }
+
+.qr-wrap { background: #fff; border: 1px solid var(--line); border-radius: var(--r2); padding: 10px; display: grid; place-items: center; }
+.qr-wrap img { width: 100%; max-width: 330px; height: auto; border-radius: 4px; }
+.pay-dl { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.pay-dl > div { display: grid; grid-template-columns: 120px 1fr auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line-2); }
+.pay-dl dt { font: 500 11px var(--f-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--mute); }
+.pay-dl dd { font-weight: 600; font-size: 14.5px; word-break: break-all; }
+.pay-dl.is-big dd.mono { font-size: 22px; letter-spacing: .02em; }
+.pay-check { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; background: rgba(26,154,90,.08); color: var(--ok); border-radius: var(--r1); font-size: 12.5px; }
+.pay-check svg { width: 16px; flex: none; margin-top: 1px; }
+.pay-mini { display: grid; gap: 6px; counter-reset: m; font-size: 13px; color: var(--ink-3); }
+.pay-mini li { counter-increment: m; display: grid; grid-template-columns: 22px 1fr; gap: 8px; }
+.pay-mini li::before { content: counter(m); width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; background: var(--paper); font: 600 11px var(--f-mono); color: var(--ink); }
+.pay-missing { padding: 14px; background: var(--paper); border-radius: var(--r2); font-size: 13.5px; color: var(--ink-3); }
+
+.pay-confirm { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 36px; margin-top: 14px; padding: 28px; border-radius: var(--r3); background: var(--mat); color: #eef5f1; }
+.pay-confirm-t { display: grid; gap: 10px; align-content: start; }
+.pay-confirm-t .eyebrow { color: rgba(238,245,241,.7); } .pay-confirm-t .eyebrow b { color: var(--signal); }
+.pay-confirm-t p { color: rgba(238,245,241,.78); max-width: 46ch; }
+.pay-confirm-f { display: grid; gap: 10px; align-content: start; }
+.pay-confirm-f .lbl { color: rgba(238,245,241,.85); }
+.pay-confirm-f .input { background-color: rgba(255,255,255,.07); border-color: rgba(255,255,255,.2); color: #fff; }
+.pay-confirm-f .muted { color: rgba(238,245,241,.6); }
+.pay-confirm .check { color: #fff; } .pay-confirm .check .box { border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.05); }
+.pay-method { display: flex; gap: 18px; flex-wrap: wrap; padding: 4px 0 8px; }
+
+.pay-faq { margin-top: 44px; max-width: 820px; }
+.pay-faq .h2 { margin-bottom: 14px; }
+
+/* info box shown in the cart / drawer for visitors in Indonesia */
+.lp-note { display: flex; gap: 12px; padding: 12px 14px; background: #fff7dc; border: 1px solid #f1d98a; border-radius: var(--r2); font-size: 12.5px; line-height: 1.45; color: var(--ink-2); }
+.lp-note > svg { width: 20px; flex: none; color: var(--ink); margin-top: 1px; }
+.lp-note b { display: block; font-size: 13px; color: var(--ink); }
+.lp-note a { text-decoration: underline; text-underline-offset: 3px; font-weight: 600; color: var(--ink); }
+.dr-f .lp-note { margin: 0 0 12px; }
+
+@media (max-width: 1000px) {
+  .pay-steps { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .pay-steps li:nth-child(odd) { padding-left: 0; border-left: 0; }
+  .pay-grid { grid-template-columns: minmax(0, 1fr); }
+  .pay-confirm { grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 22px; }
+}
+@media (max-width: 560px) {
+  .pay-steps { grid-template-columns: minmax(0, 1fr); } .pay-steps li, .pay-steps li + li { padding-left: 0; border-left: 0; }
+  .pay-dl > div { grid-template-columns: 1fr auto; } .pay-dl dt { grid-column: 1 / -1; }
+  .pay-total-row { grid-template-columns: minmax(0, 1fr); }
+}

@@ -1,0 +1,23 @@
+{%- comment -%}
+  Maps a colour name to a CSS background. Usage: {% render 'color-swatch', name: variant.option1 %}
+  Output is a CSS value (or nothing when the name is unknown, so the caller can hide the swatch).
+{%- endcomment -%}
+{%- assign n = name | downcase -%}
+{%- if n contains 'gold' and n contains 'gunmet' -%}linear-gradient(135deg,#c9a24a 50%,#4a4f56 50%)
+{%- elsif n contains 'gunmet' or n contains 'gun metal' or n contains 'gunmetal' or n contains 'grey' or n contains 'gray' -%}#4a4f56
+{%- elsif n contains 'gold' -%}#c9a24a
+{%- elsif n contains 'chrome' -%}linear-gradient(135deg,#f4f6f8 0%,#8d939b 45%,#eef1f4 55%,#6b7178 100%)
+{%- elsif n contains 'silver' -%}#c5c9cf
+{%- elsif n contains 'bronze' -%}#8c6a3d
+{%- elsif n contains 'white' -%}#f6f6f3
+{%- elsif n contains 'black' -%}#141516
+{%- elsif n contains 'tosca' -%}#1fb3a5
+{%- elsif n contains 'blue' -%}#2453c8
+{%- elsif n contains 'red' -%}#c8202a
+{%- elsif n contains 'pink' -%}#ef6aa6
+{%- elsif n contains 'purple' -%}#7a3fc0
+{%- elsif n contains 'green' -%}#2f9a4c
+{%- elsif n contains 'orange' -%}#ef7d1a
+{%- elsif n contains 'yellow' -%}#f2d21b
+{%- elsif n == 'raw' -%}#ddd5c4
+{%- endif -%}

@@ -1,0 +1,25 @@
+{%- comment -%}
+  Data-only section for the Build Planner. Fetched by assets/planner.js:
+    /collections/<handle>?section_id=planner-results&filter.p.m.hpz.diameter=10.0&page=N
+    /products/<handle>?section_id=planner-results      (single item, used to restore shared/saved builds)
+  Prints one [data-pl-item] row per product. Not meant to be added to a template.
+{%- endcomment -%}
+{%- if collection -%}
+  {%- paginate collection.products by section.settings.per_page -%}
+    <div data-pl-results>
+      {%- for product in collection.products -%}{% render 'planner-item', product: product %}{%- endfor -%}
+      {%- if paginate.next -%}<span data-next="{{ paginate.next.page }}"></span>{%- endif -%}
+    </div>
+  {%- endpaginate -%}
+{%- elsif product -%}
+  <div data-pl-results>{% render 'planner-item', product: product %}</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Planner results (data)",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per request", "min": 8, "max": 50, "step": 2, "default": 50 }
+  ]
+}
+{% endschema %}

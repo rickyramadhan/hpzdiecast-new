@@ -1,0 +1,82 @@
+{%- comment -%}
+  Rendered via /search/suggest?section_id=predictive-search&q=...&resources[type]=product,collection,article,query
+  Output is injected into #sr-res by assets/search.js (everything inside [data-predictive]).
+{%- endcomment -%}
+<div data-predictive>
+  {%- if predictive_search.performed -%}
+    {%- assign terms = predictive_search.terms -%}
+    {%- assign products = predictive_search.resources.products -%}
+    {%- assign queries = predictive_search.resources.queries -%}
+    {%- assign colls = predictive_search.resources.collections -%}
+    {%- assign arts = predictive_search.resources.articles -%}
+    {%- assign total = products.size | plus: queries.size | plus: colls.size | plus: arts.size -%}
+    {%- if total > 0 -%}
+      <div class="sr-cols">
+        <div>
+          {%- if queries.size > 0 -%}
+            <h6>{{ 'hpz.catalog.suggestions' | t }}</h6>
+            <div class="sr-links">
+              {%- for q in queries -%}
+                <a href="{{ q.url }}">{% render 'icon', name: 'search' %}<span>{{ q.styled_text }}</span></a>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+          {%- if colls.size > 0 -%}
+            <h6>{{ 'hpz.catalog.collections' | t }}</h6>
+            <div class="sr-links">
+              {%- for c in colls -%}
+                <a href="{{ c.url }}">{% render 'icon', name: 'tag' %}<span>{{ c.title | escape | highlight: terms }}</span></a>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+          {%- if arts.size > 0 -%}
+            <h6>{{ 'hpz.catalog.guides' | t }}</h6>
+            <div class="sr-links">
+              {%- for a in arts -%}
+                <a href="{{ a.url }}">{% render 'icon', name: 'info' %}<span>{{ a.title | escape | highlight: terms }}</span></a>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+        <div>
+          {%- if products.size > 0 -%}
+            <h6>{{ 'hpz.catalog.products' | t }}</h6>
+            <div class="sr-grid">
+              {%- for product in products -%}
+                <a class="sr-p" href="{{ product.url }}">
+                  {%- if product.featured_image -%}
+                    {{ product.featured_image | image_url: width: 160, height: 160, crop: 'center' | image_tag: width: 58, height: 58, loading: 'lazy', alt: product.title }}
+                  {%- endif -%}
+                  <span>
+                    {%- if product.vendor != blank -%}<em>{{ product.vendor | escape }}</em>{%- endif -%}
+                    <b>{{ product.title | escape | highlight: terms }}</b>
+                    <i>{{ product.price | money }}</i>
+                  </span>
+                </a>
+              {%- endfor -%}
+            </div>
+            <a class="btn btn-ink sr-all" href="{{ routes.search_url }}?q={{ terms | url_encode }}&type=product">{{ 'hpz.catalog.see_all' | t }} {% render 'icon', name: 'arrow' %}</a>
+          {%- else -%}
+            <div class="sr-none">
+              <b>{{ 'hpz.catalog.no_match' | t: terms: terms }}</b>
+              <p>{{ 'hpz.catalog.no_match_help' | t }}</p>
+              <a class="btn btn-ghost btn-sm" href="{{ routes.root_url | append: 'pages/services' }}#request">{{ 'hpz.catalog.request_part' | t }}</a>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- else -%}
+      <div class="sr-none">
+        <b>{{ 'hpz.catalog.no_match' | t: terms: terms }}</b>
+        <p>{{ 'hpz.catalog.no_match_help' | t }}</p>
+        <a class="btn btn-ghost btn-sm" href="{{ routes.root_url | append: 'pages/services' }}#request">{{ 'hpz.catalog.request_part' | t }}</a>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Predictive search"
+}
+{% endschema %}

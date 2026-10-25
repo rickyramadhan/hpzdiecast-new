@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  {% render 'geo-guard' %}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0e0f11">
+  {% render 'seo-head' %}
+  <link rel="icon" href="{{ 'favicon.svg' | asset_url }}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+  {{ 'components.css' | asset_url | stylesheet_tag }}
+  <style>
+    :root {
+      --signal: {{ settings.color_signal }};
+      --mat: {{ settings.color_mat }};
+      --ink: {{ settings.color_ink }};
+      --paper: {{ settings.color_paper }};
+    }
+  </style>
+  {{ content_for_header }}
+  <script>
+    window.HPZ_RAW = {
+      shop: { name: {{ shop.name | json }}, url: {{ shop.url | json }} },
+      moneyFormat: {{ shop.money_format | json }},
+      template: {{ template.name | json }},
+      locale: {{ request.locale.iso_code | json }},
+      market: {{ localization.country.iso_code | json }},
+      role: {{ settings.store_role | default: 'global' | json }},
+      country: {{ localization.country.name | json }},
+      currency: {{ cart.currency.iso_code | json }},
+      countries: [{%- for c in localization.available_countries -%}{{ c.iso_code | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}],
+      settings: {
+        city: {{ settings.workshop_city | json }},
+        address: {{ settings.workshop_address | json }},
+        hours: {{ settings.workshop_hours | json }},
+        whatsapp: {{ settings.whatsapp | json }},
+        freeShipUsd: {{ settings.free_ship_usd | json }},
+        addonBox: {{ settings.addon_box_handle | json }},
+        addonProtect: {{ settings.addon_protect_handle | json }},
+        bundleDiscount: {{ settings.bundle_discount_enabled | json }},
+        idrRate: {{ settings.idr_rate | default: 0 | json }},
+        svcFactor: {{ settings.svc_price_factor | default: 1 | json }},
+        idrLive: {{ settings.idr_rate_live | json }},
+        showDiscountBadge: {{ settings.show_discount_badge | json }},
+        lowStock: {{ settings.low_stock_threshold | json }},
+        requireVerified: {{ settings.fitment_requires_verified | json }},
+        searchPopular: {{ settings.search_popular | json }},
+        loyalty: {{ settings.loyalty_enabled | json }},
+        wheelsCollection: {{ settings.wheels_collection.handle | json }},
+        cartUpsell: {{ settings.cart_upsell_collection.handle | json }}
+      },
+      routes: {
+        root: {{ routes.root_url | json }},
+        cart: {{ routes.cart_url | json }},
+        search: {{ routes.search_url | json }},
+        account: {{ routes.account_url | json }}
+      }
+    };
+    {%- assign casting_n = metaobjects.casting.values.size | default: 0 -%}
+    window.HPZ_CASTINGS = {% if casting_n == 0 %}{%- render 'default-castings' -%}{% else %}[
+      {%- for c in metaobjects.casting.values -%}
+      {
+        handle: {{ c.handle | json }},
+        name: {{ c.name.value | json }},
+        maker: {{ c.maker.value | json }},
+        year: {{ c.year.value | json }},
+        body: {{ c.body.value | json }},
+        dia: {{ c.diameter.value | json }},
+        axle: {{ c.axle.value | json }},
+        verified: {{ c.verified.value | json }}
+      }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ]{% endif %};
+  </script>
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  <script src="{{ 'localization.js' | asset_url }}" defer></script>
+  <script src="{{ 'cart.js' | asset_url }}" defer></script>
+  <script src="{{ 'shipping-calc.js' | asset_url }}" defer></script>
+  <script src="{{ 'search.js' | asset_url }}" defer></script>
+  <script src="{{ 'quick-view.js' | asset_url }}" defer></script>
+</head>
+<body data-page="{{ template.name }}" data-nav="{{ template.name }}" data-garagebar="{% if template.name == 'planner' or template.name == 'account' %}off{% else %}on{% endif %}"{% if template.name == 'cart' %} class="no-drawer"{% endif %}>
+  <a class="sr-only" href="#main">{{ 'accessibility.skip_to_content' | t }}</a>
+  {%- sections 'header-group' -%}
+
+  <main id="main" role="main">
+    {{ content_for_layout }}
+  </main>
+
+  {%- sections 'footer-group' -%}
+
+  <div id="shell">
+    <div class="scrim" data-close></div>
+
+    <aside class="drawer" id="d-cart" aria-label="Cart" role="dialog" aria-modal="true">
+      {% section 'cart-drawer-content' %}
+    </aside>
+
+    <aside class="drawer" id="d-wish" aria-label="Wishlist" role="dialog" aria-modal="true">
+      {% render 'wishlist-drawer' %}
+    </aside>
+
+    <aside class="drawer is-left" id="d-menu" aria-label="Menu" role="dialog" aria-modal="true">
+      <div class="dr-h">
+        {% render 'logo' %}
+        <button class="dr-x" data-close aria-label="Close">{% render 'icon', name: 'close' %}</button>
+      </div>
+      <div class="dr-body mm">
+        <button class="mm-search" data-open="search">{% render 'icon', name: 'search' %}Search parts, castings…</button>
+        {%- comment -%} same items as the desktop nav (sections/header.liquid) {%- endcomment -%}
+        <a class="mm-a" href="/collections/wheels">{{ 'hpz.nav.wheels' | t }}{% render 'icon', name: 'right' %}</a>
+        <a class="mm-a" href="/collections/all">{{ 'hpz.nav.parts' | t }}{% render 'icon', name: 'right' %}</a>
+        <a class="mm-a" href="/collections/decals">{{ 'hpz.nav.decals' | t }}{% render 'icon', name: 'right' %}</a>
+        <a class="mm-a" href="/collections">{{ 'hpz.nav.brands' | t }}{% render 'icon', name: 'right' %}</a>
+        <a class="mm-a" href="/pages/builds">{{ 'hpz.nav.builds' | t }}{% render 'icon', name: 'right' %}</a>
+        <a class="mm-a" href="/pages/planner">{{ 'hpz.nav.planner' | t }}{% render 'icon', name: 'right' %}</a>
+        <a class="mm-a" href="/pages/services">{{ 'hpz.nav.services' | t }}{% render 'icon', name: 'right' %}</a>
+        {%- unless settings.hide_academy -%}
+          <a class="mm-a" href="/blogs/academy">{{ 'hpz.nav.academy' | t }}{% render 'icon', name: 'right' %}</a>
+        {%- endunless -%}
+        <div class="mm-sub">
+          <a href="{{ routes.account_url }}">{% render 'icon', name: 'user' %}Account</a>
+          <a href="{{ routes.account_url }}#orders">{% render 'icon', name: 'truck' %}Track order</a>
+          {%- if settings.whatsapp != blank -%}
+            <a href="https://wa.me/{{ settings.whatsapp }}">{% render 'icon', name: 'wa' %}WhatsApp</a>
+          {%- endif -%}
+        </div>
+        {% render 'store-switch', cls: 'is-block' %}
+      </div>
+    </aside>
+
+    <div class="search" id="search" role="dialog" aria-modal="true" aria-label="Search">
+      {% render 'search-overlay' %}
+    </div>
+
+    <div class="modal" id="m-market" role="dialog" aria-modal="true">
+      <div class="modal-box" id="market-box">{% render 'market-form' %}</div>
+    </div>
+
+    <div class="modal" id="m-garage" role="dialog" aria-modal="true">
+      <div class="modal-box is-wide" id="garage-box">{% render 'garage-modal' %}</div>
+    </div>
+
+    <div class="modal" id="m-quick" role="dialog" aria-modal="true">
+      <div class="modal-box is-xl" id="quick-box"></div>
+    </div>
+
+    <div class="modal" id="m-notify" role="dialog" aria-modal="true">
+      <div class="modal-box is-sm" id="notify-box">
+        <div class="nt">
+          <span class="eyebrow"><b>Restock alert</b></span>
+          <h3 class="h3" id="notify-title"></h3>
+          {%- form 'contact', id: 'notify-form', class: 'nt-f' -%}
+            <input type="hidden" name="contact[tags]" value="restock-alert">
+            <input type="hidden" name="contact[body]" id="notify-body" value="">
+            <input class="input" type="email" name="contact[email]" required placeholder="Email address" aria-label="Email address">
+            <button class="btn btn-ink" type="submit">Notify me</button>
+          {%- endform -%}
+        </div>
+      </div>
+    </div>
+
+    {%- form 'localization', id: 'geo-form', hidden: 'hidden' -%}
+      <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+      <input type="hidden" name="language_code" value="{{ localization.language.iso_code }}">
+      <input type="hidden" name="return_to" value="{{ request.path }}">
+    {%- endform -%}
+    <div class="geo" id="geo" hidden></div>
+    <div id="toasts" aria-live="polite"></div>
+    {% render 'id-suggest' %}
+    {% render 'wa-float' %}
+  </div>
+</body>
+</html>

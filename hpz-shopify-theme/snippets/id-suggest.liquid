@@ -1,0 +1,45 @@
+{%- comment -%}
+  International store only: a dismissible pop-up for visitors whose IP is in Indonesia. They are allowed to stay (they chose to, see
+  snippets/geo-guard.liquid), but we recommend the Indonesia store (Rupiah, QRIS and BCA transfer, local shipping).
+  Closing it hides it for the rest of the browser session. Shown at most once per session, never in the theme editor.
+  Usage: {% render 'id-suggest' %}
+{%- endcomment -%}
+{%- if settings.store_role != 'indonesia' and settings.id_store_url != blank and localization.country.iso_code == 'ID' and request.design_mode == false -%}
+  {{ 'p-idsuggest.css' | asset_url | stylesheet_tag }}
+  <div class="idp" id="idp" role="dialog" aria-modal="true" aria-labelledby="idp-t" hidden>
+    <div class="idp-box">
+      <button type="button" class="idp-x" data-idp-close aria-label="Tutup / Close">{% render 'icon', name: 'close' %}</button>
+      <span class="eyebrow"><b>{% render 'flag', code: 'ID' %} Indonesia</b></span>
+      <h3 class="h3" id="idp-t">Belanja dari Indonesia? Pakai toko Indonesia.</h3>
+      <p>Toko internasional ini memakai dolar AS (USD), pembayaran PayPal, dan ongkir internasional. Toko Indonesia memakai Rupiah, bayar lewat QRIS atau transfer BCA, dengan ongkir dalam negeri.</p>
+      <p class="xs muted">Shopping from Indonesia? Our Indonesia store uses Rupiah, QRIS and BCA transfer, and local shipping. This store charges in US dollars.</p>
+      <div class="idp-a">
+        <a class="btn btn-signal" href="{{ settings.id_store_url | strip }}{{ request.path }}" data-idp-go>Pindah ke toko Indonesia</a>
+        <button type="button" class="btn btn-ghost" data-idp-close>Tetap di sini</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var box = document.getElementById('idp');
+      if (!box) return;
+      var KEY = 'hpzIdPopup';
+      try { if (sessionStorage.getItem(KEY) === '1') return; } catch (e) {}
+      if (/bot|crawl|spider|lighthouse|headless|preview/i.test(navigator.userAgent)) return;
+      var last = null;
+      var close = function () {
+        box.hidden = true; document.documentElement.classList.remove('idp-open');
+        try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+        if (last && last.focus) last.focus();
+      };
+      box.addEventListener('click', function (e) { if (e.target === box || e.target.closest('[data-idp-close]')) close(); });
+      document.addEventListener('keydown', function (e) { if (!box.hidden && e.key === 'Escape') close(); });
+      var open = function () {
+        last = document.activeElement;
+        box.hidden = false; document.documentElement.classList.add('idp-open');
+        var b = box.querySelector('[data-idp-go]'); if (b) b.focus();
+      };
+      setTimeout(open, 900);
+    })();
+  </script>
+{%- endif -%}

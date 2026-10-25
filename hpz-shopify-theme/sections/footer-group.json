@@ -1,0 +1,76 @@
+{
+  "name": "Footer group",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "col-shop": {
+          "type": "links",
+          "settings": {
+            "title": "Shop",
+            "label_1": "Wheels",
+            "url_1": "/collections/wheels",
+            "label_2": "Decals",
+            "url_2": "/collections/decals",
+            "label_3": "Body kits",
+            "url_3": "/collections/body-kit",
+            "label_4": "Engines",
+            "url_4": "/collections/engines",
+            "label_5": "HPZ Wheels",
+            "url_5": "/collections/hpz-wheels",
+            "label_6": "All parts",
+            "url_6": "/collections/all"
+          }
+        },
+        "col-build": {
+          "type": "links",
+          "settings": {
+            "title": "Build",
+            "label_1": "Build Planner",
+            "url_1": "/pages/planner",
+            "label_2": "Built by You",
+            "url_2": "/pages/builds",
+            "label_3": "Academy",
+            "url_3": "/blogs/academy",
+            "label_4": "Services",
+            "url_4": "/pages/services",
+            "label_5": "Custom decals",
+            "url_5": "/pages/services#decal"
+          }
+        },
+        "col-help": {
+          "type": "links",
+          "settings": {
+            "title": "Help",
+            "label_1": "Contact",
+            "url_1": "/pages/contact",
+            "label_2": "Track your order",
+            "url_2": "/account",
+            "label_3": "Shipping policy",
+            "url_3": "/policies/shipping-policy",
+            "label_4": "Refund policy",
+            "url_4": "/policies/refund-policy",
+            "label_5": "Wholesale",
+            "url_5": "/pages/services#wholesale",
+            "label_6": "Pembayaran Indonesia",
+            "url_6": "/pages/bayar"
+          }
+        }
+      },
+      "block_order": [
+        "col-shop",
+        "col-build",
+        "col-help"
+      ],
+      "settings": {
+        "news_eyebrow": "Drop alerts",
+        "news_title": "New wheels drop regularly. Be first to know.",
+        "news_text": "One email per drop. No spam."
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

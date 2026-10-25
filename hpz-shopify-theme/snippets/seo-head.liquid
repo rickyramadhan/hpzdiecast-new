@@ -1,0 +1,196 @@
+{%- comment -%}
+  Everything search engines and social networks read from <head>: title, description, robots, Open Graph, Twitter, hreflang between the two stores,
+  and JSON-LD (WebSite + Store on the home page, Product + BreadcrumbList on products, CollectionPage + BreadcrumbList on collections).
+  Per-store copy comes from Theme settings > SEO (home title and description) and the hpz.seo.* locale strings.
+  Rendered once from layout/theme.liquid, after <meta charset>.
+{%- endcomment -%}
+{%- liquid
+  assign brand = settings.seo_brand | default: shop.name
+  assign origin = request.origin
+  assign desc = page_description | strip_html | strip_newlines | strip
+  assign title_out = page_title | strip
+  assign noindex = false
+
+  case request.page_type
+    when 'index'
+      if settings.seo_home_title != blank
+        assign title_out = settings.seo_home_title
+      else
+        assign title_out = brand
+      endif
+      if settings.seo_home_description != blank
+        assign desc = settings.seo_home_description
+      endif
+    when 'product'
+      assign max_len = 60 | minus: brand.size | minus: 3
+      assign title_out = product.title | strip | truncate: max_len, '…' | append: ' | ' | append: brand
+      assign desc = product.description | strip_html | strip_newlines | strip
+      if page_description != blank and page_description.size > desc.size
+        assign desc = page_description | strip_html | strip_newlines | strip
+      endif
+      if desc.size < 80
+        assign tail = 'hpz.seo.product_tail' | t
+        assign desc = desc | append: '. ' | append: tail
+      endif
+    when 'collection'
+      assign coll_title = 'hpz.seo.collection_title' | t: title: collection.title
+      assign title_out = coll_title | append: ' | ' | append: brand
+      if desc.size < 60
+        assign desc = 'hpz.seo.collection_desc' | t: title: collection.title
+      endif
+    when 'search', 'cart', 'password'
+      assign noindex = true
+    else
+      unless page_title contains brand
+        assign title_out = page_title | append: ' | ' | append: brand
+      endunless
+  endcase
+
+  if template.directory == 'customers'
+    assign noindex = true
+  endif
+  assign desc = desc | truncate: 158, '…'
+  assign og_image = nil
+  if request.page_type == 'index'
+    if settings.seo_social_image != blank
+      assign og_image = settings.seo_social_image
+    elsif shop.brand.cover_image != blank
+      assign og_image = shop.brand.cover_image
+    elsif shop.brand.logo != blank
+      assign og_image = shop.brand.logo
+    endif
+  endif
+  if request.locale.iso_code == 'id'
+    assign og_locale = 'id_ID'
+    assign og_alt = 'en_US'
+  else
+    assign og_locale = 'en_US'
+    assign og_alt = 'id_ID'
+  endif
+-%}
+<title>{{ title_out | strip | escape }}</title>
+{%- if desc != blank -%}
+  <meta name="description" content="{{ desc | escape }}">
+{%- endif -%}
+{%- if noindex -%}
+  <meta name="robots" content="noindex, follow">
+{%- endif -%}
+<link rel="canonical" href="{{ canonical_url }}">
+{%- if settings.id_store_url != blank and settings.global_store_url != blank -%}
+  {%- assign alt_id = settings.id_store_url | strip -%}
+  {%- assign alt_en = settings.global_store_url | strip -%}
+  <link rel="alternate" hreflang="id-ID" href="{{ alt_id }}{{ request.path }}">
+  <link rel="alternate" hreflang="en" href="{{ alt_en }}{{ request.path }}">
+  <link rel="alternate" hreflang="x-default" href="{{ alt_en }}{{ request.path }}">
+{%- endif -%}
+
+<meta property="og:site_name" content="{{ brand | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:locale" content="{{ og_locale }}">
+<meta property="og:locale:alternate" content="{{ og_alt }}">
+<meta property="og:title" content="{{ title_out | strip | escape }}">
+{%- if desc != blank -%}
+  <meta property="og:description" content="{{ desc | escape }}">
+{%- endif -%}
+{%- if request.page_type == 'product' -%}
+  <meta property="og:type" content="product">
+{%- else -%}
+  <meta property="og:type" content="website">
+{%- endif -%}
+{%- if og_image -%}
+  <meta property="og:image" content="{{ og_image | image_url: width: 1200 }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="{{ 1200 | divided_by: og_image.aspect_ratio | round }}">
+  <meta property="og:image:alt" content="{{ brand | escape }}">
+{%- endif -%}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ title_out | strip | escape }}">
+{%- if desc != blank -%}
+  <meta name="twitter:description" content="{{ desc | escape }}">
+{%- endif -%}
+
+{%- comment -%} JSON-LD {%- endcomment -%}
+{%- if request.page_type == 'index' -%}
+  {%- capture same_as -%}
+    {%- if settings.instagram_url != blank -%}{{ settings.instagram_url | json }},{%- endif -%}
+    {%- if settings.youtube_url != blank -%}{{ settings.youtube_url | json }},{%- endif -%}
+    {%- if settings.tiktok_url != blank -%}{{ settings.tiktok_url | json }},{%- endif -%}
+  {%- endcapture -%}
+  {%- assign same_as = same_as | strip | remove_last: ',' -%}
+  {%- capture search_tpl -%}{{ origin }}/search?q={% raw %}{search_term_string}{% endraw %}{%- endcapture -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": {{ origin | append: '/#website' | json }},
+        "url": {{ origin | append: '/' | json }},
+        "name": {{ brand | json }},
+        "inLanguage": {{ request.locale.iso_code | json }},
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": { "@type": "EntryPoint", "urlTemplate": {{ search_tpl | json }} },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Store",
+        "@id": {{ origin | append: '/#store' | json }},
+        "name": {{ brand | json }},
+        "url": {{ origin | append: '/' | json }},
+        "description": {{ desc | json }},
+        {%- if shop.brand.logo != blank -%}"logo": {{ shop.brand.logo | image_url: width: 600 | prepend: 'https:' | json }},{%- endif -%}
+        {%- if og_image -%}"image": {{ og_image | image_url: width: 1200 | json }},{%- endif -%}
+        {%- if settings.whatsapp != blank -%}"telephone": {{ settings.whatsapp | prepend: '+' | json }},{%- endif -%}
+        {%- if settings.seo_opening_hours != blank -%}"openingHours": {{ settings.seo_opening_hours | json }},{%- endif -%}
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": {{ settings.workshop_city | json }},
+          "addressCountry": "ID"
+        },
+        "sameAs": [{{ same_as }}]
+      }
+    ]
+  }
+  </script>
+{%- elsif request.page_type == 'product' -%}
+  <script type="application/ld+json">{{ product | structured_data }}</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": {{ 'hpz.seo.home' | t | json }}, "item": {{ origin | append: '/' | json }} },
+      {%- if collection != blank -%}
+      { "@type": "ListItem", "position": 2, "name": {{ collection.title | json }}, "item": {{ origin | append: collection.url | json }} },
+      { "@type": "ListItem", "position": 3, "name": {{ product.title | json }}, "item": {{ canonical_url | json }} }
+      {%- else -%}
+      { "@type": "ListItem", "position": 2, "name": {{ product.title | json }}, "item": {{ canonical_url | json }} }
+      {%- endif -%}
+    ]
+  }
+  </script>
+{%- elsif request.page_type == 'collection' -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "name": {{ collection.title | json }},
+        "description": {{ desc | json }},
+        "url": {{ canonical_url | json }},
+        "inLanguage": {{ request.locale.iso_code | json }}
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": {{ 'hpz.seo.home' | t | json }}, "item": {{ origin | append: '/' | json }} },
+          { "@type": "ListItem", "position": 2, "name": {{ collection.title | json }}, "item": {{ canonical_url | json }} }
+        ]
+      }
+    ]
+  }
+  </script>
+{%- endif -%}

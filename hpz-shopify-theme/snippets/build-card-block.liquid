@@ -1,0 +1,78 @@
+{%- comment -%}
+  Fallback gallery tile built from a section block (used when no `build` metaobjects exist).
+  Params: block, index, castings_json (raw default-castings output)
+  Same markup and JSON blob as build-card.liquid so assets/builds.js treats both the same.
+{%- endcomment -%}
+{%- liquid
+  assign castings_json = castings
+  assign s = block.settings
+  assign handle = 'b' | append: index | append: '-' | append: block.id | slice: 0, 14
+  assign title = s.title | default: 'Build'
+  assign builder = s.builder | remove: '@' | strip
+  assign photo = s.photo
+  assign likes = s.likes | default: 0
+  assign cast_handle = s.casting | strip | downcase
+  assign cast_name = ''
+  assign cast_body = ''
+  if cast_handle != blank
+    assign mo = metaobjects.casting[cast_handle]
+    if mo.name.value != blank
+      assign cast_name = mo.name.value
+      assign cast_body = mo.body.value
+    else
+      assign key_s = '"handle":"' | append: cast_handle | append: '","name":"'
+      assign parts_s = castings_json | split: key_s
+      if parts_s.size > 1
+        assign cast_name = parts_s[1] | split: '"' | first
+        assign body_s = parts_s[1] | split: '"body":"' | last
+        assign cast_body = body_s | split: '"' | first
+      endif
+    endif
+  endif
+  assign seen = '|'
+  assign parts_n = 0
+  assign dots = ''
+  capture parts_json
+    for i in (1..4)
+      assign kx = 'hs' | append: i | append: '_x'
+      assign ky = 'hs' | append: i | append: '_y'
+      assign kp = 'hs' | append: i | append: '_product'
+      assign hx = s[kx]
+      assign hy = s[ky]
+      assign hp = s[kp]
+      if hp.id and hx != blank and hy != blank
+        assign key = hp.id | prepend: '|' | append: '|'
+        unless seen contains key
+          assign seen = seen | append: hp.id | append: '|'
+          if parts_n > 0
+            echo ','
+          endif
+          render 'build-part', product: hp, x: hx, y: hy
+          assign parts_n = parts_n | plus: 1
+        endunless
+      endif
+    endfor
+  endcapture
+-%}
+<figure class="bt" data-reveal style="--i:{{ index | modulo: 6 }}" data-build-card="{{ handle }}" data-casting="{{ cast_handle }}" data-casting-name="{{ cast_name | escape }}" data-likes="{{ likes }}" data-parts="{{ parts_n }}" data-order="{{ index }}" {{ block.shopify_attributes }}>
+  <button class="bt-img" type="button" data-build="{{ handle }}" aria-label="{{ title | escape }}">
+    {%- if photo -%}
+      {{ photo | image_url: width: 700 | image_tag: widths: '350, 500, 700', sizes: '(min-width: 1000px) 25vw, 50vw', alt: title, loading: 'lazy' }}
+    {%- endif -%}
+    {%- for i in (1..4) -%}
+      {%- liquid
+        assign kx = 'hs' | append: i | append: '_x'
+        assign ky = 'hs' | append: i | append: '_y'
+        assign kp = 'hs' | append: i | append: '_product'
+      -%}
+      {%- if s[kp].id and s[kx] != blank and s[ky] != blank -%}<span class="bt-dot" style="left:{{ s[kx] }}%;top:{{ s[ky] }}%"></span>{%- endif -%}
+    {%- endfor -%}
+    <span class="bt-shop">{% render 'icon', name: 'cart' %}{{ 'hpz.builds.shop_build' | t }}{% if parts_n > 0 %} &middot; {{ parts_n }} {{ 'hpz.builds.parts' | t }}{% endif %}</span>
+  </button>
+  <figcaption>
+    <div><b>{{ title }}</b><span class="mono">{% if builder != blank %}@{{ builder }}{% endif %}{% if cast_name != blank %}{% if builder != blank %} &middot; {% endif %}{{ cast_name }}{% endif %}</span></div>
+    <button class="bt-like" type="button" data-like="{{ handle }}" aria-label="{{ 'hpz.builds.like' | t }}">{% render 'icon', name: 'heart' %}<span class="mono">{{ likes }}</span></button>
+  </figcaption>
+  <script type="application/json" data-build-json>{"id":{{ handle | json }},"title":{{ title | json }},"builder":{{ builder | json }},"photo":{{ photo | image_url: width: 1200 | json }},"photoAlt":{{ title | json }},"story":{{ s.story | json }},"casting":{"handle":{{ cast_handle | json }},"name":{{ cast_name | json }},"body":{{ cast_body | json }}},"likes":{{ likes }},"parts":[{{ parts_json }}]}</script>
+</figure>
+

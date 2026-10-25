@@ -1,0 +1,53 @@
+{%- comment -%}
+  "My garage" casting picker. Options come from the casting metaobjects (metaobjects.casting); when none exist yet it uses
+  the built-in fallback list (snippets/default-castings-list). Records are delimited text, there is no parse_json in Liquid.
+  record: 0 handle | 1 name | 2 maker | 3 year | 4 body | 5 diameter | 6 axle | 7 keywords
+{%- endcomment -%}
+{%- capture recs_raw -%}
+  {%- assign casting_n = metaobjects.casting.values.size | default: 0 -%}
+  {%- if casting_n == 0 -%}
+    {%- render 'default-castings-list' -%}
+  {%- else -%}
+    {%- for c in metaobjects.casting.values -%}
+      {{- c.handle }}|{{ c.name.value }}|{{ c.maker.value }}|{{ c.year.value }}|{{ c.body.value }}|{{ c.diameter.value }}|{{ c.axle.value }}|
+      {%- unless forloop.last -%};;{%- endunless -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endcapture -%}
+{%- assign garage_recs = recs_raw | strip | split: ';;' -%}
+<button class="modal-x" data-close aria-label="Close">{% render 'icon', name: 'close' %}</button>
+<div class="g-h">
+  <span class="eyebrow"><b>My garage</b></span>
+  <h3 class="h3">Which casting are you building?</h3>
+  <div class="g-s">
+    {% render 'icon', name: 'search' %}
+    <input id="g-q" class="input" placeholder="Search: R34, Civic, Supra…" aria-label="Search castings">
+  </div>
+  <div class="g-tabs" id="g-tabs">
+    <button class="is-on" data-m="all">All</button>
+    {%- assign makers = '' -%}
+    {%- for rec in garage_recs -%}
+      {%- assign c = rec | split: '|' -%}
+      {%- unless makers contains c[2] -%}
+        {%- assign makers = makers | append: c[2] | append: '|' -%}
+        <button data-m="{{ c[2] | escape }}">{{ c[2] }}</button>
+      {%- endunless -%}
+    {%- endfor -%}
+  </div>
+</div>
+<div class="g-list" id="g-list">
+  {%- for rec in garage_recs -%}
+    {%- assign c = rec | split: '|' -%}
+    <button class="g-i" data-cast="{{ c[0] }}" data-maker="{{ c[2] | escape }}" data-search="{{ c[1] | downcase | escape }}">
+      <span class="g-sil">{% render 'casting-silhouette', body: c[4] %}</span>
+      <span><b>{{ c[1] }}</b><em>{{ c[2] }}{% if c[3] != blank %} · {{ c[3] }}{% endif %}</em></span>
+      <span class="g-sp mono">&empty;{{ c[5] }}<small>mm</small></span>
+    </button>
+  {%- else -%}
+    <p class="muted small" style="padding:20px">No castings listed yet. Request one below.</p>
+  {%- endfor -%}
+</div>
+<div class="g-f">
+  <span class="xs muted">Fitment is measured on our own castings. Missing yours? <a class="link" href="{{ routes.root_url }}pages/contact">Request a casting</a></span>
+  <button class="link xs" data-garage-clear>Clear garage</button>
+</div>
